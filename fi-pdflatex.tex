@@ -182,9 +182,56 @@ Further in the thesis and the application, we will work with the following set o
 \end{itemize}
 
 \subsection{Relations}
+Once we have extracted the \textit{named entities}, we can start looking for the relationships between them.
+As soon as we recognize entities and their relations, the main semantic meaning of a sentence is usually fully extracted.
+In a legal environment, we can illustrate the added value of a relation by a testimony, in which a witness tells about both a person and a location, however we are interested in the document only if there is a relation between these two, particularly 'was in' or similar.
+
+Let's see how the relations are represented.
+Most of the \textit{relations extraction} algorithms are focused on binary relations only.
+Multi-entity relations would be very expensive to extract.
+We will borrow the representation from the Resource Description Framework (RDF) \cite{lassila1999resource} and define the relation as a triple
+$$
+\text{<subject, predicate, object>}
+$$
+where the \textit{subject} is an entity that performs an activity specified in the \textit{predicate} with respect to the \textit{object}.
+The \textit{predicate} is the relation for us, it can be for example 'employed by', 'built', 'son of' or 'cheated on'.
+
+The following groups of algorithms can be applied to extract the relations: \textbf{hand-written patterns}, \textbf{supervised machine learning}, \textbf{semi-supervised}, and \textbf{unsupervised}.
+We will introduce the first two
+\footnote{For more detailed description, see \citetitle{jurafsky2014speech} \cite{jurafsky2014speech}.}.
+
+\subsubsection{\textbf{Hand-written patterns}}
+In the work \citetitle{hearst1992automatic} by \citeauthor{hearst1992automatic} \cite{hearst1992automatic} we find the first idea of using patterns to extract relations.
+The entity names are ignored and a relation is recognized by a set of patterns.
+The patterns are based on the lexicology (POS tagging), the syntax (syntax tree) and the type of the entity (person, location, etc.).
+For example, the pattern \cite[sec. 21.2]{jurafsky2014speech}
+$$
+NP_0\text{ such as }NP_1 \{, NP_2 ..., (\text{and|or})NP_i \}, i \geq 1
+$$
+is able to catch the relation 'hyponym' for many occurrences, for instance, a sentence
+$$
+\text{... by any poison, such as Cyanide, Arsenic or Ricin ...}
+$$
+would generate relations 
+\begin{itemize}
+\item <poison, hyponym of, Cyanide>
+\item <poison, hyponym of, Arsenic>
+\item <poison, hyponym of, Ricin>
+\end{itemize}
+An example of a pattern using entity type \cite[sec. 21.2]{jurafsky2014speech}
+$$
+\text{\textbf{PERSON} (named|appointed|chose|...) \textbf{PERSON} Prep? \textbf{POSITION}}
+$$
+will determine a relation 'named'. 
+
+The big disadvantage of the pattern-based recognition is that the patterns need to be written by hand, which takes a lot of work. On the other hand, the precision of such method is usually high since the patterns are directed by a human.
+
+\subsubsection{\textbf{Supervised machine learning}}
+
+
 
 \subsection{Document Category}
-
+[note: we will rely on user's input, but if none, then let algorithm]
 \subsection{Concepts}
 
 \section{Introduction of the tools}
