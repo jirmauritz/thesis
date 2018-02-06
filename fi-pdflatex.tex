@@ -227,12 +227,31 @@ will determine a relation 'named'.
 The big disadvantage of the pattern-based recognition is that the patterns need to be written by hand, which takes a lot of work. On the other hand, the precision of such method is usually high since the patterns are directed by a human.
 
 \subsubsection{\textbf{Supervised machine learning}}
+The second approach is to annotate a corpus of relations and entities and consider it as a training set in the machine learning.
+More precisely, we need to extract features from the sentences, which serve as an input into the ML algorithm and the relations represents the labels for each sentence
+\cite[sec 21.2]{jurafsky2014speech}.
+
+The features can consist of unigrams or bigrams of the words in the sentence, especially between the subject and object. Next, the named entity types, POS tags or features from the syntax tree can be included as features. We can also consider the number of words between the subject and object or stemmed version of the words \cite[sec. 21.2]{jurafsky2014speech}.
+
+The algorithm uses two models for the relations extraction.
+The first one decides whether there exists a relation between two given entities, and the second one recognizes its type. Then, the algorithm first finds all pairs of entities in the sentence, test it with the first model, and only the positive results are tested on type with the second model \cite[sec. 21.2]{jurafsky2014speech}.
+
+The supervised method can be very accurate on general inputs, however, to be able to do that, a large training dataset is required.
+Therefore, the \textit{Distant Supervision for Relation Extraction} can be applied \cite{mintz2009distant}.
+It is an elegant way, how to obtain a large training data.
+The DBPedia \footnote{Comprehensive database of structured facts extracted from Wikipedia: \mbox{\url{http://wiki.dbpedia.org/}}} or 
+Google Knowledge Graph \footnote{Database of world knowledge structured in a graph: \url{https://www.google.com/intl/bn/insidesearch/features/search/knowledge.html}}
+provide enough information about some of the relations between real-world objects.
+When we search a page about the subject on Wikipedia and find the sentence with the object, then we are ready to adopt the text as an input data for our training phase.
+This approach delivers a lot of diverse sentences, in which we are confident about the relation type, and thus the training dataset is rich enough to create a reliable model.
+
+\subsection{Concepts}
 
 
 
 \subsection{Document Category}
 [note: we will rely on user's input, but if none, then let algorithm]
-\subsection{Concepts}
+
 
 \section{Introduction of the tools}
 
