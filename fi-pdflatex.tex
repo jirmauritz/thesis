@@ -245,18 +245,57 @@ provide enough information about some of the relations between real-world object
 When we search a page about the subject on Wikipedia and find the sentence with the object, then we are ready to adopt the text as an input data for our training phase.
 This approach delivers a lot of diverse sentences, in which we are confident about the relation type, and thus the training dataset is rich enough to create a reliable model.
 
-\subsection{Concepts}
+\subsection{Topic Modeling}
+\label{topic_modeling}
+The \textit{Topic modeling} is a statistical approach for finding general topics that appear in the document.
+They keywords are already able to discover some trends of a document, however, unlike the topics, they have to appear in the text.
+
+Prior to the topic recognition, a fixed set of topics have to be defined.
+The usual process is to assign probabilities of all topics to every word in the dictionary.
+Then, if we consider a document as a bag-of-words
+\footnote{Representation of a document which forgets ordering and counts of the words and keep them in a simple set.}, 
+we can compute the overall probability that a document has a specific topic only from its words.
+
+One of the well-known algorithms for the topic modeling is called the \textit{Latent Dirichlet allocation} developed by \citeauthor{blei2003latent} in \citeyear{blei2003latent} \cite{blei2003latent}.
+The model assumes that every document has fixed distribution of topics it belongs to.
+Let's further assume that the words of a document were withdrawn from a specific distribution defined in the following way.
+\begin{enumerate}
+\item Pick a topic distribution of each document according to a \textit{Dirichlet distribution}.
+\item Pick a word distribution for each topic.
+\item For all words in all documents, generate the word as follows:
+\begin{enumerate}
+  \item Pick a random topic according to the distribution of topics for the document.
+  \item Pick a random word from the distribution of words for the topic chosen in the step a).
+\end{enumerate}
+\end{enumerate}
+The generation scheme tells us the probability theory for documents and topics, however, it does not tell us how to recognize the topics from the fixed documents.
+To apply the theory, we need to reverse the process and assume that the documents were created by this generation process, and eventually guess the topic.
+One of the iterative methods, which achieves this goal, is called the \textit{Collapsed Gibbs Sampling} \cite{xiao2010efficient}.
+Put simply, the initialization phase picks a random topic for each word in all documents and each next phase goes over every word and changes its topic by computing the probabilities, assuming that all the other words are correctly labeled.
 
 
 
 \subsection{Document Category}
-[note: we will rely on user's input, but if none, then let algorithm]
+There are two types of categories we are interested in.
+The first is more related to the structure of the text and tells us where the document is coming from. 
+Such types can be for instance email, medical record, police record, affidavit, etc.
+The Legato system is prepared to work with such categories, and therefore we rely on the input to contain the information about the first type.
 
+The second type is related to the meaning of the text.
+Semantically, it is very similar to the topics introduced in the section \ref{topic_modeling}, and only difference is that we need the most dominant topic to be chosen as a representative.
 
 \section{Introduction of the tools}
 
-\subsection{Python Natural Language Toolkit}
-Python provides a library for natural language processing \footnote{\url{http://www.nltk.org}}, which 
+\subsection{NLTK: The Natural Language Toolkit}
+As a baseline for the commercial NLP tools, we included the open source python framework \textit{NLTK} \cite{bird2004nltk}.
+Although it was originally developed for educational purposes, it is now broadly used by students, researchers and public to process the textual data in python.
+
+\textit{NLTK} consists of multiple modules, which can be used as a pipeline during the text processing. 
+The basic modules run the tokenizer, POS tagging and syntactic analysis.
+More advanced modules are aimed to information extraction and knowledge representation.
+The framework comes with large preprocessed corpora that can be used as a reference corpora during the keyword or NE extraction \cite{bird2009natural}.
+
+
 \subsection{Google Cloud Natural Language}
 \subsection{Watson Natural Language Understanding}
 \subsection{Aylien}
