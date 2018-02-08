@@ -295,14 +295,54 @@ The basic modules run the tokenizer, POS tagging and syntactic analysis.
 More advanced modules are aimed to information extraction and knowledge representation.
 The framework comes with large preprocessed corpora that can be used as a reference corpora during the keyword or NE extraction \cite{bird2009natural}.
 
-
 \subsection{Google Cloud Natural Language}
+Google has a long-standing experience with the text processing, especially in the field of information retrieval.
+They decided to provide their knowledge of semantic text analysis in a service called Cloud Natural Language \cite{googleNLP}.
+Google makes no secret of their approach: the same Deep Learning models that power the Google Search are also employed in the NLP service.
+
+The tool is able to recognize entities, syntactic structure of sentences, category and sentiment  of the text.
+The sentiment analysis is recently very interesting topic because companies want to know public opinion on themselves.
+However, the sentiment in legal documents is usually neutral and does not play a key role in the relevance classification, therefore we decided not to consider sentiment as a feature.
+
+The \textit{Cloud Natural Language} tool also adds a level of confidence to every entity and category so that the user see how strong each feature is. Moreover, the tool replies with a Wikipedia article for every entity, if exists. Another useful feature is the Translation API, which converts text among many different languages and is able to recognize sources of unknown language. Worth noting that the input does not have to be a pure text but also speech in audio or text in a picture.
+
 \subsection{Watson Natural Language Understanding}
+In March 2017, the IBM announced retirement of the \textit{AlchemyAPI} service, which was designed to understand the semantics of text and image by advanced techniques \cite{alchemyRetirement}.
+One component of the service was also the \textit{AlchemyLanguage}, providing all NLP features, such as entity, sentiment and topic recognition.
+As a replacement, a new service emerged: the \textit{Natural Language Understanding} service \cite{watsonNLP}.
+
+Besides typical NLP features, such as keywords, entities, relations, category, sentiment or topics (which are called concepts in the \textit{NLU}), the service provides emotion recognition (joy, anger, fear, etc.) and metadata recognition.
+The latter includes basic information about the author, title, prominent page image, and publication date.
+Unfortunately, this feature is available only for HTML pages, which is usually not the type of our documents, hence we will not take advantage of the metadata recognition.
+
+One of the most promising features of the \textit{NLU} service is the model customization.
+All the NLP features are always recognized with respect to some general language model, which consists of words from all aspects and domains of our language.
+This might be a disadvantage, especially when our documents are actually always of one type and contains words from specific domain.
+For instance, the general model would always consider 'law', 'justice' or ' sentence' as keywords in our legal documents, however, they might appear in most of the documents and become not relevant anymore in the legal domain.
+The \textit{NLU} service enables a user to create its own language model and load it into the cloud.
+More than one model can be active and the user can switch between them before each query.
+
 \subsection{Aylien}
+\textit{Aylien} is a software package of information retrieval, machine learning, and natural language processing \cite{aylienNLP}, which provides competitive features to the mentioned NLP services from Google and IBM.
+
+In addition to the classical NLP features, \textit{Aylien} provides summarization, which essentially picks the most important sentences from the text. In fact, this feature makes a good sense in our legal domain. Next innovative feature looks for related phrases, which are semantically as close to the original phrase as possible. Another advantage of \textit{Aylien} is that it includes time-based entities in the named entity recognition, specifically dates. The previously mentioned services surprisingly ignore the time and date expressions most of the time.
+
+Next interesting feature of \textit{Aylien} is the hashtag suggestion, however, it is basically the topic modeling as we described it in \ref{topic_modeling}. In the same manner, the article extraction is another term for the IBM's metadata recognition. Truly new feature is the aspect-based sentiment analysis, in which the sentiment is recognized for each aspect, not generally for the whole text. For example, an analysis of hotel reviews can discover angry opinions on Wi-Fi signal but excellent sentiment regarding the staff.
 
 \section{Comparison}
 [union of results from respondents, then kappa measure]
 \subsection{Mock legal case}
+
+\subsection{Approach in NLTK}
+Keywords
+- filtering on Brown corpus
+- only nouns
+- reference corpus Reuters
+- tf-idf
+
+Entities
+- look at the doc, their apporach
+
 \chapter{Classification}
 \section{Attributes}
 \section{Models}
