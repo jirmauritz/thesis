@@ -100,13 +100,13 @@ The typical approach of the text categorization techniques is to create a docume
 The problem with this approach is that the long documents are represented by a vector, which \emph{information gain} is rather low.
 For us, a high \emph{information gain} means that the representation captures the general idea, purpose of the document, and similarity/dissimilarity with other documents.
 
-To address the issue, we decided to represent a document by specific features extracted by one of the NLP tools.
-We are looking for potentially the most interesting information in the text, such as people, locations, dates, crime related words or email addresses.
+To address the issue, we decided to represent a document by specific features extracted by one or more NLP tools.
+We are looking for potentially the most interesting pieces of information in the text, such as people, locations, dates, crime related words or email addresses.
 Nowadays, one can find numerous services providing extraction of many different features.
 We have chosen some of them and have collected results from testing on our mock legal case.
-We evaluated results based on analysis of our use-case and a survey, in which participants labeled features from the text in a similar way as a NLP tool.
+We compared results of the NLP services and a survey, in which participants labeled features from the text in a similar way as a NLP tool.
 
-[odstavec o tom, proc pouzivam tooly a nedelam to sam]
+It is important to note that the field of extraction NLP features is well-studied topic and the tools produce very stable results, probably using rather similar algorithms (which are described in the following section). Even though we could dedicate part of this work to developing well-suited algorithms for NLP feature extraction, we decided to take advantage of the existing tools and put the focus on processing and application of the features to the high-quality data mining and machine learning algorithms. 
 
 \section{NLP Algorithms}
 First, let us introduce the features and well-known algorithms for their extraction from a text in general.
@@ -327,11 +327,31 @@ More than one model can be active and the user can switch between them before ea
 
 In addition to the classical NLP features, \textit{Aylien} provides summarization, which essentially picks the most important sentences from the text. In fact, this feature makes a good sense in our legal domain. Next innovative feature looks for related phrases, which are semantically as close to the original phrase as possible. Another advantage of \textit{Aylien} is that it includes time-based entities in the named entity recognition, specifically dates. The previously mentioned services surprisingly ignore the time and date expressions most of the time.
 
-Next interesting feature of \textit{Aylien} is the hashtag suggestion, however, it is basically the topic modeling as we described it in \ref{topic_modeling}. In the same manner, the article extraction is another term for the IBM's metadata recognition. Truly new feature is the aspect-based sentiment analysis, in which the sentiment is recognized for each aspect, not generally for the whole text. For example, an analysis of hotel reviews can discover angry opinions on Wi-Fi signal but excellent sentiment regarding the staff.
+Next interesting feature of \textit{Aylien} is the hashtag suggestion, however, it is basically the topic modeling as we described it in \ref{topic_modeling}.
+In the same manner, the article extraction is another term for the IBM's metadata recognition.
+Truly new feature is the aspect-based sentiment analysis, in which the sentiment is recognized for each aspect, not generally for the whole text.
+For example, an analysis of hotel reviews can discover angry opinions on Wi-Fi signal but excellent rating of the staff.
 
 \section{Comparison}
-[union of results from respondents, then kappa measure]
-\subsection{Mock legal case}
+To compare the tools, we had to restrict the evaluation set only to the common features included in all the tools.
+Specifically, the \textit{keywords} and \textit{named entities}: persons, organizations, and locations.
+Without any comparison, we also evaluated the relations, which were supported only by \textit{Watson NLU}, and dates supported only by \textit{Aylien}.
+
+\subsection{Testing data: Legal mock case}
+Of course, we could not use any real-world case for our testing and analysis due to privacy reasons, therefore, we analyzed a legal mock case called \textit{Davis v. HappyLand Toy Company}\cite{american2015davis} created by the \textit{American Mock Trial Association}\footnote{http://www.collegemocktrial.org/}. 
+The association creates legal cases for educational purposes, which then serve as a material for the mock trial competitions.
+
+Briefly described, the case puts a father of a child, who was killed by swallowed part of a toy, against the company that produced the dangerous toy. For our use case, we picked five most interesting and distinct documents: 
+\begin{enumerate}
+\item An email of an inter-company communication about the substances used in the toy.
+\item Affidavit (testimony) of the father.
+\item Affidavit of the baby sitter, who looked after the child at the moment of the fatality.
+\item Medical record from the autopsy of the child.
+\item Journal paper about the origin, behavior, look and impacts on a human body of the substance used in the toy.
+\end{enumerate}
+
+\subsection{Survey}
+The survey 
 
 \subsection{Approach in NLTK}
 Keywords
@@ -342,6 +362,15 @@ Keywords
 
 Entities
 - look at the doc, their apporach
+
+\subsection{Statistical comparison}
+[jackard coefficient do tabulky]
+
+[union of results from respondents, then kappa measure - neouzitelna, rict proc, pouzil jsem jackard coefficient]
+
+\subsection{Analytical comparison}
+[vypichnout par spatnych a dobrych prikladu a popsat v cem se tooly lisi]
+
 
 \chapter{Classification}
 \section{Attributes}
