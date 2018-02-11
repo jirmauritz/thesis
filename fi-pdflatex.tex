@@ -351,9 +351,24 @@ Briefly described, the case puts a father of a child, who was killed by swallowe
 \end{enumerate}
 
 \subsection{Survey}
-The survey 
+The survey was created in a way that no knowledge of law is necessary, the questions are simple and clearly stated.
+Some of the documents are several pages long, hence the survey can be saved and finished later.
+The respondents were not provided with any extra information about the legal case, so that the results are comparable with the NLP tools, which have no information as well.
+
+We asked the same set of questions for every document.
+First two questions asked about the keywords.
+We have split the one-word phrases and multi-word phrases and required both with at least 10 one-word keywords.
+Next, the respondent has to type people, organizations and locations that appear in the text.
+Moreover, we require relationships between people and dates together with a label specifying which event is related to the date.
+Next two questions were related to the semantics and were not used to evaluate the tools.
+We asked the respondents to copy short passage from the text that could be used as an evidence at the court.
+The second question asks for a short summary of the whole document.
+Both of the questions will be later applied in the training and evaluation of the models
+for document relevancy.
 
 \subsection{Approach in NLTK}
+[mozna presunout do NLTK intro, sem se to moc nehodi]
+
 Keywords
 - filtering on Brown corpus
 - only nouns
