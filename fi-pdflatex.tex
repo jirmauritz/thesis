@@ -113,6 +113,7 @@ First, let us introduce the features and well-known algorithms for their extract
 Note that the tools mentioned further most likely use modified or even different techniques for extraction of the features.
 
 \subsection{Keywords}
+\label{algorithms_keywords}
 \emph{Keywords} are people, places, words, ideas, which are understood as important in the given context. 
 In our case, the context is the document, hence we expect the keyword to reflect what the document is really about.
 Then, the \textit{keyness} is a quality measure of the importance the words have in the given text.
@@ -292,8 +293,27 @@ Although it was originally developed for educational purposes, it is now broadly
 
 \textit{NLTK} consists of multiple modules, which can be used as a pipeline during the text processing. 
 The basic modules run the tokenizer, POS tagging and syntactic analysis.
-More advanced modules are aimed to information extraction and knowledge representation.
-The framework comes with large preprocessed corpora that can be used as a reference corpora during the keyword or NE extraction \cite{bird2009natural}.
+More advanced modules are dealing with the information extraction and knowledge representation.
+The framework comes with large preprocessed corpora that can be used as reference corpora during the keyword or NE extraction \cite{bird2009natural}.
+
+The commercial NLP tools do not need any settings since they are already configured and the configuration is basically the key to their success.
+Nevertheless, the \textit{NLTK} is more a framework than a tool and we have to take the time to set the variables right.
+It also brings a great advantage of highly configurable settings.
+In the next two paragraphs, we explain our approach to extracting the keywords and entities in the \textit{NLTK}.
+
+We applied \textit{TF-IDF} algorithm to compute the keywords, as explained in \ref{algorithms_keywords}.
+Firstly, we removed the stop words and filtered only meaningful words.
+The list of stop words was used as defined by the \textit{Scikit-learn library} \footnote{Machine learning library for python \cite{pedregosa2011scikit}}.
+To remove the non-sense words, we compared them against a dictionary of the \textit{Brown corpus}, which is the first text corpus of American English of about 1 million words \cite{brownCorpus}.
+Next, we filtered only nouns and finally, computed the \textit{TF-IDF} score against the \textit{Reuters} reference corpus \cite[sec. 2.1]{bird2009natural}, which contains more than 10,000 news articles with 1.3 million words.
+We have chosen the journalistic context because it was the closest domain to the legal environment.
+This procedure outputs a score for each word in a document and the final keywords are those, which \textit{TF-IDF} score was more than a threshold of 0.15.
+
+The entity extraction requires less settings since the NE tagger is already trained by the library \cite[sec. 7.5]{bird2009natural}.
+We split the text into sentences and consequently sentences into tokens \footnote{token = word as a string without a disambiguated meaning}.
+Next step is to extract the part-of-speech tags for each token.
+The tokens together with the \textit{POS tags} are the input data into the \textit{NE chunker}, which is able to mark words as named entities and also determine its type.
+
 
 \subsection{Google Cloud Natural Language}
 Google has a long-standing experience with the text processing, especially in the field of information retrieval.
@@ -365,18 +385,6 @@ We asked the respondents to copy short passage from the text that could be used 
 The second question asks for a short summary of the whole document.
 Both of the questions will be later applied in the training and evaluation of the models
 for document relevancy.
-
-\subsection{Approach in NLTK}
-[mozna presunout do NLTK intro, sem se to moc nehodi]
-
-Keywords
-- filtering on Brown corpus
-- only nouns
-- reference corpus Reuters
-- tf-idf
-
-Entities
-- look at the doc, their apporach
 
 \subsection{Statistical comparison}
 [jackard coefficient do tabulky]
