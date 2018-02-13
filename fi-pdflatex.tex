@@ -81,7 +81,9 @@
   stringstyle     = \color{teal},%
   commentstyle    = \itshape\color{magenta}}
 \usepackage{floatrow} %% Putting captions above tables
+\usepackage{slashbox} %% Big slash in tables
 \floatsetup[table]{capposition=top}
+
 \begin{document}
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
@@ -374,6 +376,7 @@ Briefly described, the case puts a father of a child, who was killed by swallowe
 The survey was created in a way that no knowledge of law is necessary, the questions are simple and clearly stated.
 Some of the documents are several pages long, hence the survey can be saved and finished later.
 The respondents were not provided with any extra information about the legal case, so that the results are comparable with the NLP tools, which have no information as well.
+The survey was completed by five developers of the Legato system.
 
 We asked the same set of questions for every document.
 First two questions asked about the keywords.
@@ -386,8 +389,55 @@ The second question asks for a short summary of the whole document.
 Both of the questions will be later applied in the training and evaluation of the models
 for document relevancy.
 
+
 \subsection{Statistical comparison}
-[jackard coefficient do tabulky]
+Since the survey was completed by only five respondents, we decided to consider unification of the results for each answer.
+
+
+
+\begin{figure}
+\centering
+\caption{Jaccard index of the NLP tools evaluated against the survey.}
+\label{fig:jaccard_table}
+\footnotesize
+\begin{tabular}{|l||l||*{5}{c|}}\hline
+\rowcolor{orange!50}
+\makebox[4em]{\textbf{Feature}}&\backslashbox{\textbf{Document}}{\textbf{Tool}}
+&\makebox[3em]{\textbf{NLTK}}&\makebox[3em]{\textbf{Google}}
+&\makebox[3em]{\textbf{Watson}}&\makebox[3em]{\textbf{Aylien}}\\\hline\hline
+Keywords & Miller affidavit &0.11&&0.11&0.02\\\hline
+& Davis affidavit &0.06&&0.03&0.03\\\hline
+& Email &0.05&&0.24&0.20\\\hline
+& Toxicology paper &0.00&&0.02&0.03\\\hline
+& Medical record &0.09&&0.04&0.05\\\hline\hline
+& \textbf{Average} &\textbf{0.06}&&\textbf{0.09}&\textbf{0.07} \\\hline\hline
+People & Miller affidavit &0.00&0.29&0.54&0.38\\\hline
+& Davis affidavit &0.00&0.13&0.25&0.24\\\hline
+& Email &0.29&0.44&1.00&0.43\\\hline
+& Toxicology paper &0.00&0.00&0.29&0.00\\\hline
+& Medical record &0.00&0.27&0.71&0.57\\\hline\hline
+& \textbf{Average} &\textbf{0.06}&\textbf{0.23}&\textbf{0.56}&\textbf{0.32}\\\hline\hline
+Organizations & Miller affidavit &0.07&0.40&0.50&0.29\\\hline
+& Davis affidavit &0.06&0.17&0.33&0.17\\\hline
+& Email &0.00&0.25&0.50&0.00\\\hline
+& Toxicology paper &0.00&0.33&0.33&0.14\\\hline
+& Medical record &0.00&0.00&0.00&0.00\\\hline\hline
+& \textbf{Average} &\textbf{0.03}&\textbf{0.23}&\textbf{0.33}&\textbf{0.12}\\\hline\hline
+Locations & Miller affidavit &0.00&0.06&0.00&0.00\\\hline
+& Davis affidavit &0.00&0.00&0.00&0.00\\\hline
+& Email &0.00&0.00&0.00&0.00\\\hline
+& Toxicology paper &0.00&0.00&0.00&0.00\\\hline
+& Medical record &0.14&0.00&0.00&0.00\\\hline\hline
+& \textbf{Average} &\textbf{0.03}&\textbf{0.01}&\textbf{0.00}&\textbf{0.00}\\\hline\hline
+Dates & Miller affidavit &&&&0.07\\\hline
+& Davis affidavit &&&&0.13\\\hline
+& Email &&&&0.00\\\hline
+& Toxicology paper &&&&0.00\\\hline
+& Medical record &&&&0.00\\\hline\hline
+& \textbf{Average} &&&&\textbf{0.04}\\\hline\hline
+\end{tabular}
+\normalsize
+\end{figure}
 
 [union of results from respondents, then kappa measure - neouzitelna, rict proc, pouzil jsem jackard coefficient]
 
