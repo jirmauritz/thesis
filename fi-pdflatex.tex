@@ -391,9 +391,6 @@ for document relevancy.
 
 
 \subsection{Statistical comparison}
-Since the survey was completed by only five respondents, we decided to consider unification of the results for each answer.
-
-
 
 \begin{figure}
 \centering
@@ -439,7 +436,60 @@ Dates & Miller affidavit &&&&0.07\\\hline
 \normalsize
 \end{figure}
 
-[union of results from respondents, then kappa measure - neouzitelna, rict proc, pouzil jsem jackard coefficient]
+Since the survey was completed by only five respondents, we decided to consider unification of the results for each answer.
+The standard approach how to compute agreement between two sources is the \textit{Cohen's kappa measure} \cite{smeeton1985kappa}.
+The problem with \textit{kappa measure} is that the sources assign fixed number of items to classes, which is not our situation.
+In our case, the number of items is variable and we do not have any classes.
+We care about the agreement between the sets.
+Therefore, we are using a measure for the distance between sets, the \textit{Jaccard index} \cite{levandowsky1971distance}, defined as follows:
+$$
+J(A, B) = \frac{|A \cap B|}{|A \cup B|}
+$$
+Since the union is always larger than or equal to the intersection, we get $0 \leq J(A, B) \leq 1$ for any sets $A$, $B$. 
+When $J(A,B)=1$, the sets are identical and when $J(A,B)=0$, the sets do not share any item.
+
+Before the comparison, all items (keywords and entities) are converted to lower case, so that the names, organizations, locations and other items are compared regardless of the capital letters.
+Apart from that, no changes are made to the tokens, therefore the names, for instance, has to be in the same form even if the text represents the same person. 
+E.g. for sets $A=\{\text{"Joey Davis", "Brett"}\}$ and $B=\{\text{"Joey", "Brett"}\}$ the Jaccard index is 
+$$
+J(A, B) = \frac{|\{\text{"Brett"}\}|}{|\{\text{"Joey Davis", "Joey", "Brett"}\}|} = 1/3
+$$
+
+The figure \ref{fig:jaccard_table} shows \textit{Jaccard indices} for each combination of the tool, feature and document compared with the ground truth, which is the survey output.
+The "\textbf{Average}" row displays the mean over all documents for each tool and feature.
+
+\subsubsection{\textbf{Keywords}}
+All tools except for the \textit{Google Cloud Natural Language} service provide the keywords extraction.
+The \textit{Jaccard index} is generally very low in the case of the keywords.
+There is usually a lot of words to choose from and even the respondents agreed only on few of them.
+We can notice the best scores in the case of the email due to the short length of the text.
+The \textit{Watson NLU} achieved the best score, however, it did not perform much better than our baseline \textit{NLTK}.
+
+\subsubsection{\textbf{People}}
+The scores for the people extraction were surprisingly high.
+Only \textit{NLTK} failed because of the its limitation of recognizing only one-word tokens.
+Since people usually appear with both given and family name, the \textit{NLTK} recognized the name separately as two tokens.
+The winner of this category is the \textit{Watson NLU}, which is superior for every document.
+\textit{Aylien} service achieved better score than \textit{Google CNL}, especially in the case of the longer documents.
+
+\subsubsection{\textbf{Organizations}}
+The \textit{NLTK} achieved very low score from the same reason as in the case of the people extraction since the names of organizations also consist of more than one word.
+All other tools performed significantly better than the baseline, yet the best score again achieved the \textit{Watson NLU} service.
+In this category, \textit{Google CNL} outperformed the \textit{Aylien} service.
+The Medical record unfortunately does not contain many organizations, therefore none services was successful.
+
+\subsubsection{\textbf{Locations}}
+The extraction of the locations was quite chaotic and diverse by the respondents as well as by the tools.
+The location can be understood as a named entity which is unique in the world, such as Hype park in London, 107 Myers street or Moscow, whereas someone understands the location as any expression specifying the environment, such as living room, school or a car.
+The latter type was mostly recognized by the \textit{Google CNL} and the other tools recognized the first type.
+Moreover, there were not enough location entities in the documents to draw meaningful conclusion from the results.
+We ascribe win of the \textit{NLTK} service to a coincidence, as its simple model extracted many words starting with capitals, hence more people than locations appeared in the output set.
+
+\subsubsection{\textbf{Dates}}
+As the \textit{Aylien} service is the only one that is able to extract the time-based entities, we have not performed any comparison.
+Still, we wanted to see how precise is the extraction, and so we present the \textit{Jaccard index} computed from the \textit{Aylien} output and the survey data.
+The \textit{Aylien} achieved some hits only in the longer documents and the results are under our estimation.
+On the other hand, we took into consideration only the dates, while \textit{Aylien} recognized times and other expressions such as "last week" as well.
 
 \subsection{Analytical comparison}
 [vypichnout par spatnych a dobrych prikladu a popsat v cem se tooly lisi]
