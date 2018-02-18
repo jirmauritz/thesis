@@ -104,7 +104,15 @@ The real contribution of this work is the understanding of characteristics of th
 This chapter will introduce our working dataset, its statistics and characteristics.
 
 \section{Dataset introduction}
-- american trials since SDE works with American clients
+The end users of the Legato system are mostly the U.S. lawyers, which influences our choice of the dataset.
+The U.S. legal system is very specific with its own laws, constitution, trial process and most importantly for us -- terminology.
+Also, we have to take into consideration specifics in the form of the documents: medical records, police records, affidavits, emergency call transcripts etc.
+We do not claim that our application will not work for other than U.S. legal documents, however, the model might manage to recognize the structure and terminology of the U.S. documents more accurately.
+
+Unfortunately, we have not acquired enough training data from the users of Legato, mainly because the legal cases are ongoing and the documents are too confidential to be included in a research.
+For the same reason, it is hard to find an authentic public trial documents on the Internet.
+We have found a solution thanks to an American Mock Trial Association.
+
 - not possible to gather real trial cases, not accessible and if so, problem with privacy
 - 20x case from which:
 2x School environment - educational malpractice or indifference
@@ -121,6 +129,8 @@ This chapter will introduce our working dataset, its statistics and characterist
 \section{Data statistics}
 \section{Types of documents}
 \section{Linguistics}
+\section{Consequences for the model creation}
+- hard to discover: timing claims, e.g. in the text two independent events and sentence: "if it happens for the second time ..." 
 
 \chapter{NLP tool selection}
 The amount of text in the legal documents can vary largely.
