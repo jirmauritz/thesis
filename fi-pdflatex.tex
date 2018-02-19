@@ -82,6 +82,7 @@
   commentstyle    = \itshape\color{magenta}}
 \usepackage{floatrow} %% Putting captions above tables
 \usepackage{slashbox} %% Big slash in tables
+\usepackage{cleveref}[2012/02/15] %% Enables cross reference footnotes
 \floatsetup[table]{capposition=top}
 
 \begin{document}
@@ -111,19 +112,23 @@ We do not claim that our application will not work for other than U.S. legal doc
 
 Unfortunately, we have not acquired enough training data from the users of Legato, mainly because the legal cases are ongoing and the documents are too confidential to be included in a research.
 For the same reason, it is hard to find an authentic public trial documents on the Internet.
-We have found a solution thanks to an American Mock Trial Association.
+We have found a solution thanks to an \textit{American Mock Trial Association} \footnote{http://www.collegemocktrial.org/} and \textit{Classroom Law Project} \footnote{\url{http://www.classroomlaw.org}}.
+Both associations create legal cases for educational purposes, which then serve as a material for the mock trial competitions.
+All their legal cases are fictional, though some of them were inspired by real-world situations and issues.
+Still, any resemblance to actual persons and events is purely coincidental.
 
-- not possible to gather real trial cases, not accessible and if so, problem with privacy
-- 20x case from which:
-2x School environment - educational malpractice or indifference
-1x Bullying - intentional infliction of emotional distress
-2x Criminal law - assault, battery or murder
-3x Inmate partner violence - domestic violence by a current or former partner
-3x First Amendment - breach of freedom of speech, religion, press etc.
-4x Child neglect - child injury or death caused by parents, baby-sitter or teacher
-2x Sex crime - sexual harassment and disease transmissions
-3x Tort law - fault leading to suffer or harm
-
+All 20 cases used as a training set are downloaded from two sites: Street Law, inc. \footnote{\url{http://streetlaw.org}} and Classroom Law Project \footnote{\url{http://www.classroomlaw.org}}.
+Not to be biased with one legal area, we included cases of diverse legal fields:
+\begin{itemize}
+\item[2x] \textbf{School environment} \\ educational malpractice or indifference
+\item[1x] \textbf{Bullying} \\ intentional infliction of emotional distress
+\item[2x] \textbf{Criminal law} \\ assault, battery or murder
+\item[3x] \textbf{Inmate partner violence} \\ domestic violence by a current or former partner
+\item[3x] \textbf{First Amendment} \\ breach of freedom of speech, religion, press etc.
+\item[4x] \textbf{Child neglect} \\ child injury or death caused by parents, baby-sitter or teacher
+\item[2x] \textbf{Sex crime} \\ sexual harassment and disease transmissions
+\item[3x] \textbf{Tort law } \\ fault leading to suffer or harm
+\end{itemize}
 
 
 \section{Data statistics}
@@ -397,8 +402,7 @@ Specifically, the \textit{keywords} and \textit{named entities}: persons, organi
 Without any comparison, we also evaluated the relations, which were supported only by \textit{Watson NLU}, and dates supported only by \textit{Aylien}.
 
 \subsection{Testing data: Legal mock case}
-Of course, we could not use any real-world case for our testing and analysis due to privacy reasons, therefore, we analyzed a legal mock case called \textit{Davis v. HappyLand Toy Company}\cite{american2015davis} created by the \textit{American Mock Trial Association}\footnote{http://www.collegemocktrial.org/}. 
-The association creates legal cases for educational purposes, which then serve as a material for the mock trial competitions.
+Of course, we could not use any real-world case for our testing and analysis due to privacy reasons, therefore, we analyzed a legal mock case called \textit{Davis v. HappyLand Toy Company}\cite{american2015davis} created by the \textit{American Mock Trial Association}\footnote{http://www.collegemocktrial.org/}.
 
 Briefly described, the case puts a father of a child, who was killed by swallowed part of a toy, against the company that produced the dangerous toy. For our use case, we picked five most interesting and distinct documents: 
 \begin{enumerate}
