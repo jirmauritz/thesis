@@ -130,7 +130,6 @@ Not to be biased with one legal area, we included cases of diverse legal fields:
 \item[3x] \textbf{Tort law } \\ fault leading to suffer or harm
 \end{itemize}
 
-
 \section{Data statistics}
 \section{Types of documents}
 \section{Linguistics}
@@ -435,8 +434,8 @@ for document relevancy.
 
 \begin{figure}
 \centering
-\caption{Jaccard index of the NLP tools evaluated against the survey.}
-\label{fig:jaccard_table}
+\caption{Jaccard index of the NLP tools evaluated against the survey with strict string comparison.}
+\label{fig:jaccard_table_strict}
 \footnotesize
 \begin{tabular}{|l||l||*{5}{c|}}\hline
 \rowcolor{orange!50}
@@ -467,17 +466,49 @@ Locations & Miller affidavit &0.00&0.06&0.00&0.00\\\hline
 & Toxicology paper &0.00&0.00&0.00&0.00\\\hline
 & Medical record &0.14&0.00&0.00&0.00\\\hline\hline
 & \textbf{Average} &\textbf{0.03}&\textbf{0.01}&\textbf{0.00}&\textbf{0.00}\\\hline\hline
-Dates & Miller affidavit &&&&0.07\\\hline
-& Davis affidavit &&&&0.13\\\hline
-& Email &&&&0.00\\\hline
-& Toxicology paper &&&&0.00\\\hline
-& Medical record &&&&0.00\\\hline\hline
-& \textbf{Average} &&&&\textbf{0.04}\\\hline\hline
 \end{tabular}
 \normalsize
 \end{figure}
 
-Since the survey was completed by only five respondents, we decided to consider unification of the results for each answer.
+\begin{figure}
+\centering
+\caption{Jaccard index of the NLP tools evaluated against the survey with subset tolerance in string comparison.}
+\label{fig:jaccard_table_subset}
+\footnotesize
+\begin{tabular}{|l||l||*{5}{c|}}\hline
+\rowcolor{orange!50}
+\makebox[4em]{\textbf{Feature}}&\backslashbox{\textbf{Document}}{\textbf{Tool}}
+&\makebox[3em]{\textbf{NLTK}}&\makebox[3em]{\textbf{Google}}
+&\makebox[3em]{\textbf{Watson}}&\makebox[3em]{\textbf{Aylien}}\\\hline\hline
+Keywords & Miller affidavit &0.30&&0.47&0.57\\\hline
+& Davis affidavit &0.35&&0.26&0.33\\\hline
+& Email &0.14&&0.57&0.50\\\hline
+& Toxicology paper &0.09&&0.37&0.25\\\hline
+& Medical record &0.23&&0.24&0.15\\\hline\hline
+& \textbf{Average} &\textbf{0.22}&&\textbf{0.38}&\textbf{0.36} \\\hline\hline
+People & Miller affidavit &0.79&0.32&0.85&0.94\\\hline
+& Davis affidavit &0.64&0.29&0.63&0.47\\\hline
+& Email &1.00&0.56&1.00&0.71\\\hline
+& Toxicology paper &0.00&0.06&0.29&0.29\\\hline
+& Medical record &0.57&0.40&0.71&0.83\\\hline\hline
+& \textbf{Average} &\textbf{0.60}&\textbf{0.32}&\textbf{0.69}&\textbf{0.65}\\\hline\hline
+Organizations & Miller affidavit &0.36&0.40&0.50&0.71\\\hline
+& Davis affidavit &0.06&0.17&0.33&0.17\\\hline
+& Email &0.50&0.50&1.00&0.50\\\hline
+& Toxicology paper &0.29&0.33&0.33&0.29\\\hline
+& Medical record &0.16&0.00&0.00&0.00\\\hline\hline
+& \textbf{Average} &\textbf{0.27}&\textbf{0.28}&\textbf{0.43}&\textbf{0.33}\\\hline\hline
+Locations & Miller affidavit &0.27&0.61&0.67&0.29\\\hline
+& Davis affidavit &0.00&0.10&0.00&0.00\\\hline
+& Email &0.00&0.00&0.00&0.00\\\hline
+& Toxicology paper &0.00&0.00&0.00&0.00\\\hline
+& Medical record &0.14&0.00&0.00&0.00\\\hline\hline
+& \textbf{Average} &\textbf{0.08}&\textbf{0.14}&\textbf{0.13}&\textbf{0.06}\\\hline\hline
+\end{tabular}
+\normalsize
+\end{figure}
+
+Since the survey was completed by only five respondents, we decided to unify results for each answer.
 The standard approach how to compute agreement between two sources is the \textit{Cohen's kappa measure} \cite{smeeton1985kappa}.
 The problem with \textit{kappa measure} is that the sources assign a fixed number of items to classes, which is not our situation.
 In our case, the number of items is variable and we do not have any classes.
@@ -489,15 +520,28 @@ $$
 Since the union is always larger than or equal to the intersection, we get $0 \leq J(A, B) \leq 1$ for any sets $A$, $B$. 
 When $J(A,B)=1$, the sets are identical and when $J(A,B)=0$, the sets do not share any item.
 
-Before the comparison, all items (keywords and entities) are converted to lower case, so that the names, organizations, locations and other items are compared regardless of the capital letters.
-Apart from that, no changes are made to the tokens, therefore the names, for instance, has to be in the same form even if the text represents the same person. 
+The next step is to define when two items (keywords and entities) are equal.
+We have defined two approaches in comparing the equality: \textit{strict approach}, and \textit{subset tolerance approach}.
+
+In the \textit{strict approach}, all items are converted to lower case, so that the names, organizations, locations and other items are compared regardless of the capital letters.
+Apart from that, no changes are made to the items and the comparison is based on a strict string equality.
+As a consequence, for instance, full name and given name alone are not equal, even if the text represents the same person. 
 E.g. for sets $A=\{\text{"Joey Davis", "Brett"}\}$ and $B=\{\text{"Joey", "Brett"}\}$ the Jaccard index is 
 $$
 J(A, B) = \frac{|\{\text{"Brett"}\}|}{|\{\text{"Joey Davis", "Joey", "Brett"}\}|} = 1/3
 $$
-
-The figure \ref{fig:jaccard_table} shows \textit{Jaccard indices} for each combination of the tool, feature and document compared with the ground truth, which is the survey output.
+Figure \ref{fig:jaccard_table_strict} shows \textit{Jaccard indices} using the strict approach for each combination of tool, feature and document compared with the ground truth, which is the survey output.
 The "\textbf{Average}" row displays the mean over all documents for each tool and feature.
+
+The \textit{subset tolerance approach} converts the items to lower case in the same manner as the \textit{strict approach}.
+Then, two items are equal if one is a subset of the other or they are strictly equal.
+To keep the construction of unions and intersections simple, we include both superset and subset in the union as well as in the intersection.
+E.g. for sets $A=\{\text{"Joey Davis", "Brett"}\}$ and $B=\{\text{"Joey", "Davis"}\}$ the Jaccard index is 
+$$
+J(A, B) = \frac{|\{\text{"Joey Davis", "Joey", "Davis"}\}|}{|\{\text{"Joey Davis", "Joey", "Brett", "Davis"}\}|} = 3/4
+$$
+Results of the \textit{subset tolerance approach} are displayed in the figure \ref{fig:jaccard_table_subset} in the same form as in \ref{fig:jaccard_table_strict}.
+One can notice that the score is always equal or higher compared to the \textit{strict approach}, which is a natural consequence of the approach definitions.
 
 \subsubsection{\textbf{Keywords}}
 All tools except for the \textit{Google Cloud Natural Language} service provide the keywords extraction.
@@ -505,18 +549,22 @@ The \textit{Jaccard index} is generally very low in the case of the keywords.
 There is usually a lot of words to choose from and even the respondents agreed only on few of them.
 We can notice the best scores in the case of the email due to the short length of the text.
 The \textit{Watson NLU} achieved the best score, however, it did not perform much better than our baseline \textit{NLTK}.
+\textit{Aylien} scores high in the \textit{subset tolerance approach} because it extracts very long keywords, which have a high probability of being superset of some of the real keyword.
 
 \subsubsection{\textbf{People}}
 The scores for the people extraction were surprisingly high.
-Only the \textit{NLTK} failed because of its limitation of recognizing only one-word tokens.
-Since people usually appear with both given and family name, the \textit{NLTK} recognized the name separately as two tokens.
-The winner of this category is the \textit{Watson NLU}, which is superior for every document.
+In the \textit{strict approach}, the \textit{NLTK} failed because of its limitation of recognizing only one-word items.
+People names mostly appeared with both given and family name and the \textit{NLTK} recognized the name separately as two items.
+On the other hand, when the subsets are tolerated, the \textit{NLTK} achieved very good result.
+The winner of this category is the \textit{Watson NLU}, which is superior for every document and approach.
 \textit{Aylien} service achieved a better score than \textit{Google CNL}, especially in the case of the longer documents.
 
 \subsubsection{\textbf{Organizations}}
-The \textit{NLTK} achieved very low score for the same reason as in the case of the people extraction since the names of organizations also consist of more than one word.
-All other tools performed significantly better than the baseline, yet the best score again achieved the \textit{Watson NLU} service.
-In this category, \textit{Google CNL} outperformed the \textit{Aylien} service.
+The \textit{NLTK} achieved the lowest score for the same reason as in the case of the people extraction since the names of organizations also consist of more than one word.
+In the strict variant, all other tools performed significantly better than the baseline, yet the best score again achieved the \textit{Watson NLU} service.
+In this category, \textit{Google CNL} outperformed the \textit{Aylien} service in the \textit{strict approach}, however, we can see reversed result in the \textit{subset tolerance approach}.
+One of the possible explanations is the fact that \textit{Google} is able to precisely determine borders of the entities but they are not so often common with the survey output.
+Whereas \textit{Aylien} usually fails at determining the borders since the organizations often consist of many words but the items contain the right information in the subsets.
 The Medical record, unfortunately, does not contain many organizations, therefore none services were successful.
 
 \subsubsection{\textbf{Locations}}
@@ -524,31 +572,52 @@ The extraction of the locations was quite chaotic and diverse by the respondents
 The location can be understood as a named entity which is unique in the world, such as Hype park in London, 107 Myers street or Moscow, whereas someone understands the location as any expression specifying the environment, such as living room, school or a car.
 The latter type was mostly recognized by the \textit{Google CNL} and the other tools recognized the first type.
 Moreover, there were not enough location entities in the documents to draw a meaningful conclusion from the results.
-We ascribe win of the \textit{NLTK} service to a coincidence, as its simple model extracted many words starting with capitals, hence more people than locations appeared in the output set.
+In the strict variant, we ascribe win of the \textit{NLTK} service to a coincidence, as its simple model extracted many words starting with capitals, hence more people than locations appeared in the output set.
+In the subset tolerance variant, \textit{Google CNL} and \textit{Watson NLU} achieved very similar score, however, the Watson generated approximately ten times fewer items, which brings us to a conclusion that the discriminative power of the Watson's items might be higher.
 
 \subsubsection{\textbf{Dates}}
 As the \textit{Aylien} service is the only one that is able to extract the time-based entities, we have not performed any comparison.
 Still, we wanted to see how precise is the extraction, and so we present the \textit{Jaccard index} computed from the \textit{Aylien} output and the survey data.
-The \textit{Aylien} achieved some hits only in the longer documents and the results are under our estimation.
-On the other hand, we took into consideration only the dates, while \textit{Aylien} recognized times and other expressions such as "last week" as well.
+
+\begin{figure}[h]
+\centering
+\caption{Jaccard index of the time-based entities extracted by Aylien.}
+\label{fig:jaccard_dates}
+\footnotesize
+\begin{tabular}{|l||*{5}{c|}}\hline
+\rowcolor{orange!50}
+\makebox[4em]{\textbf{Document}}&{\textbf{Jaccard index}}\\\hline\hline
+Miller's affidavit & 0.07 \\\hline
+Davis' affidavit &0.13\\\hline
+Email &0.00\\\hline
+Toxicology paper &0.00\\\hline
+Medical record &0.00\\\hline\hline
+\textbf{Average} &\textbf{0.04}\\\hline
+\end{tabular}
+\normalsize
+\end{figure}
+The \textit{Aylien} achieved non-zero results only in the longer documents and even then, the scores are under our estimation.
+As an example, a simple date in form "24. 12. 2017" is recognized as a phone rather than a date.
+Here, it strongly depends on the spaces: after we remove a space before the month -- "24.12. 2017" -- the day and month are finally recognized as a date, however, the whole string is still reported as a phone.
+On the other hand, we took into consideration only the dates, while \textit{Aylien} recognizes times and other expressions, such as "last week", as well.
 
 \subsection{Analytical comparison}
 Aside from the statistical evaluation of the tools' accuracy, it is also important to manually analyze the output and check whether it is semantically correct.
-In this section, we discuss characteristics of the tools and its benefits and drawbacks.
+In this section, we discuss characteristics of the tools and their benefits and drawbacks.
 
 \subsubsection{\textbf{NLTK}}
 We already outlined two drawbacks of the \textit{NLTK} in the previous section: one-word limitation and simple NE model.
-The first problem is visible in both affidavits, where the toy name appears under the name "Princess Beads", which is a clear keyword in this context.
+The first problem is visible in both affidavits, where the toy name appears under the name "Princess Beads", which is an obvious keyword in this context.
 Interestingly, the \textit{NLTK} extracted both parts: "princess" and "beads" as keywords since the words are quite unique by itself.
 However, the key phrase was missed.
 As the \textit{NLTK} is highly customizable, we believe that the multi-word phrases extraction is indeed possible but it would require an extra amount of work.
 
 On the other hand, the keyword extraction performance was very well comparable to the commercial tools.
-Considerably worse performed the \textit{NLTK} in the entity extraction.
+\textit{NLTK} performed considerably worse in the entity extraction.
 Besides the separation of the given and family name, it also falsely marked "Liquid", "Myth" or "Identification" as people, probably because of the capital letters.
 One can notice a lot of false positives in the Medical record, were a lot of words were written in the capitals and \textit{NLTK} recognized all of them as organizations, e.g. "BODY", "AND" or "OF".
 
-Although the \textit{NLTK} provides a very good baseline for the NLP features extraction, we can see a noticeable line between its hand-written patterns and the supervised machine learning models, which are used by the other tools.
+Although the \textit{NLTK} provides a very good baseline for the NLP feature extraction, we can see a noticeable line between its hand-written patterns and the supervised machine learning models, which are used by the other tools.
 
 \subsubsection{\textbf{Google Cloud Natural Language}}
 The approach of the Google is a little different in the following way.
@@ -562,16 +631,16 @@ The problem is that words, such as "kids", "one", or "friend" are recognized as 
 \subsubsection{\textbf{Watson Natural Language Understanding}}
 The \textit{Watson} approach is slightly more moderate.
 Very little false positives are introduced as \textit{Watson} outputs a word only in case of high confidence.
-Similarly as \textit{Google}, \textit{Watson} recognized all people in the Miller's affidavit including "full name of "Hillary Davis".
+Similarly as \textit{Google}, \textit{Watson} recognized all people in the Miller's affidavit including full name of "Hillary Davis".
 Due to the conservativeness, only the family name of "Chase Tuchmont" was recognized since "chase" is an ordinary word in English as well.
-However, the overwhelming majority of the recognized entities make perfect sense and are truly people, organizations or locations.
+However, the overwhelming majority of the recognized entities makes perfect sense and are truly people, organizations or locations.
 Therefore, the \textit{Watson NLU} service is not only superior in the statistical evaluation, but also in the analytical overview of the semantics.
 
 \subsubsection{\textbf{Aylien}}
 We can see yet another approach by the \textit{Aylien} service.
 Keywords are understood as complex pieces of information of arbitrary length, sometimes even more than 10 words long.
 As a result, service correctly extracted "Joye" as a keyword in the Davis' affidavit, though incorrectly extracted a key phrase "Davis and that I wanted to speak with someone about Princess", which seems rather awkward.
-This was a source of the failure of \textit{Aylien} in the keywords category.
+This was a source of a low score of \textit{Aylien} in the keywords category.
 
 On the other hand, \textit{Aylien} excelled in the extraction of people.
 Again, all people in the Miller's affidavit were successfully recognized, even though the model was not sophisticated enough to merge "Hillary" and "Hillary Davis".
