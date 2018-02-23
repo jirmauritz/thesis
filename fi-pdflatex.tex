@@ -120,6 +120,7 @@ Still, any resemblance to actual persons and events is purely coincidental.
 All 20 cases used as a training set are downloaded from two sites: Street Law, inc. \footnote{\url{http://streetlaw.org}} and Classroom Law Project \footnote{\url{http://www.classroomlaw.org}}.
 Not to be biased with one legal area, we included cases of diverse legal fields:
 \begin{itemize}
+\itemsep0em
 \item[2x] \textbf{School environment} \\ educational malpractice or indifference
 \item[1x] \textbf{Bullying} \\ intentional infliction of emotional distress
 \item[2x] \textbf{Criminal law} \\ assault, battery or murder
@@ -127,14 +128,54 @@ Not to be biased with one legal area, we included cases of diverse legal fields:
 \item[3x] \textbf{First Amendment} \\ breach of freedom of speech, religion, press etc.
 \item[4x] \textbf{Child neglect} \\ child injury or death caused by parents, baby-sitter or teacher
 \item[2x] \textbf{Sex crime} \\ sexual harassment and disease transmissions
-\item[3x] \textbf{Tort law } \\ fault leading to suffer or harm
+\item[3x] \textbf{Tort law } \\ fault leading to suffer or harm, without breaching any contract
 \end{itemize}
+All mock cases have a similar structure: there are approx. 5-8 testimonies of the involved people, called affidavits, and the rest of the documents are emails, medical records, police reports, emergency call transcripts, description of the past similar cases etc.
+The affidavits are up to 10 pages long, usually describing the issue in depth, whereas the other documents are usually one or two pages long.
+We excluded all extra information specific to the mock trials, explanations of the competitions and summaries: we do not expect these to be typical part of a case.
+Some extra headers and footers that contain metadata were also removed not to confuse the model training.
+
+During the model building, we need to take into account that the real cases might be more or less different from the mock cases.
+For instance, we do not expect the affidavits to appear in the real cases as much as in the mock cases.
+Also, we expect more emails and papers of unknown structure in real cases.
+Generally, we found two major shifts: 
+\begin{enumerate}
+\item real cases will most probably contain shorter documents
+\item real cases will contain many more unrelated documents
+\end{enumerate}
+We present solutions for both issues:
+\begin{enumerate}
+\item 
+The length of the document should be an insignificant parameter when determining the document's relevancy.
+Therefore, we decided to focus on sentences rather than on a document as a whole.
+In other words, we determine relevance of the document by exploring the relevances of the individual sentences.
+As a result, the model is slightly simplified, however, we do not completely ignore the cross-sentence information, as we will see in the further chapters.
+Thanks to the sentence-based model, we should be able to eliminate an influence of the document length and judge the relevance without bias.
+
+\item
+The second issue is caused by the lack of motivation to add unrelated documents during the creation of the mock cases.
+Still, we can find some documents that are related to the case but are not relevant, e.g. resume of a defendant.
+A straight forward solution is to add some irrelevant documents from other cases to simulate the balance in a real situation.
+
+\end{enumerate}
+
+\section{Annotation}
+- num of annotators
+- annotation of docs
+- annotation of sentences
 
 \section{Data statistics}
+- avg doc per case
+- avg words per case
+- most frequent words
+- most frequent words for crime vs. first amendment
+- most frequent words for relevant vs. unrelevant cases
+
 \section{Types of documents}
+- non-sense (pics)
+- law related vs. case specific
 \section{Linguistics}
-\section{Consequences for the model creation}
-- hard to discover: timing claims, e.g. in the text two independent events and sentence: "if it happens for the second time ..." 
+
 
 \chapter{NLP tool selection}
 The amount of text in the legal documents can vary largely.
