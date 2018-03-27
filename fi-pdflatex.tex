@@ -733,7 +733,7 @@ Despite a few mistakes, mostly recognizing numbers as people, the service was ab
 Data exploration in the chapter \ref{chp:data_characteristics} helped us clarify the language and style of the legal documents enough to design models for the relevance classification.
 We present a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
 First is a \textit{Law-Case classifier} \ref{sec:law-case-classifier}, the second is a \textit{Sentence classifier} \ref{sec:sentence-classifier} and the last is a \textit{Document classifier} \ref{sec:document-classifier}.
-Each of them needs different set of attributes as an input and applies suitable machine learning model.
+Each of them needs a different set of attributes as an input and applies a suitable machine learning model.
 For further details about the individual classifiers, see the related sections.
 
 \section{Law-Case classifier}
@@ -767,22 +767,26 @@ $$
 \{\text{"knife"} \rightarrow (1,0,0), \text{"gun"} \rightarrow (0,1,0), \text{"wire"} \rightarrow (0,0,1), \dots\}
 $$
 Now, a vector uniquely identifies a word and the vectors are not comparable for the classifier, which eliminates the problem with the previous approach.
-This solution has been improved by counting the words in the training documents, TF-IDF weighting or co-occurrence matrices \cite{wordEmbeddings}.
+This solution can be further improved by counting the words in the training documents, TF-IDF weighting or co-occurrence matrices \cite{wordEmbeddings}.
 
-The third and final solution goes even further in the embedding of the meaning.
+The third and final solution goes even further in the embedding of the semantics.
 Recent research by Mikolov et al. \cite{mikolov2013efficient} introduced a revolutionary algorithm \textit{Word2vec}, which uses a neural network to create a vectors of fixed length with its semantics compressed.
-Each element of the vector represents some concept, which can be somehow quantified, such as masculinity, age or liveliness \cite{mikolov2013linguistic}.
+Each dimension of a vector represents some concept, which can be somehow quantified, such as masculinity, age or liveliness \cite{mikolov2013linguistic}.
 The vectors are capturing semantic regularities, and therefore, the classifiers have a potential to perform better even for unknown words.
-In this embeddings, the assumption that close vectors are close by the meaning of the underlying words as well, is true.
+This embedding ensures our ultimate assumption, that close vectors are also close by the meaning of their underlying words.
 
 Both the algorithm and the trained vectors are publicly available.
 Though we could use the algorithm to train our own vectors, it is much easier to adopt the already trained dataset.
 Since the meaning of the words is the same regardless of the area, there would be a very little gain in the training a custom dataset specialized on legal documents.
 The dictionary we will use is trained by the \textit{Google} company and is available on their official code archive \cite{word2vecGoogle}.
-The pre-trained model contains 3 million unique words of 300-dimensional vectors, which was trained on the 300 billion word news dataset.
-For our purpose, a trimmed dataset of 300 thousand words without the phrases is sufficient \footnote{\url{https://github.com/eyaler/word2vec-slim}}.
+The pre-trained model contains 3 million unique words of 300-dimensional vectors, which was trained on a 300 billion word news dataset.
+For our purpose, a trimmed dataset of 300 thousand unique words without the phrases is sufficient \footnote{\url{Downloaded from https://github.com/eyaler/word2vec-slim}}.
 
-[2. problem]
+The second problem relates to the fact, that the classifiers usually need fixed input, but we currently computed vectors for each words of a sentence.
+Researches Vedantam et al. \cite{vedantam2015learning} applied a simple average of \textit{word2vec} vectors to the words in a phrase to get the final embedding.
+We can extend the idea to all sentences and achieve one vector per sentence by computing an average of all words in the sentence.
+To achieve more interesting results, it is possible to weight the words by their TF-IDF score in the overall average, however, the contribution is not necessary positive since the ordinary words can distinguish relevant sentence as well as the keyword.
+Besides, we embedded the keywords (words with high TF-IDF) in another representation, hence the TF-IDF weighting does not bring enough contribution to be worth the processing time.
 
 
 \subsubsection{\textbf{Extracted features}}
