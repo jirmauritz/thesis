@@ -219,40 +219,40 @@ The following are the keywords: city, school, know, got, joey, just, police, pri
 
 
 \chapter{NLP tool selection}
-The amount of text in the legal documents can vary largely.
-Most of the documents we are working with stretch across one page, however, the average number of pages is 6 and we can find documents up to hundred pages long.
-The typical approach of the text categorization techniques is to create a document-term matrix containing counts of terms in each document.
+The amount of text in legal documents can vary largely.
+Most of the documents we are working with stretch across one page, however, the average number of pages is six and we can find documents up to hundred pages long.
+The typical approach of the text processing is to convert the text into a document-term matrix that contains number of term occurrences in each document.
 The problem with this approach is that the long documents are represented by a vector, which \emph{information gain} is rather low.
-For us, a high \emph{information gain} means that the representation captures the general idea, the purpose of the document, and similarity/dissimilarity with other documents.
+High \emph{information gain} implies that the numerical representation captures the general idea, the purpose of the document, and characteristics of similarity/dissimilarity with other documents.
 
-To address the issue, we decided to represent a document with specific features extracted by one or more NLP tools.
-We are looking for potentially the most interesting pieces of information in the text, such as people, locations, dates, crime-related words or email addresses.
-Nowadays, one can find numerous services providing extraction of many different features.
+To address the issue, we decided to represent a document with specific features extracted by one or more NLP tools rather than plain words of the document.
+We are looking for the most interesting pieces of information in the text, such as people, locations, dates, crime-related words or email addresses.
+Nowadays, one can find numerous services providing extraction of such features.
 We have chosen some of them and have collected results from testing on our mock legal case.
 We compared results of the NLP services and a survey, in which participants labeled features from the text in a similar way as an NLP tool.
 
-It is important to note that the field of extraction NLP features is a well-studied topic and the tools produce very stable results, probably using rather similar algorithms (which are described in the following section). Even though we could dedicate part of this work to developing well-suited algorithms for NLP feature extraction, we decided to take advantage of the existing tools and put the focus on processing and application of the features to the high-quality data mining and machine learning algorithms. 
+It is important to note that the field of NLP feature extraction is a well-studied topic and the tools produce very stable results, probably using rather similar algorithms (which are described in the following section). Even though we could dedicate part of this work to developing well-suited algorithms for NLP feature extraction, we decided to take advantage of the existing tools and put the focus on processing and application of the features to the high-quality data mining and machine learning algorithms. 
 
 \section{NLP Algorithms}
 First, let us introduce the features and well-known algorithms for their extraction from a text in general.
-Note that the tools mentioned further most likely use modified or even different techniques for extraction of the features.
+Note that the further mentioned tools might use modified or even different techniques for extraction of the features.
 
 \subsection{Keywords}
 \label{algorithms_keywords}
 \emph{Keywords} are people, places, words, ideas, which are understood as important in the given context. 
 In our case, the context is the document, hence we expect the keyword to reflect what the document is really about.
-Then, the \textit{keyness} is a quality measure of the importance the words have in the given text.
+Then, the \textit{keyness} is a quality measure of the importance in the given text.
 \cite[ch. 4]{scott2006textual}
 
 We do not restrict the keyword to be one word because most of the tools are able to extract multi-word keywords, so-called \textit{key phrases}.
-By combining words together, the phrases usually gain new meaning that cannot be inferred from the individual words.
+By combining words together, the phrases usually gain a new meaning that cannot be inferred from the individual words.
 Therefore, if we assumed only one-word keywords, we would never find the keyness hidden in the phrases.
 
 The process of identifying keywords is driven by two factors.
 First, the more often a word occurs in the document, the more likely it is a keyword.
 And second, the more often a word occurs generally in a speech, the less likely it is a keyword of any document.
 \cite[ch. 4]{scott2006textual}
-The second factor ensures that words we use very often in the speech, such as prepositions, conjunctions or the most common nouns, are not considered as keywords, even though they occur in the document often.
+The second factor ensures that words we use very often in the speech, such as prepositions, conjunctions or the most common nouns, are not considered as keywords, even though their occurrence is frequent.
 
 Common implementation of the idea is called the \textit{TF-IDF} algorithm \cite[ch. 6]{manning2008introduction}.
 The weight of a term is defined by its \textit{term frequency} and \textit{inverse document frequency}.
@@ -260,37 +260,37 @@ The term frequency tf$_{t,d}$ is simply a number of occurrences of the term $t$ 
 $$
 \text{idf}_t = \log{\frac{N}{\text{df}_t}}
 $$
-where $N$ is the total number of documents and df$_{t}$ is a \textit{document frequency} and is equal to the number of documents, in which the term $t$ occurs.
+where $N$ is the total number of documents and df$_{t}$ is a \textit{document frequency}, which is equal to the number of documents containing term $t$.
 It is important to take a logarithm of the expression because the \textit{inverted document frequency} can become very large with a large collection of documents and we need it to be comparable with the \textit{term frequency}, which is rather small.
 
 The tf-idf weight is computed as follows \cite[ch. 6]{manning2008introduction}:
 $$
 \text{tf-idf}_{t, d} = \text{tf}_{t,d} \times \text{idf}_t
 $$
-The \textit{term frequency} ensures higher weight for more frequent terms in the document and \textit{inverse document frequency} ensures higher weight for more obscure words. Now tf-idf$_{t, d}$ can be a good approximation of our keyness measure and is often used as the keyword extraction technique. The last step is to establish a threshold value that distinguishes keywords and non-keywords by comparing it to the tf-idf values of the terms.
+The \textit{term frequency} ensures higher weight for more frequent terms in the document and \textit{inverse document frequency} ensures higher weight for more obscure words. Now, tf-idf$_{t, d}$ can be a good approximation of our keyness measure and is often used in the keyword extraction technique with the same same. The last step is to establish a threshold value that distinguishes keywords and non-keywords by comparing it to the tf-idf values of the terms.
 
 \subsection{Named Entity Recognition}
-To extract valuable information from the text, we are interested in detecting named entities.
-Those are entities that can be referred to with a proper name \cite[ch. 21]{jurafsky2014speech}.
-In the speech, they are always noun phrases representing people, places, things, organizations, temporal or numerical expressions, events etc.
+To extract valuable information from the text, it is necessary to include \textit{named entities} (NEs).
+They are entities that can be referred to with a proper name \cite[ch. 21]{jurafsky2014speech}.
+In the speech, NEs are always noun phrases representing people, places, things, organizations, temporal or numerical expressions, events etc.
 
 Lets pinpoint how important the named entities are in the context of legal cases.
 Consider a typical use case of our application: a lawyer is searching through hundreds of emails with different senders and receivers.
 The name of the only victim, place, and date of the crime are known.
-If the lawyer is forced to manually search through the documents, he will filter the emails by occurrences of the aforementioned facts in the text.
-All of the facts are named entities, which can be extracted from each document and eventually lead the algorithm to increase the relevance of documents accordingly.
-Thanks to the named entities, the algorithm is performing the ranking in the same manner as the lawyer would do, which is our goal.
+If the lawyer is forced to manually search through the documents, they will filter the emails by occurrences of the aforementioned facts in the text.
+All of the facts are named entities, which can be extracted from each document automatically and eventually lead the algorithm to increase the relevance of documents accordingly.
+Thanks to the named entities, the algorithm performs the classification in the same manner as the lawyer would do, which is our goal.
 
-The academic approach to a find \textit{named entity} is often based on the statistical sequence model \cite[ch. 21]{jurafsky2014speech}.
+The academic approach to find a \textit{named entity} is often based on the statistical sequence model \cite[ch. 21]{jurafsky2014speech}.
 Entity type and boundaries are found with one pass over the text according to a set of rules.
 The rules include \textit{Part-of-Speech Tagging} 
 \footnote{Detailed information about POS Tagging can be found in chapter 10 of \citetitle{jurafsky2014speech} by \citeauthor{jurafsky2014speech} \cite{jurafsky2014speech}}
 , which helps to find the noun phrases, and therefore, the boundaries.
-Next, a \textit{word shape} is examined, which represents a group of words by a general string representation. 
-For instance, replacing any letter for X and any digit for d, we get a unique word shape dd XX for representing hours of the day written in US format, such as 12 am or 03 PM. 
+Next, the \textit{word shapes} are examined, which are simple string representations that generalize a group of expressions.
+For instance, replacing any letter for X and any digit for d, we can describe a unique word shape dd XX, which represents hours of the day written in US format, such as 12 am or 03 PM. 
 Other rules include prefix matching or dictionary of predefined named entities.
 
-On the other hand, the commercial approach is based on the combination of updated dictionaries, rules and supervised machine learning \cite{chiticariu2013rule}.
+In comparison to the academic approach, the commercial approach is based on the combination of updated dictionaries, rules and supervised machine learning \cite{chiticariu2013rule}.
 In the word of Big Data, it has become easier to collect large dictionaries of given names, family names, organizations or geological places (gazetteers).
 The named entity recognition is performed by multiple passes over the text data.
 First, the high-precision but low-recall rules are applied, then more entities are added by substring search of the previous entities.
@@ -310,7 +310,7 @@ Further in the thesis and the application, we will work with the following set o
 \subsection{Relations}
 Once we have extracted the \textit{named entities}, we can start looking for the relationships between them.
 As soon as we recognize entities and their relations, the main semantic meaning of a sentence is usually fully extracted.
-In a legal environment, we can illustrate the added value of a relation by a testimony, in which a witness tells about both a person and a location, however, we are interested in the document only if there is a relation between these two, particularly was in or similar.
+In the legal environment, we can illustrate the added value of a relation by a testimony, in which a witness tells about both a person and a location, however, we are interested in the document only if there is a relation between these two.
 
 Lets see how the relations are represented.
 Most of the \textit{relations extraction} algorithms are focused on binary relations only.
@@ -320,14 +320,14 @@ $$
 \text{<subject, predicate, object>}
 $$
 where the \textit{subject} is an entity that performs an activity specified in the \textit{predicate} with respect to the \textit{object}.
-The \textit{predicate} is the relation for us, it can be for example employed by, built, son of or cheated on.
+In our context, the \textit{predicate} is the type of the relation; it can be, for example, "employed-by", "built", "son-of" or "cheated-on".
 
 The following groups of algorithms can be applied to extract the relations: \textbf{hand-written patterns}, \textbf{supervised machine learning}, \textbf{semi-supervised}, and \textbf{unsupervised}.
 We will introduce the first two
 \footnote{For more detailed description, see \citetitle{jurafsky2014speech} \cite{jurafsky2014speech}.}.
 
 \subsubsection{\textbf{Hand-written patterns}}
-In the work \citetitle{hearst1992automatic} by \citeauthor{hearst1992automatic} \cite{hearst1992automatic} we find the first idea of using patterns to extract relations.
+The work \citetitle{hearst1992automatic} by \citeauthor{hearst1992automatic} \cite{hearst1992automatic} describes the first idea of using patterns to extract relations.
 The entity names are ignored and a relation is recognized by a set of patterns.
 The patterns are based on the lexicology (POS tagging), the syntax (syntax tree) and the type of the entity (person, location, etc.).
 For example, the pattern \cite[sec. 21.2]{jurafsky2014speech}
@@ -348,27 +348,30 @@ An example of a pattern using entity type \cite[sec. 21.2]{jurafsky2014speech}
 $$
 \text{\textbf{PERSON} (named|appointed|chose|...) \textbf{PERSON} Prep? \textbf{POSITION}}
 $$
-will determine a relation named. 
+will determine a relation "named". 
 
 The big disadvantage of the pattern-based recognition is that the patterns need to be written by hand, which takes a lot of work. On the other hand, the precision of such method is usually high since the patterns are directed by a human.
 
 \subsubsection{\textbf{Supervised machine learning}}
 The second approach is to annotate a corpus of relations and entities and consider it as a training set in the machine learning.
-More precisely, we need to extract features from the sentences, which serve as an input into the ML algorithm and the relations represents the labels for each sentence
+More precisely, features are extracted from the sentences and are served to the machine learning algorithm as an input.
+With the relation types as the output labels, the algorithm is prepared to be trained automatically.
 \cite[sec 21.2]{jurafsky2014speech}.
 
-The features can consist of unigrams or bigrams of the words in the sentence, especially between the subject and object. Next, the named entity types, POS tags or features from the syntax tree can be included as features. We can also consider the number of words between the subject and object or stemmed version of the words \cite[sec. 21.2]{jurafsky2014speech}.
+The features can consist of unigrams or bigrams of the words in the sentence, especially between the subject and object. Next, the named entity types, POS tags or features from the syntax tree can be included as well. Sometimes the number of words between the subject and object or stemmed version of the words is also be considered \cite[sec. 21.2]{jurafsky2014speech}.
 
 The algorithm uses two models for the relations extraction.
-The first one decides whether there exists a relation between two given entities, and the second one recognizes its type. Then, the algorithm first finds all pairs of entities in the sentence, test it with the first model, and only the positive results are tested on type with the second model \cite[sec. 21.2]{jurafsky2014speech}.
+The first decides whether there exists a relation between two given entities, and the second one recognizes its type. First, the algorithm finds all pairs of entities in the sentence, test it with the first model, and only the positive results are tested on type with the second model \cite[sec. 21.2]{jurafsky2014speech}.
 
-The supervised method can be very accurate on general inputs, however, to be able to do that, a large training dataset is required.
-Therefore, the \textit{Distant Supervision for Relation Extraction} can be applied \cite{mintz2009distant}.
-It is an elegant way, how to obtain a large training data.
+The supervised method has a potential to be very accurate on general inputs, however, to achieve a better results than pattern-based models, a large training dataset is required.
+Therefore, the \textit{Distant Supervision for Relation Extraction} was invented to solve the problem \cite{mintz2009distant}.
+It is an elegant way, how to obtain a large training dataset.
 The DBpedia \footnote{Comprehensive database of structured facts extracted from Wikipedia: \mbox{\url{http://wiki.dbpedia.org/}}} or 
 Google Knowledge Graph \footnote{Database of world knowledge structured in a graph: \url{https://www.google.com/intl/bn/insidesearch/features/search/knowledge.html}}
 provide enough information about some of the relations between real-world objects.
-When we search a page about the subject on Wikipedia and find the sentence with the object, then we are ready to adopt the text as an input data for our training phase.
+The algorithm is able to extract full relations with subject, object and relation type.
+To gather the training data, the algorithm searches a page about the subject on Wikipedia and finds a sentence with the specified object.
+Then, it is ready to adopt the text as an input data for the training phase.
 This approach delivers a lot of diverse sentences, in which we are confident about the relation type, and thus the training dataset is rich enough to create a reliable model.
 
 \subsection{Topic Modeling}
@@ -377,14 +380,15 @@ The \textit{Topic modeling} is a statistical approach for finding general topics
 The keywords are already able to discover some trends of a document, however, unlike the topics, they have to appear in the text.
 
 Prior to the topic recognition, a fixed set of topics have to be defined.
-The usual process is to assign probabilities of all topics to every word in the dictionary.
+The more advanced algorithms creates a hierarchical topic structure rather than a simple list.
+The usual process of topic modeling is to assign probabilities of all topics to every word in the dictionary.
 Then, if we consider a document as a bag-of-words
 \footnote{Representation of a document that forgets ordering and counts of the words and keeps them in a simple set.}, 
 we can compute the overall probability that a document has a specific topic only from its words.
 
 One of the well-known algorithms for the topic modeling is called the \textit{Latent Dirichlet allocation} developed by \citeauthor{blei2003latent} in \citeyear{blei2003latent} \cite{blei2003latent}.
-The model assumes that every document has fixed distribution of topics it belongs to.
-Lets further assume that the words of a document were withdrawn from a specific distribution defined in the following way.
+The model assumes that every document has a fixed distribution of topics it belongs to.
+Let's further assume that the words of a document were withdrawn from a specific distribution defined in the following way.
 \begin{enumerate}
 \item Pick a topic distribution of each document according to a \textit{Dirichlet distribution}.
 \item Pick a word distribution for each topic.
@@ -405,7 +409,7 @@ Put simply, the initialization phase picks a random topic for each word in all d
 There are two types of categories we are interested in.
 The first is more related to the structure of the text and tells us where the document is coming from. 
 Such types can be for instance email, medical record, police record, affidavit, etc.
-The Legato system is prepared to work with such categories, and therefore we rely on the input to contain the information about the first type.
+The Legato system is prepared to work with such categories, and therefore, we rely on the input to contain the information about the first type.
 
 The second type is related to the meaning of the text.
 Semantically, it is very similar to the topics introduced in the section \ref{topic_modeling}, and the only difference is that we need the most dominant topic to be chosen as a representative.
