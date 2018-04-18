@@ -27,7 +27,7 @@
   main=english, %% By using `czech` or `slovak` as the main locale
                 %% instead of `english`, you can typeset the thesis
                 %% in either Czech or Slovak, respectively.
-  english, german, russian, czech, slovak %% The additional keys allow
+  %english, german, russian, czech, slovak %% The additional keys allow
 ]{babel}        %% foreign texts to be typeset as follows:
 %%
 %%   \begin{otherlanguage}{german}  ... \end{otherlanguage}
@@ -84,6 +84,8 @@
 \usepackage{slashbox} %% Big slash in tables
 \usepackage{cleveref}[2012/02/15] %% Enables cross reference footnotes
 \floatsetup[table]{capposition=top}
+\usepackage{minted} % nice listings
+%\usemintedstyle{fruity}
 
 \begin{document}
 \chapter*{Introduction}
@@ -517,7 +519,7 @@ for document relevancy.
 
 
 \subsection{Statistical comparison}
-
+\label{sec:nlp:statistical_comparison}
 \begin{figure}
 \centering
 \caption{Jaccard index of the NLP tools evaluated against the survey with strict string comparison.}
@@ -735,24 +737,28 @@ Despite a few mistakes, mostly recognizing numbers as people, the service was ab
 
 \chapter{Classification}
 Data exploration in the chapter \ref{chp:data_characteristics} helped us clarify the language and style of the legal documents enough to design models for the relevance classification.
+% ... write about the outcomes of data characteristics chapter when they're done ...
+
+First section presents the NLP features encoded into attributes applicable to the models.
+Next sections describe the models predicting relevance.
+Due to the large number of features, we decided to create a layered system of models, where the top-level models make predictions based on the outputs of the bottom-level models.
+
 We present a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
 First is a \textit{Law-Case classifier} \ref{sec:law-case-classifier}, the second is a \textit{Sentence classifier} \ref{sec:sentence-classifier} and the last is a \textit{Document classifier} \ref{sec:document-classifier}.
-Each of them needs a different set of attributes as an input and applies a suitable machine learning model.
+Each of them needs a different set of attributes as an input and applies different machine learning model.
 For further details about the individual classifiers, see the related sections.
 
-\section{Law-Case classifier}
-\label{sec:law-case-classifier}
-
-\section{Sentence relevance classifier}
-\label{sec:sentence-classifier}
-
-\subsection{Attributes}
+\section{Attributes}
 To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes, which will be most helpful in determining the classes.
 Technically, all machine learning models are built to process numbers as input variables.
 Since we work here with text and only text, we have to find a way how to convert all keywords, entities, relations, syntactic structure, and other features into numerical representation.
-During this process, we have to keep in mind the main purpose: the numbers have to be hiding information about the relevance of the sentence.
+During this process, we have to keep in mind the main purpose: the numbers needs to internally hide information about the relevance.
 
-\subsubsection{\textbf{Sentence meaning extraction}}
+Based on the arguments made in the chapter \ref{chp:data_characteristics}, the units of the machine learning are sentences rather than documents.
+This fact implies that the attributes are related to a sentence.
+As a result, there are less data from which to compute the attributes and the representation of the attributes as well as the classification itself become simpler.
+
+\subsection{Sentence meaning embedding}
 When extracting a meaning of a sentence, one will encounter two major problems to be solved: 1) how to represent meaning of a single word 2) how to combine word meanings.
 
 The first problem is also known as the \textit{Word Embedding} problem \cite{wordEmbeddings}.
@@ -784,7 +790,7 @@ Though we could use the algorithm to train our own vectors, it is much easier to
 Since the meaning of the words is the same regardless of the area, there would be a very little gain in the training a custom dataset specialized on legal documents.
 The dictionary we will use is trained by the \textit{Google} company and is available on their official code archive \cite{word2vecGoogle}.
 The pre-trained model contains 3 million unique words of 300-dimensional vectors, which was trained on a 300 billion word news dataset.
-For our purpose, a trimmed dataset of 300 thousand unique words without the phrases is sufficient \footnote{\url{Downloaded from https://github.com/eyaler/word2vec-slim}}.
+For our purpose, a trimmed dataset of 300 thousand unique words without the phrases is sufficient \footnote{Downloaded from \url{https://github.com/eyaler/word2vec-slim}}.
 
 The second problem relates to the fact, that the classifiers usually need fixed input, but we currently computed vectors for each words of a sentence.
 Researches Vedantam et al. \cite{vedantam2015learning} applied a simple average of \textit{word2vec} vectors to the words in a phrase to get the final embedding.
@@ -793,10 +799,151 @@ To achieve more interesting results, it is possible to weight the words by their
 Besides, we embedded the keywords (words with high TF-IDF) in another representation, hence the TF-IDF weighting does not bring enough contribution to be worth the processing time.
 
 
-\subsubsection{\textbf{Extracted features}}
+\subsection{Keyword embedding}
+Next attribute is a vector computed from the keywords of a sentence.
+The NLP feature extraction determined keywords in the context of the whole documents, which means the first task is to find the working set of words by intersecting the sentence with the keywords.
+In the process of intersecting, the \textit{subset tolerance approach} is applied, as defined in the section \ref{sec:nlp:statistical_comparison}.
+
+The next step is very similar to the approach mentioned in the previous section -- the words are converted into embedding by \textit{word2vec} dictionary and then averaged into one 300 dimensional vector.
+Indeed, the sentence meaning vectors contain the keywords as well, thus some information is redundant and one can argue that these two attributes appears too similar.
+However, the choice of right words plays a crucial role in the influence on classification, and the importance of both the attributes will be obvious in the evaluation chapter.
 
 
-\subsubsection{\textbf{Syntax structure}}
+\subsection{Entity embedding}
+\textit{Watson NLU} service is able to recognize extensive number of entity types (462) \footnote{\url{https://console.bluemix.net/docs/services/natural-language-understanding/entity-types-v1.html\#entity-types-and-subtypes-version-1-}}, 
+which include as obscure categories as "WebBrowserExtension" or "HockeyConference".
+For the purpose of this research, only 6 of them the following types are used:
+\begin{itemize}
+\item Person
+\item Organization
+\item Location
+\item Crime
+\item HealthCondition
+\end{itemize}
+Note that also "Company" type is recognized, subsequently classified as "Organization".
+In addition, the concepts and dates are included as entities, since there is no difference in the way they might influence the relevance.
+
+The first draft of the entities embedding was based only on the entities appearing in the case.
+During the case preprocessing, the mentioned entities were extracted from the case synopsis and stored in a vector of fixed length for each entity type. For instance, a vector for people entities might look as follows:
+$$
+(\text{"joey david", "thomas", "jesse hester", "obama", "", "", "", "", "", ""})
+$$
+The rest of the vector is left for entities from documents, which would be included based on their importance score (\textit{Watson NLU} attaches the score to each entity).
+Finally, the representation is a mask array of ones and zeros that indicates which entities are present in the sentence.
+
+One problem with this embedding is that the vector acquires different meaning for every case.
+In a situation when a model learns that a name on the index $i$ indicates a relevant document, the model becomes not transferable to another case, where the vector contains different names.
+General model for any case would become impossible to train and even the case-specific models would face a lack of data to achieve a satisfactory performance.
+Fortunately, the \textit{word2vec} dictionary was trained on general texts including the entities as well.
+Most of the well-known names, such as "David", "George", or "Adele", organizations, such as "Mc Donald", "IBM", or "Facebook" and locations, such as "Prague", "Nigeria", or "Prater" are present in the dictionary.
+Not only that we can now train a general model, in which each word has its own fixed representation, but also the embeddings satisfy the expected semantic rules.
+For example, vectors representing names will be close together and the model has a chance to learn that names are in fact important regardless of the specific word.
+
+
+\begin{figure}[H]
+\centering
+\caption{Distances among entity vectors in word2vec dictionary.}
+\label{fig:entity_distances}
+\begin{tabular}{|*{5}{c|}}
+  \hline
+           & David   & George  & IBM      & Facebook \\ \hline
+  David    & 0.0     &         &          &     \\ \hline
+  George   & 0.93944 & 0.0     &          &     \\ \hline
+  IBM      & 1.37978 & 1.41457 & 0.0      &     \\ \hline
+  Facebook & 1.37652 & 1.40856 & 1.319643 & 0.0 \\ \hline
+\end{tabular}
+\end{figure}
+
+\subsection{Relation embedding}
+\label{sec:relation_embedding}
+The relations computed by Watson NLU keep the following structure:
+\begin{listing}[H]
+\begin{minted}[frame=single,
+               framesep=3mm,
+               linenos=true,
+               xleftmargin=21pt,
+               tabsize=4]{js}
+{    
+ "type" : "locatedAt",
+ "sentence" : "her coming into the courtroom late"
+ "arguments" : [
+    { "text" : "her", 
+      "entities" : [{ 
+      	"text" : "her", 
+      	"type" : "Person" }] 
+    }, 
+    { "text" : "courtroom",  
+      "entities" : [{ 
+      	"text" : "courtroom", 
+      	"type" : "Facility" }] 
+    }], 
+}
+\end{minted}
+\caption{Watson NLU relation example in JSON} 
+\label{json:relation}
+\end{listing}
+Note that the fields "location" and "score" were excluded to make the example compact.
+As the JSON example suggests, the important parts of the relation are its type ("locatedAt"), types of the entities ("Person", "Facility") and the text of the entities ("her", "courtroom").
+The relation embedding, therefore, needs to accommodate relation type, 2x entity type and 2x entities itself.
+The previous sections presented the \textit{word2vec} dictionary, which is able to convert common words into an vector.
+The same approach is used here for embedding of the entity words, since there is a high probability of them being in the dictionary.
+
+On the other hand, types of relations and entities are rather identifiers than meaningful words, and thus, they will hardly occur in the \textit{word2vec} dictionary.
+In this case, we can take advantage of the lists of all possible types, which is offered by Watson.
+There is a limited number of relation types (54) and entity types (49), which provides a transparent way of converting the type into a vector.
+The type is encoded by a vector of length equal to the number of types, in which each index represents one specific type.
+Then, the embedding contains zeros in all elements except for the index of the type it represents.
+This approach is called \textit{One-hot encoding} as defined by the Scikit-learn machine learning library \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}}.
+
+To summarize, the final embedding of the relation consists of:
+\begin{itemize}
+\item relation type in one-hot vector (length 54)
+\item entity type of the subject in one-hot vector (length 49)
+\item entity type of the object in one-hot vector (length 49)
+\item the subject in word2vec vector (length 300)
+\item the object in word2vec vector (length 300)
+\end{itemize}
+
+
+\subsection{Category embedding}
+The category is an example of the attribute related to the document instead of the sentence.
+Similarly as the relation and entity types, the Watson NLU defined a fixed set of categories.
+There are five levels of categories arranged in a hierarchic tree structure, but not all categories contain a full range of levels.
+An example of a category with four levels might be
+\begin{minted}[frame=single,
+               framesep=3mm,
+               linenos=false,
+               xleftmargin=-5pt,
+               xrightmargin=-5pt,
+               tabsize=4,
+               fontsize=\small]{js}
+law, govt and politics / legal issues / civil rights / privacy
+\end{minted}
+
+As the principle of one-hot vector was explained in the previous section (\ref{sec:relation_embedding}), the category embedding should be straight-forward.
+Each category level has a fixed number of types, therefore, one-hot vectors are created for all levels and are concatenated in one vector of representing a full category.
+It is worth noting that the last (fifth) level is excluded in the embedding, since the absolute majority of categories get by with the first four levels, which left the last level largely unused.
+
+%\subsection{Syntax structure}
+\section{Bottom-level model}
+This section introduces the model that directly processes the extracted embeddings explained in the previous section and predict the class.
+
+
+
+% popsat proc jsem zvolil NN - kvuli prirozenemu prostredi word2vec
+% popsat nejlepsi parametry, optimizer
+
+% popsat ze jsem zkusil LSTM na vsechny slova dokumentu, ale nevyslo
+
+% popsat ze jsem zkusil pouzit features primo z celeho dokumentu, ale uspesnost byla nizsi nez pri pouziti vet
+
+\section{Law-Case classifier}
+\label{sec:law-case-classifier}
+% ted je jasne co pouzivam na ziskani predpovedi z jednotlivych featur - cisla z NN
+% napsat ktere z feature jsem pouzil a jak zkombinoval
+
+\section{Sentence relevance classifier}
+\label{sec:sentence-classifier}
 
 
 
@@ -825,13 +972,29 @@ The final step is a removal of a hyphenation that was introduced to break new li
 \section{Integration into Legato}
 
 \chapter{Evaluation}
-\section{Dataset introduction}
 \section{Model selection}
+% Law-Case classification based on Sentence Meaning
+% ...Neural Networks        0.860
+% ...SVM C=1.0              0.754
+% ...RF n_est=500 depth=20  0.845
+
+% comparing keywords from case and doc to predict law-case
+% Case....0.839 
+% Doc ....0.863
+
+% relations: acc with full vector with types: 82 \%, acc with only words (300+300) 79\% => types helps
+
+% tried LSTM RNN networks, which failed to recognize anything, - describe how I fed it, all text of each document
+
 \section{Parameter tuning}
 \section{Results}
 
 \chapter{Conclusion}
 
+% future work
+% - Watson NLU enables to create custom language model, which could recognize entities, keywords and relations even more precise if we feed it with legal data. We could not, since we have not enough text, but a future research could work with this.
+
+% - Watson NLU enables 462 entities - possible to include all of them
 
 
   \printbibliography[heading=bibintoc] %% Print the bibliography.
