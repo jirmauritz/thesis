@@ -86,6 +86,9 @@
 \floatsetup[table]{capposition=top}
 \usepackage{minted} % nice listings
 %\usemintedstyle{fruity}
+\usepackage{amsmath,amssymb} % math
+\DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
+\DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 
 \begin{document}
 \chapter*{Introduction}
@@ -739,16 +742,26 @@ Despite a few mistakes, mostly recognizing numbers as people, the service was ab
 Data exploration in the chapter \ref{chp:data_characteristics} helped us clarify the language and style of the legal documents enough to design models for the relevance classification.
 % ... write about the outcomes of data characteristics chapter when they're done ...
 
-First section presents the NLP features encoded into attributes applicable to the models.
-Next sections describe the models predicting relevance.
+First section (\ref{sec:attributes}) presents how the NLP features are encoded into attributes applicable to the models.
+Next sections describe the system of models that predicts the document relevance.
 Due to the large number of features, we decided to create a layered system of models, where the top-level models make predictions based on the outputs of the bottom-level models.
-
-We present a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
-First is a \textit{Law-Case classifier} \ref{sec:law-case-classifier}, the second is a \textit{Sentence classifier} \ref{sec:sentence-classifier} and the last is a \textit{Document classifier} \ref{sec:document-classifier}.
-Each of them needs a different set of attributes as an input and applies different machine learning model.
+The section \ref{sec:bottom-level-models} introduces the bottom-level models specialized on each feature separately, that are able to understand the word embeddings.
+Next, the top-level layer is formed by a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
+First is the \textit{Law-Case classifier} \ref{sec:law-case-classifier}, second is the \textit{Sentence classifier} \ref{sec:sentence-classifier} and the last is the \textit{Document classifier} \ref{sec:document-classifier}.
+Each of them needs a different set of inputs and applies different machine learning model.
+The following figure visually explains the system of models.
 For further details about the individual classifiers, see the related sections.
 
+% TODO write that there'll be a lot of claims proven in evaluation section
+
+\begin{figure}[H]
+\caption{Diagram of models}
+\label{fig:models-diagram}
+TBA
+\end{figure}
+
 \section{Attributes}
+\label{sec:attributes}
 To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes, which will be most helpful in determining the classes.
 Technically, all machine learning models are built to process numbers as input variables.
 Since we work here with text and only text, we have to find a way how to convert all keywords, entities, relations, syntactic structure, and other features into numerical representation.
@@ -759,6 +772,7 @@ This fact implies that the attributes are related to a sentence.
 As a result, there are less data from which to compute the attributes and the representation of the attributes as well as the classification itself become simpler.
 
 \subsection{Sentence meaning embedding}
+\label{sec:sentence-meaning}
 When extracting a meaning of a sentence, one will encounter two major problems to be solved: 1) how to represent meaning of a single word 2) how to combine word meanings.
 
 The first problem is also known as the \textit{Word Embedding} problem \cite{wordEmbeddings}.
@@ -854,6 +868,8 @@ For example, vectors representing names will be close together and the model has
 \end{tabular}
 \end{figure}
 
+TBA - explain the table and make conclusion
+
 \subsection{Relation embedding}
 \label{sec:relation_embedding}
 The relations computed by Watson NLU keep the following structure:
@@ -926,26 +942,67 @@ It is worth noting that the last (fifth) level is excluded in the embedding, sin
 
 %\subsection{Syntax structure}
 \section{Bottom-level model}
-This section introduces the model that directly processes the extracted embeddings explained in the previous section and predict the class.
+\label{sec:bottom-level-models}
+This section introduces the model that directly processes the extracted embeddings explained in the previous section and extracts information provided to the top-level models.
+To achieve the best performance, it is crucial to split the predictions to elementary units and build on top of them.
+% TODO find a source to prove it
+The models are able to learn limited amount of information, especially in the case of insufficient number of training instances, and therefore, one should keep the models as simple as possible.
+In contrast, one could concatenate all inputs, apply them to a single large model and expect that it will be able to extract all important information.
+This approach is not very likely to work in the environment with thousands of features, as in our case.
 
+Following this idea, we preset a series of models specialized on each of the attribute separately.
+Besides better final performance in predicting the relevance (\ref{eval:allinone-vs-features}), another advantage is the transparent flow of information and better understanding of the models.
+Examining the intermediate results from the models, we are able to deduce which attributes (keywords, entities and relations) are the most discriminative in predicting of the relevance and which are not.
 
+\subsection{Machine learning model selection}
+The evaluation chapter contains a test on the most suitable machine learning model for the bottom-level predictions (\ref{eval:bottom-model-selection}).
+Besides the fact, that the neural networks achieved the best results, it is worth to explain, why they are naturally the most suitable model.
 
-% popsat proc jsem zvolil NN - kvuli prirozenemu prostredi word2vec
-% popsat nejlepsi parametry, optimizer
+Regarding attributes describing the sentences, the final solution was to apply the \textit{word2vec} dictionary to create an embedding.
+As mentioned in the section \ref{sec:sentence-meaning}, the dictionary was computed from the texts of news reports that are processed by a neural network.
+Specifically, in the proposed word2vec algorithm, the vectors are derived from the weights between the hidden and output layer \cite[sec. 2.2.1]{wordEmbeddings}.
+Since the embeddings represent an internal state of a neural network, the natural step is to extend the network by virtually connecting additional layers.
+Even though the idea of extending network is not precise, as the embeddings are understood as inputs instead of weights, the aspect of the follow-up model structure showed to be important (\ref{eval:bottom-model-selection}).
 
-% popsat ze jsem zkusil LSTM na vsechny slova dokumentu, ale nevyslo
+Another reason, why neural network best suites our needs, is that it is an incremental estimator \cite{incrementalScikit}.
+Incremental estimators enables to iteratively learn and improve on a new batch of data without forgetting the old state.
+Other incremental estimators solving classification problems include Naive Bayes (NB) or Stochastic Gradient Descent (SGD) learning.
 
-% popsat ze jsem zkusil pouzit features primo z celeho dokumentu, ale uspesnost byla nizsi nez pri pouziti vet
+The final structure of the neural network has an input layer of dimension 300, two hidden layers of 6 and 3 neurons and 2 output neurons representing binary classes.
+Such a model is prepared to predict law-related vs case-related sentences as well as relevant vs irrelevant sentences. Note that even though there are three final classes of relevance (HOT, WARM, COLD), the WARM class is neglected to be decided by the top-level models.
+
+\begin{figure}[H]
+\caption{Bottom-level model structure}
+\label{fig:neural-network}
+TBA
+\end{figure}
+
+The \textit{sigmoid} activation function proved to be the most successful in all layers (\ref{eval:bottom-model-tuning}).
+During the model training, an Adamax optimizer with learning rate of 0.02 was applied in 100 epochs and batch size of 10.
+To prevent the overfitting, the model stopped learning in case of increasing loss on a validation set (10\% of training data).
+The applied loss function is called the Cross Entropy (CE), which is defined as follows:
+$$
+H(P, Q) = -\EX_{x \sim P} \log{Q(x)} = -\sum_x P(x) \log{Q(x)}
+$$
+where $P$ is the true probability distribution and $Q$ is the predicted probability distribution over samples $x$ \cite{Goodfellow-et-al-2016}.
+Note that the roles of true and predicted distributions are given, in contrast to the accuracy measure.
 
 \section{Law-Case classifier}
 \label{sec:law-case-classifier}
 % ted je jasne co pouzivam na ziskani predpovedi z jednotlivych featur - cisla z NN
 % napsat ktere z feature jsem pouzil a jak zkombinoval
+The goal of the Law-Case classifier is to assign a document to one of the classes: law-related or case-related.
+As the Data Characteristics chapter (\ref{chp:data_characteristics}) loosely defines the classes, the following paragraphs provide more specific and statistical definition.
+
+Law-related ...
+
+Case-related ...
+
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
 
-
+% popsat ze jsem zkusil pouzit features primo z celeho dokumentu, ale uspesnost byla nizsi nez pri pouziti vet
 
 \section{Document relevance classifier}
 \label{sec:document-classifier}
@@ -972,21 +1029,38 @@ The final step is a removal of a hyphenation that was introduced to break new li
 \section{Integration into Legato}
 
 \chapter{Evaluation}
-\section{Model selection}
+
+\section{Decision point evaluation}
+\subsection{Bottom-level model selection}
+\label{eval:bottom-model-selection}
 % Law-Case classification based on Sentence Meaning
 % ...Neural Networks        0.860
 % ...SVM C=1.0              0.754
 % ...RF n_est=500 depth=20  0.845
 
+\subsection{Keyword type selection}
 % comparing keywords from case and doc to predict law-case
 % Case....0.839 
 % Doc ....0.863
 
+\subsection{Number of models}
+\label{eval:allinone-vs-features}
+% conclude research on whether put all features in one long vector or separate models
+% 1. one large model, concatenate all attribtues for sentence (keyword, entities, relations..)
+% 2. separate models for attribubtes, plus top-level model, examine relevance or law-case
+
+\subsection{Relations with types}
 % relations: acc with full vector with types: 82 \%, acc with only words (300+300) 79\% => types helps
 
+\subsection{LSTM RNN networks}
 % tried LSTM RNN networks, which failed to recognize anything, - describe how I fed it, all text of each document
 
-\section{Parameter tuning}
+
+
+\subsection{Parameter tuning}
+\label{eval:bottom-model-tuning}
+% tuning of the bottom-level NN, i.e. activation functions, optimizers and layers
+
 \section{Results}
 
 \chapter{Conclusion}
