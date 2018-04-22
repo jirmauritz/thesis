@@ -75,7 +75,7 @@
 \lstset{
   basicstyle      = \ttfamily,%
   identifierstyle = \color{black},%
-  keywordstyle    = \color{blue},%
+  keywordstyle    = \color{blueečnou práci zavádí studijní oddělení },%
   keywordstyle    = {[2]\color{cyan}},%
   keywordstyle    = {[3]\color{olive}},%
   stringstyle     = \color{teal},%
@@ -101,6 +101,36 @@ diploma under my belt. Wish me luck!
 \chapter{Background: Legato System}
 
 \chapter{Related work}
+This chapter summarizes the previous work generally on the artificial intelligence in the legal domain, retrieval of the legal documents, and issue of relevance in the legal context.
+Many researchers have been concerned with the issue of auto
+
+\section{Artificial Intelligence and Law}
+The global publishing company Springer introduced a journal \textit{Artificial Intelligence and Law} \footnote{\url{https://link.springer.com/journal/10506}} in 1992 which contains 426 published articles (March 2018) describing theoretical and empirical studies in artificial intelligence (AI) from the legal perspective.
+Though the journal consists of articles concerned with AI as a new trend that needs to be bounded by law, such as legal aspects of autonomous vehicles \cite{Prakken2017autonomous}, robot sex \cite{Frank2017robotSex} or responsibility of autonomous machines \cite{Brozek2017AIresponsibility}, it also contains researches of new innovative AI systems that perform automatic reasoning and knowledge extraction in the legal domain.
+The collection of AI-law related articles provides enough information to create a brief overview of how this field has evolved in time.
+
+The first legal search engines enabled retrieving results by first-order logic rules and fixed pieces of text \cite{Turtle1995legalRetrieval}.
+In early 1990s, the concept of full-text search has become widely used and users could enjoy a retrieval by a plain natural language \cite{Turtle1995legalRetrieval}.
+Shortly after, the researchers started to focus on AI when creating a new legal retrieval system, such as legal text management system \textit{Flexlaw} (\citeyear{Smith1995flexlaw}) \cite{Smith1995flexlaw}, integrated decision support system \textit{DataLex WorkStations} (\citeyear{Greenleaf1995datalex}) \cite{Greenleaf1995datalex} or system for heuristic retrieval of legal arguments \textit{BankXX} (\citeyear{Rissland1996bankxx}) \cite{Rissland1996bankxx}.
+As the machine learning was still quite nascent, the mentioned systems are a fusion of expert and AI systems with expert knowledge as the essential part of the system.
+A sign of such fusion is an attempt to formalize the \textit{legal argument} (\cite{Freeman1996argument}, \cite{Bench-Capon1997argument} and most recently \cite{ashley2013information}) as an element between the \textit{rules} (expert systems) and \textit{models} (AI systems).
+
+At the turn of the century, an attempt to conceptualize the legal domain brought a number of ontologies, such as McCarty's language for legal discourse, Stamper's norma formalism or Valente's functional ontology \cite{Visser1998ontologies}.
+The ontologies are categorizing the knowledge and breaking it into predicate relations, which express properties of objects, rules in the form of implications and second-order expressions adding more explanatory power.
+Unfortunately, they are not very widely applied, except for the Valente's Functional Ontology for Law (FOLaw) \cite{VanEngers2008folaw}.
+In any case, the conclusion of the research comparing four main ontologies for the design of legal knowledge systems is
+``Non  of  the  ontologies  seems  to  have  adequate  provisions  to  specify  legal procedures'' \cite{Visser1998ontologies}.
+
+
+
+% paper: Automated patent landscaping
+
+\section{Legal document retrieval}
+% paper: Ranking and Classifying Legal Documents using Conceptual Information
+
+\section{Relevance in the legal domain}
+% paper: On the concept of relevance in legal information retrieval
+% paper: Document Categorization in Legal Electronic Discovery: Computer Classification vs. Manual Review
 
 \chapter{Data Characteristics}
 \label{chp:data_characteristics}
@@ -218,8 +248,8 @@ The following are the keywords: city, school, know, got, joey, just, police, pri
 - most frequent words for relevant vs. unrelevant cases
 
 \section{Types of documents}
-- non-sense (pics)
-- law related vs. case specific
+- non-sense docs (pics)
+- law related vs. case specific - loosely define
 \section{Linguistics}
 
 
@@ -989,20 +1019,37 @@ Note that the roles of true and predicted distributions are given, in contrast t
 
 \section{Law-Case classifier}
 \label{sec:law-case-classifier}
-% ted je jasne co pouzivam na ziskani predpovedi z jednotlivych featur - cisla z NN
-% napsat ktere z feature jsem pouzil a jak zkombinoval
 The goal of the Law-Case classifier is to assign a document to one of the classes: law-related or case-related.
-As the Data Characteristics chapter (\ref{chp:data_characteristics}) loosely defines the classes, the following paragraphs provide more specific and statistical definition.
+As the Data Characteristics chapter (\ref{chp:data_characteristics}) defines the classes only loosely, the following paragraphs provide more specific and statistical definition.
 
-Law-related ...
+Case-related documents contain at least one specific information about the subjects or acts related to the case. 
+The authors of these documents are usually directly involved in the case or came into contact with the subjects.
+They are mostly confidential, such as emails, medical records, emergency call records, police records or testimonies.
+Their main characteristic is an occurrence of a known entity, such as victim, defendant or place of the act.
 
-Case-related ...
+Law-related documents do not contain any information specific to the case.
+They usually state facts that help lawyers argue about the legal aspects of the case and find disagreement and evidence.
+Examples of such documents are fragments of law code, description of similar cases from the past, policies of a company/school/office, news, books or articles.
+Their main characteristic is a specific vocabulary, usually including the legal terminology.
 
+All 263 documents were labeled by one of the classes as part of the annotation process.
+To train the models, we had to establish a simplified assumption and mark all sentences with the same class as the document.
+As a result, the models were trained on all 14,368 sentences.
+
+\textit{TBA - some results of the bottom-level model}
+
+The top-level model is based on the two outputs (prob. of case-related and prob. of law-related) from each bottom-level model and encoded document category.
+To eliminate the influence of a document length, outputs are averaged for all sentences.
+In this case, the model is trained on the set of documents, which has only 263 instances, hence the neural networks are not applicable.
+As the best classifier showed to be the \textit{Random Forest} with 300 base estimators and maximum tree depth of 2 (\ref{eval:law-case-model-selection}).
+
+\textit{TBA - some results of the top-level model}
+
+Now, when the division to the two diverse types of documents is in place, a labeled document can proceed to the specialized relevance estimator.
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
 
-% popsat ze jsem zkusil pouzit features primo z celeho dokumentu, ale uspesnost byla nizsi nez pri pouziti vet
 
 \section{Document relevance classifier}
 \label{sec:document-classifier}
@@ -1031,12 +1078,21 @@ The final step is a removal of a hyphenation that was introduced to break new li
 \chapter{Evaluation}
 
 \section{Decision point evaluation}
+
+\subsection{Topology system of models}
+% popsat ze jsem zkusil pouzit features primo z celeho dokumentu, ale uspesnost byla nizsi nez pri pouziti vet a pak dokument
+
 \subsection{Bottom-level model selection}
 \label{eval:bottom-model-selection}
 % Law-Case classification based on Sentence Meaning
 % ...Neural Networks        0.860
 % ...SVM C=1.0              0.754
 % ...RF n_est=500 depth=20  0.845
+
+\subsection{Law-Case model selection}
+\label{eval:law-case-model-selection}
+% vyber law-case top-level classifier, vyhral to RF s 300 a 0.86 zatim
+% zkusil jsem na zaklade Conceptů - vybrat concepty z case_related a law_related, odebrat ty, co jsou v obou a potom pocitat, kolik konceptu ma dokument spolecnyho s temito mnozinami - jen 0.756, kazdopadne pro law_related ma 98% uspech, protoze 63 z 64 spravne uhadlo, z celkovyho 263 oznacilo 126 jako law_related, takze pridana hodnota je
 
 \subsection{Keyword type selection}
 % comparing keywords from case and doc to predict law-case
@@ -1055,11 +1111,18 @@ The final step is a removal of a hyphenation that was introduced to break new li
 \subsection{LSTM RNN networks}
 % tried LSTM RNN networks, which failed to recognize anything, - describe how I fed it, all text of each document
 
+\subsection{All words}
+% predict law-case based on training on all 190k words, predict class of word - 0.83
 
 
-\subsection{Parameter tuning}
+
+\section{Parameter tuning}
+
+\subsection{Bottom-level model}
 \label{eval:bottom-model-tuning}
 % tuning of the bottom-level NN, i.e. activation functions, optimizers and layers
+
+\subsection{Top-level models}
 
 \section{Results}
 
