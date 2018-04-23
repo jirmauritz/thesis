@@ -94,15 +94,14 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 
-Theses are rumoured to be the capstones of education, so I decided
-to write one of my own. If all goes well, I will soon have a
-diploma under my belt. Wish me luck!
-
-\chapter{Background: Legato System}
+introduction
 
 \chapter{Related work}
-This chapter summarizes the previous work generally on the artificial intelligence in the legal domain, retrieval of the legal documents, and issue of relevance in the legal context.
-Many researchers have been concerned with the issue of auto
+This chapter summarizes the previous work on the application of artificial intelligence in the legal domain. 
+First section describes a general role of artificial intelligence in law and how it evolved in time.
+Researchers in this field focused mainly on decision making systems to support work of the jury; however, our research focuses more on the electronic discovery, information retrieval and knowledge discovery in legal domain, which brings a support for lawyers.
+Therefore, the second section looks more closely on this subfield by introducing state-of-the-art legal retrieval systems and underlines common characteristics with our research.
+The last section discusses the issue of relevance in the legal context.
 
 \section{Artificial Intelligence and Law}
 The global publishing company Springer introduced a journal \textit{Artificial Intelligence and Law} \footnote{\url{https://link.springer.com/journal/10506}} in 1992 which contains 426 published articles (March 2018) describing theoretical and empirical studies in artificial intelligence (AI) from the legal perspective.
@@ -115,15 +114,44 @@ Shortly after, the researchers started to focus on AI when creating a new legal 
 As the machine learning was still quite nascent, the mentioned systems are a fusion of expert and AI systems with expert knowledge as the essential part of the system.
 A sign of such fusion is an attempt to formalize the \textit{legal argument} (\cite{Freeman1996argument}, \cite{Bench-Capon1997argument} and most recently \cite{ashley2013information}) as an element between the \textit{rules} (expert systems) and \textit{models} (AI systems).
 
-At the turn of the century, an attempt to conceptualize the legal domain brought a number of ontologies, such as McCarty's language for legal discourse, Stamper's norma formalism or Valente's functional ontology \cite{Visser1998ontologies}.
+At the turn of the century, an attempt to conceptualize the legal domain for the design of legal knowledge systems brought a number of ontologies, such as McCarty's language for legal discourse, Stamper's norma formalism or Valente's functional ontology \cite{Visser1998ontologies}.
 The ontologies are categorizing the knowledge and breaking it into predicate relations, which express properties of objects, rules in the form of implications and second-order expressions adding more explanatory power.
 Unfortunately, they are not very widely applied, except for the Valente's Functional Ontology for Law (FOLaw) \cite{VanEngers2008folaw}.
-In any case, the conclusion of the research comparing four main ontologies for the design of legal knowledge systems is
-``Non  of  the  ontologies  seems  to  have  adequate  provisions  to  specify  legal procedures'' \cite{Visser1998ontologies}.
+The conclusion of the research comparing four main ontologies is
+\begin{quote}
+``Non  of  the  ontologies  seems  to  have  adequate  provisions  to  specify  legal procedures.'' --- \citeauthor{Visser1998ontologies} \cite{Visser1998ontologies}
+\end{quote}
 
+Consequently, the formalistic implementations of the syllogistic model in legal domain were criticized (\cite{Shapira1999fuzzy}, \cite{Philipps1999nn}).
+Researchers realized that the deductions starting at axioms and following prescribed rules are limiting and introduce imprecise standards in the legal reasoning.
+One of the possible solutions is to use relaxed formalisms, such as fuzzy logic \cite{Shapira1999fuzzy} or neural networks \cite{Philipps1999nn}.
+Philipps et al. and suggest that the usual perspective of rules as a set of linguistic entities (sentences, words, etc.) is not general and abstract enough to express the knowledge \cite{Philipps1999nn}.
+They compare the lawyer's work to the learning and producing results of the neural network.
+Some of the real-world application following this scheme are a neural approach to legal reasoning system for family law in Australia \cite{Stranieri1999nn}, modeling the French Council of State decisions in NEUROLEX \cite{Bourcier1999nn}, or a decision  support  system   in the field of insurance using a neural network \cite{Borgulya1999nn}.
 
+% odstavec o 2000 - 2010 - jak pribyvalo dat -> data mining, lepsi modely
+Despite all the effort, the lawyers were rather skeptical about AI helping in the legal domain, as can be seen in the article \citetitle{oskamp2002ainotsomuch} by \citeauthor{oskamp2002ainotsomuch} (\citeyear{oskamp2002ainotsomuch}) \cite{oskamp2002ainotsomuch}.
+The main problem seemed to be the lack of legal data, which could not have been applied to train and evaluate the AI models.
+This, however, changed during the first decade of the new century with the rise of the Internet.
+New collections of documents and structured databases enabled growth of a data exploration techniques:
+data mining was applied to find implicit information from multiple heterogeneous sources (\citetitle{Dahbur2003crimes} \cite{Dahbur2003crimes}), heuristic search method was used in case-based reasoning system AGATHA \cite{Chorley2005agatha}, and text summarization was applied in extracting the important parts of law from the XML corpus of judgments of the UK House of Lords \cite{Hachey2006summarization}.
 
-% paper: Automated patent landscaping
+% odstavec o 2010 - present - jak se zacly nastroje specializovat
+During the last few years, the automated tools helping in legal realm has become more specialized, yet properly tuned.
+These include automated tool for finding patents related to a particular topic \cite{Abood2018patent}, detection of tax evasion by networks of transactions with their corresponding audit observables \cite{Hemberg2016tax}, and finding and modeling contradictions in judicial statements \cite{Carey2013contradiction} \cite{marneffe2008contradiction}.
+
+% bayesian networks
+Some of the more theoretical researches has adopted \textit{Bayesian networks} for modeling legal arguments and eventually evidence (\cite{Fenton2012bayes} and \cite{Vlek2016bayes}).
+The \textit{Bayesian network} is a directed acyclic graph with probability tables for each node \cite{Vlek2016bayes}.
+\begin{figure}[H]
+\caption{Simple example of Bayesian Network.}
+\label{fig:bayesianNetwork}
+\includegraphics[width=0.9\textwidth]{img/Bayesian_Network}
+\end{figure}
+Each node holds a predicate, which is true with certain probability depending on the value of incoming nodes.
+For example, a table of the node $C$ in the figure \ref{fig:bayesianNetwork} would describe conditional probabilities of the events $P(C | A, B)$ for all possible combinations of values A and B \cite{Vlek2016bayes}.
+The \textit{Bayesian Network} enables to visualize the legal arguments and is able to work with uncertainty.
+The probabilities of unlikely events are especially of great importance, since judges need to distinguish between coincidence and purpose.
 
 \section{Legal document retrieval}
 % paper: Ranking and Classifying Legal Documents using Conceptual Information
@@ -131,6 +159,8 @@ In any case, the conclusion of the research comparing four main ontologies for t
 \section{Relevance in the legal domain}
 % paper: On the concept of relevance in legal information retrieval
 % paper: Document Categorization in Legal Electronic Discovery: Computer Classification vs. Manual Review
+
+\chapter{Background: Legato System}
 
 \chapter{Data Characteristics}
 \label{chp:data_characteristics}
@@ -1114,6 +1144,8 @@ The final step is a removal of a hyphenation that was introduced to break new li
 \subsection{All words}
 % predict law-case based on training on all 190k words, predict class of word - 0.83
 
+\subsection{Word2vec contribution}
+% predict with embedded numbers - use embedding layer of keras with 300 000 as len(dictionary)
 
 
 \section{Parameter tuning}
