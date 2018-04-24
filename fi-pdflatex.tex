@@ -98,23 +98,23 @@ introduction
 
 \chapter{Related work}
 This chapter summarizes the previous work on the application of artificial intelligence in the legal domain. 
-First section describes a general role of artificial intelligence in law and how it evolved in time.
-Researchers in this field focused mainly on decision making systems to support work of the jury; however, our research focuses more on the electronic discovery, information retrieval and knowledge discovery in legal domain, which brings a support for lawyers.
-Therefore, the second section looks more closely on this subfield by introducing state-of-the-art legal retrieval systems and underlines common characteristics with our research.
-The last section discusses the issue of relevance in the legal context.
+The first section describes a general role of artificial intelligence in law and how it evolved in time.
+Researchers in this field focused mainly on decision-making systems to support work of the jury; however, our research focuses more on the information retrieval and knowledge discovery in the legal domain, also known as \textit{Electronic Discovery}, which brings a support for lawyers.
+Therefore, the second section looks more closely at this subfield by introducing state-of-the-art legal retrieval systems and underlines common characteristics with our research.
+The last section discusses an issue of relevance in the legal context and related studies.
 
 \section{Artificial Intelligence and Law}
-The global publishing company Springer introduced a journal \textit{Artificial Intelligence and Law} \footnote{\url{https://link.springer.com/journal/10506}} in 1992 which contains 426 published articles (March 2018) describing theoretical and empirical studies in artificial intelligence (AI) from the legal perspective.
+The global publishing company \textit{Springer} introduced a journal \textit{Artificial Intelligence and Law} \footnote{\url{https://link.springer.com/journal/10506}} in 1992 which contains 426 published articles (March 2018) describing theoretical and empirical studies in artificial intelligence (AI) from the legal perspective.
 Though the journal consists of articles concerned with AI as a new trend that needs to be bounded by law, such as legal aspects of autonomous vehicles \cite{Prakken2017autonomous}, robot sex \cite{Frank2017robotSex} or responsibility of autonomous machines \cite{Brozek2017AIresponsibility}, it also contains researches of new innovative AI systems that perform automatic reasoning and knowledge extraction in the legal domain.
-The collection of AI-law related articles provides enough information to create a brief overview of how this field has evolved in time.
+The collection of AI-law related articles provides enough information to create a brief overview of how this field has evolved over time.
 
 The first legal search engines enabled retrieving results by first-order logic rules and fixed pieces of text \cite{Turtle1995legalRetrieval}.
-In early 1990s, the concept of full-text search has become widely used and users could enjoy a retrieval by a plain natural language \cite{Turtle1995legalRetrieval}.
+In the early 1990s, the concept of full-text search has become widely used and users could enjoy a retrieval by a plain natural language \cite{Turtle1995legalRetrieval}.
 Shortly after, the researchers started to focus on AI when creating a new legal retrieval system, such as legal text management system \textit{Flexlaw} (\citeyear{Smith1995flexlaw}) \cite{Smith1995flexlaw}, integrated decision support system \textit{DataLex WorkStations} (\citeyear{Greenleaf1995datalex}) \cite{Greenleaf1995datalex} or system for heuristic retrieval of legal arguments \textit{BankXX} (\citeyear{Rissland1996bankxx}) \cite{Rissland1996bankxx}.
 As the machine learning was still quite nascent, the mentioned systems are a fusion of expert and AI systems with expert knowledge as the essential part of the system.
 A sign of such fusion is an attempt to formalize the \textit{legal argument} (\cite{Freeman1996argument}, \cite{Bench-Capon1997argument} and most recently \cite{ashley2013information}) as an element between the \textit{rules} (expert systems) and \textit{models} (AI systems).
 
-At the turn of the century, an attempt to conceptualize the legal domain for the design of legal knowledge systems brought a number of ontologies, such as McCarty's language for legal discourse, Stamper's norma formalism or Valente's functional ontology \cite{Visser1998ontologies}.
+At the turn of the century, an attempt to conceptualize the legal domain for the design of legal knowledge systems brought a number of ontologies, such as McCarty's language for legal discourse, Stamper's norma formalism, or Valente's functional ontology \cite{Visser1998ontologies}.
 The ontologies are categorizing the knowledge and breaking it into predicate relations, which express properties of objects, rules in the form of implications and second-order expressions adding more explanatory power.
 Unfortunately, they are not very widely applied, except for the Valente's Functional Ontology for Law (FOLaw) \cite{VanEngers2008folaw}.
 The conclusion of the research comparing four main ontologies is
@@ -125,19 +125,19 @@ The conclusion of the research comparing four main ontologies is
 Consequently, the formalistic implementations of the syllogistic model in legal domain were criticized (\cite{Shapira1999fuzzy}, \cite{Philipps1999nn}).
 Researchers realized that the deductions starting at axioms and following prescribed rules are limiting and introduce imprecise standards in the legal reasoning.
 One of the possible solutions is to use relaxed formalisms, such as fuzzy logic \cite{Shapira1999fuzzy} or neural networks \cite{Philipps1999nn}.
-Philipps et al. and suggest that the usual perspective of rules as a set of linguistic entities (sentences, words, etc.) is not general and abstract enough to express the knowledge \cite{Philipps1999nn}.
+Philipps et al. suggest that the usual perspective of rules as a set of linguistic entities (sentences, words, etc.) is not general and abstract enough to express the knowledge \cite{Philipps1999nn}.
 They compare the lawyer's work to the learning and producing results of the neural network.
-Some of the real-world application following this scheme are a neural approach to legal reasoning system for family law in Australia \cite{Stranieri1999nn}, modeling the French Council of State decisions in NEUROLEX \cite{Bourcier1999nn}, or a decision  support  system   in the field of insurance using a neural network \cite{Borgulya1999nn}.
+Examples of real-world applications following this scheme are the neural approach to legal reasoning system for family law in Australia \cite{Stranieri1999nn}, modeling the French Council of State decisions in NEUROLEX \cite{Bourcier1999nn}, or a decision  support  system   in the field of insurance using a neural network \cite{Borgulya1999nn}.
 
 % odstavec o 2000 - 2010 - jak pribyvalo dat -> data mining, lepsi modely
 Despite all the effort, the lawyers were rather skeptical about AI helping in the legal domain, as can be seen in the article \citetitle{oskamp2002ainotsomuch} by \citeauthor{oskamp2002ainotsomuch} (\citeyear{oskamp2002ainotsomuch}) \cite{oskamp2002ainotsomuch}.
 The main problem seemed to be the lack of legal data, which could not have been applied to train and evaluate the AI models.
 This, however, changed during the first decade of the new century with the rise of the Internet.
 New collections of documents and structured databases enabled growth of a data exploration techniques:
-data mining was applied to find implicit information from multiple heterogeneous sources (\citetitle{Dahbur2003crimes} \cite{Dahbur2003crimes}), heuristic search method was used in case-based reasoning system AGATHA \cite{Chorley2005agatha}, and text summarization was applied in extracting the important parts of law from the XML corpus of judgments of the UK House of Lords \cite{Hachey2006summarization}.
+\textit{data mining} was applied to find implicit information from multiple heterogeneous sources (\citetitle{Dahbur2003crimes} \cite{Dahbur2003crimes}), \textit{heuristic search} method was used in case-based reasoning system AGATHA \cite{Chorley2005agatha}, and \textit{text summarization} was applied in extracting the important parts of law from the XML corpus of judgments of the UK House of Lords \cite{Hachey2006summarization}.
 
 % odstavec o 2010 - present - jak se zacly nastroje specializovat
-During the last few years, the automated tools helping in legal realm has become more specialized, yet properly tuned.
+During the last few years, the automated tools helping in legal realm have become more specialized, yet properly tuned.
 These include automated tool for finding patents related to a particular topic \cite{Abood2018patent}, detection of tax evasion by networks of transactions with their corresponding audit observables \cite{Hemberg2016tax}, and finding and modeling contradictions in judicial statements \cite{Carey2013contradiction} \cite{marneffe2008contradiction}.
 
 % bayesian networks
@@ -151,17 +151,63 @@ The \textit{Bayesian network} is a directed acyclic graph with probability table
 Each node holds a predicate, which is true with certain probability depending on the value of incoming nodes.
 For example, a table of the node $C$ in the figure \ref{fig:bayesianNetwork} would describe conditional probabilities of the events $P(C | A, B)$ for all possible combinations of values A and B \cite{Vlek2016bayes}.
 The \textit{Bayesian Network} enables to visualize the legal arguments and is able to work with uncertainty.
-The probabilities of unlikely events are especially of great importance, since judges need to distinguish between coincidence and purpose.
+The probabilities of unlikely events are especially of great importance since judges need to distinguish between coincidence and purpose.
 
-\section{Legal document retrieval}
-% paper: Ranking and Classifying Legal Documents using Conceptual Information
+\section{Electronic Discovery}
+Electronic Discovery, also known as E-discovery or Electronic Data Discovery (EDD), is a process of searching, gathering, cleansing, and organizing of legal documents in order to find evidence in a civil or criminal legal case \cite{Conrad2010ediscovery}.
+The field of Information Retrieval (IR) is an essential part of the E-Discovery, as it provides efficient full-text search among the documents.
+\citeauthor{Conrad2010ediscovery} mentions how the IR can be supplemented by AI techniques in his work \citetitle{Conrad2010ediscovery} \cite{Conrad2010ediscovery}:
+\begin{enumerate}
+\item Intelligent relevance feedback
+\item E-mail management
+\item Social network analysis
+\item Data mining and machine learning techniques
+\item Anticipatory E-Discovery
+\end{enumerate}
+The E-mail and Social network have become naturally a source of legal arguments with increasing amount of information stored in such media.
+Anticipatory E-Discovery is a new practice of corporates to prepare for a possible legal hold on some of their products or intellectual property.
 
-\section{Relevance in the legal domain}
+The fourth category includes mainly the clustering and categorization of documents to organize them into separate groups.
+A research under \textit{Xerox Research Center Europe} introduced a machine learning classifier \textit{CategoriX}, which works with a fixed set of document categories and predicts document's category with probabilistic latent semantic analysis (PLSA) \cite{barnett2009classification}.
+The mentioned technique is usually applied in the topic modeling of documents and is briefly explained in the section \ref{topic_modeling} as it is one of our working attributes.
+Research of Noortwijk et al. presents the \textit{Copac} system, which categorizes whole legal cases instead of documents.
+Moreover, they relaxed the set of categories and enable users to define their own by selecting examples of positive and negative samples \cite{van2006ranking}.
+
+The main goal of our research is the relevance prediction.
+However, a categorization of documents is also part of our research, because the preparation for the relevance prediction is labeling documents as case-related or law-related (\ref{sec:law-case-classifier}).
+The paper \citetitle{thompson2001automatic} compares three algorithms for legal document classification: k-NN, decision tree algorithm, and a machine learning rule induction algorithm Ripper \cite{thompson2001automatic}.
+They conclude the decision tree and Ripper algorithms outperform the k-NN with Ripper being best by recall measure.
+For the purpose of our categorization, we applied the decision tree for its satisfactory performance, simplicity, and transparentness.
+Moreover, the ensemble of decision trees -- Random Forest -- helped us to boost the performance.
+
+The first enhancement of IR -- Intelligent relevance feedback -- best explains the workflow of our system.
+By feedback, \citeauthor{Conrad2010ediscovery} means consultation of the suggested relevance by the system to the user, which might lead to recomputation of the relevances \cite{Conrad2010ediscovery}.
+This iterative process has proven to increase the accuracy of the predictions \cite{Conrad2010ediscovery}.
+On the other hand, Zhao et al. show that more than one round of the feedback selection process is not helpful \cite{zhao2009feedback}.
+Our system provides a possibility of immediate feedback through relevance settings of individual documents.
+Relevances within the scope of the particular legal case are updated after each feedback.
+
+To compare the existing systems with ours, it is worth noting that most of them implement a slightly different use case.
+Their goal is to pick relevant documents out of a massive storage of legal texts, in which documents might relate to multiple cases, whereas our goal is to pick relevant documents out of a relatively small collection that is uploaded to the system by the lawyer.
+We are not allowed to share documents among cases and/or look for information elsewhere than what is selected by the lawyer.
+This task is somewhat more difficult since the prediction model starts to learn almost from the beginning with each new case.
+Most of the similar researches focus either on the case retrieval or document retrieval from a global storage, hence our use case seems to be too unusual to be included in any recent research.
+
+% Papers predicting outcomes of new cases based on previous
+% 1. Automatically classifying case texts and predicting outcomes
+
+\section{Measuring relevance in the legal domain}
+Many studies are concerned with the concept of relevance in the legal domain, formalization of its subjective nature and its measuring and evaluation (\cite{vanOpijnen2017relevance}, \cite{Hogan2010sensemaking}, \cite{Ashley2010analysis}).
+% Relevance - with higher precision, lower recall and vice versa, always better high recall
+In ordinary IR, the precision is usually more significant measure than recall, since the user is often satisfied with the first few most relevant results.
+In the legal domain, both high precision and recall are required, sometimes the recall is considered the dominant measure as missing a relevant information could be fatal \cite{Hogan2010sensemaking}.
+
+
+% paper: Document categorization in legal electronic discovery: computer classification vs. manual review.
 % paper: On the concept of relevance in legal information retrieval
-% paper: Document Categorization in Legal Electronic Discovery: Computer Classification vs. Manual Review
+% paper: Emerging AI & Law approaches to automating analysis and retrieval of electronically stored information in discovery proceedings
 
 \chapter{Background: Legato System}
-
 \chapter{Data Characteristics}
 \label{chp:data_characteristics}
 One of the most important preconditions for building an efficient model is to understand the input data characteristics.
@@ -1165,6 +1211,7 @@ The final step is a removal of a hyphenation that was introduced to break new li
 
 % - Watson NLU enables 462 entities - possible to include all of them
 
+% Matter of privacy - how to ensure the models do not enable to retrieve information about other case
 
   \printbibliography[heading=bibintoc] %% Print the bibliography.
 
