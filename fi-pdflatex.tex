@@ -242,6 +242,117 @@ The four main concepts of UM are:
 % paper: Emerging AI & Law approaches to automating analysis and retrieval of electronically stored information in discovery proceedings
 
 \chapter{Background: Legato System}
+The system introduced in this research is integrated into a proprietary web application \textit{Legato} developed by the \textit{SDE Software Solutions Ltd.} company.
+\textit{Legato} is a collaborative system for management of legal documents that provides comprehensive control over legal cases including full-text search, organizing of important information and visualizations.
+The system is now in development phase undergoing a number of user testing in U.S. and Czech environment.
+
+\begin{figure}[h]
+\caption{Legato -- Dashboard}
+\label{fig:legato_dashboard}
+\includegraphics[width=\textwidth]{img/Legato-Dashboard}
+\end{figure}
+
+
+\section{Use case}
+Legato belongs to the group of E-Discovery systems, which provide an infrastructure mainly to the lawyers and attorneys, who need to collect legal documents from both sides (plaintiff and defendant) and possibly from other sources, such as the World Wide Web.
+The next phase of E-Discovery is the organization of documents and information retrieval tasks to find relevant pieces of information in the texts.
+\textit{Legato} is designed to ease and speed up the E-Discovery in general.
+
+Users can upload documents in various formats (plain text, PDF, image, etc.), which is followed by a phase of post-processing.
+The document is converted into plain text or analyzed by the \textit{OCR} in case it is an image.
+Then, it is analyzed by third-party libraries to extract additional features.
+So far, there are only two types of documents: emails and others.
+Emails are treated specially for their metadata and are further utilized to provide deeper insight into data (more in \ref{sec:legato_advanced}).
+
+Figure \ref{fig:legato_dashboard} displays a home page of a legal case in the \textit{Legato}.
+Here, the user is able to see various statistics about the case including a number of emails and other documents, number of document labels, number of players, number of days of active work on the case, recent case activity, case summary, overview of relevance and main keywords.
+
+Labels serve users for annotation of documents by custom text tags.
+Some users might label the origin of documents, others might distinguish confidential document from the public one and others might label simply their favorites.
+
+The term \textit{player} is understood as a person, who appears and is directly involved in the case.
+At the moment, \textit{Legato} has no tool to automatically recognize players from documents other than extracting sender and receiver from emails.
+In the future, users will be able to add their own players and NLP tools will help to recognize them from the documents.
+
+The figure \ref{fig:legato_document} shows a document detail page.
+Besides reading, users can highlight arbitrary part of a document and add a commentary.
+Thanks to the OCR analysis, the system is able to show a plain text version and enables text selection, full-text search, and copying.
+
+
+\begin{figure}[h]
+\caption{Legato -- Document}
+\label{fig:legato_document}
+\includegraphics[width=\textwidth]{img/Legato-File}
+\end{figure}
+
+\section{Technical details}
+
+\begin{itemize}
+\item php, laravel
+\item servers: alpha, demo, ai
+\item Amazon Cloud Watch
+\end{itemize}
+
+\section{Research \& Advanced Features}
+\label{sec:legato_advanced}
+Thanks to the progressive attitude of \textit{Legato} management, multiple advanced features were proposed.
+The ideas of management and developers are often amazing features with a rich functionality; however, only some of them intersect with the user's requirement, which explains the excessive user testing.
+
+\subsection*{Natural Language Processing}
+One of the most important features is the recognition of named entities in the text (more in the section \ref{sec:named_entities}).
+Named entities, such as people, companies, locations or dates are key pieces of text that lawyers might look for.
+As management of \textit{Legato} is aware of that, they are intensively researching the most suitable tool for named entity extraction together with other natural language processing (NLP) features.
+One of the most wanted features is the \textit{text summarization}, which could accelerate the process of reading and sorting of documents.
+Unfortunately, the \textit{text summarization} is too abstract and still very hard task for automated NLP systems to be competitive with humans.
+
+% Email reconstruction and timeline
+\subsection*{Email reconstruction}
+One of the features that are already implemented, is the email reconstruction and timeline.
+Emails contain enough structured metadata for the full reconstruction of conversations including senders, receivers, subjects and dates (fig. \ref{fig:legato_email}).
+
+\begin{figure}[h]
+\caption{Legato -- Email}
+\label{fig:legato_email}
+\includegraphics[width=\textwidth]{img/Legato-Email}
+\end{figure}
+
+\subsection*{Timeline}
+Dates are also applied in the timeline visualization (fig. \ref{fig:legato_timeline}), which consists of points representing emails horizontally arranged by date.
+The color of points marks the relevance and the size represents the number of emails in the conversation.
+When a conversation stretches across multiple days, the points are connected by a line.
+
+\begin{figure}[h]
+\caption{Legato -- Timeline}
+\label{fig:legato_timeline}
+\includegraphics[width=\textwidth]{img/Legato-Timeline}
+\end{figure}
+
+\subsection*{Communication chart}
+Due to quite reliable identification of the players in the communication, it is possible to draw a circular communication chart (fig. \ref{fig:legato_communication}).
+Players' names are printed into a circular shape and two players are connected if and only if there exists an email that was sent from one to the other.
+
+\begin{figure}[h]
+\caption{Legato -- Communication chart}
+\label{fig:legato_communication}
+\includegraphics[width=\textwidth]{img/Legato-Communication}
+\end{figure}
+
+\subsection*{Annotation of images}
+Another already implemented feature is the image annotator.
+Whenever an image is uploaded into \textit{Legato}, Google Vision API \footnote{\url{https://cloud.google.com/vision/}} automatically recognized concepts in the picture and creates tags.
+This feature helps with structuralization of data and adds images into results of full-text searches.
+
+\subsection*{Optical Character Recognition}
+An \textit{Optical Character Recognition} (OCR) is the very essential part of every E-Discovery system.
+Although some documents are already in the electronic form, such as emails or PDF document, lawyers have to work with a large number of only-paper documents, that needs to be scanned.
+OCR is then applied to the scanned documents to extract text in the electronic form.
+Even though there has been a wide investment in the algorithms for OCR, the result is never 100\% successful because the recognition leaves some "typos".
+The better algorithms use some statistical models to guess the most probable word.
+
+Research in \textit{Legato} team about the best OCR tool is still ongoing and the performance of this step is taken very seriously, as the result influences the outcome of all subsequent steps of E-Discovery.
+
+
+
 \chapter{Data Characteristics}
 \label{chp:data_characteristics}
 One of the most important preconditions for building an efficient model is to understand the input data characteristics.
@@ -415,6 +526,7 @@ $$
 The \textit{term frequency} ensures higher weight for more frequent terms in the document and \textit{inverse document frequency} ensures higher weight for more obscure words. Now, tf-idf$_{t, d}$ can be a good approximation of our keyness measure and is often used in the keyword extraction technique with the same same. The last step is to establish a threshold value that distinguishes keywords and non-keywords by comparing it to the tf-idf values of the terms.
 
 \subsection{Named Entity Recognition}
+\label{sec:named_entities}
 To extract valuable information from the text, it is necessary to include \textit{named entities} (NEs).
 They are entities that can be referred to with a proper name \cite[ch. 21]{jurafsky2014speech}.
 In the speech, NEs are always noun phrases representing people, places, things, organizations, temporal or numerical expressions, events etc.
@@ -884,9 +996,9 @@ Data exploration in the chapter \ref{chp:data_characteristics} helped us clarify
 
 First section (\ref{sec:attributes}) presents how the NLP features are encoded into attributes applicable to the models.
 Next sections describe the system of models that predicts the document relevance.
-Due to the large number of features, we decided to create a layered system of models, where the top-level models make predictions based on the outputs of the bottom-level models.
-The section \ref{sec:bottom-level-models} introduces the bottom-level models specialized on each feature separately, that are able to understand the word embeddings.
-Next, the top-level layer is formed by a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
+Due to a large number of features, the system is structured into layers, where the top-level models make predictions based on the outputs of the bottom-level models.
+The section \ref{sec:bottom-level-models} introduces the bottom-level models, which are specialized on each feature separately and are able to understand the word embeddings.
+The top-level layer is formed by a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
 First is the \textit{Law-Case classifier} \ref{sec:law-case-classifier}, second is the \textit{Sentence classifier} \ref{sec:sentence-classifier} and the last is the \textit{Document classifier} \ref{sec:document-classifier}.
 Each of them needs a different set of inputs and applies different machine learning model.
 The following figure visually explains the system of models.
@@ -902,25 +1014,24 @@ TBA
 
 \section{Attributes}
 \label{sec:attributes}
-To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes, which will be most helpful in determining the classes.
+To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes that will be most helpful in determining the classes.
 Technically, all machine learning models are built to process numbers as input variables.
-Since we work here with text and only text, we have to find a way how to convert all keywords, entities, relations, syntactic structure, and other features into numerical representation.
-During this process, we have to keep in mind the main purpose: the numbers needs to internally hide information about the relevance.
+Since we work here with the text only, we have to find a way how to convert all keywords, entities, relations, syntactic structure, and other features into the numerical representation.
+During this process, one has to keep in mind the main purpose: the numbers must internally hide information about the relevance.
 
 Based on the arguments made in the chapter \ref{chp:data_characteristics}, the units of the machine learning are sentences rather than documents.
-This fact implies that the attributes are related to a sentence.
-As a result, there are less data from which to compute the attributes and the representation of the attributes as well as the classification itself become simpler.
+As a result, there is fewer data from which to compute the attributes and the representation of the attributes as well as the process of classification itself become simpler.
 
 \subsection{Sentence meaning embedding}
 \label{sec:sentence-meaning}
-When extracting a meaning of a sentence, one will encounter two major problems to be solved: 1) how to represent meaning of a single word 2) how to combine word meanings.
+When extracting a meaning of a sentence, one will encounter two major problems to be solved: 1) how to represent the meaning of a single word 2) how to combine word meanings.
 
 The first problem is also known as the \textit{Word Embedding} problem \cite{wordEmbeddings}.
 The simplest solution is to assign unique numbers to all words and train classifiers on the numbers instead of words.
 $$
 \{\text{"knife"} \rightarrow 1, \text{"gun"} \rightarrow 2, \text{"wire"} \rightarrow 3, \dots\}
 $$
-This approach does not work since the classifiers interpret a number as a quantitative, not nominative,  attribute.
+This approach does not usually perform well since the classifiers interpret a number as a quantitative, not nominative,  attribute.
 As a result, the classifier understands two words with close numbers as close by the meaning as well.
 Since the numbers were assigned without any order, there is undoubtedly a lot of misinterpretation.
 
@@ -928,40 +1039,38 @@ The next solution is often applied in the information retrieval systems.
 Instead of one number, we can represent the word embedding by a vector, with all elements zeroed but one.
 Each word is assigned an unique index, on which the vector keeps a value of one.
 $$
-\{\text{"knife"} \rightarrow (1,0,0), \text{"gun"} \rightarrow (0,1,0), \text{"wire"} \rightarrow (0,0,1), \dots\}
+\{\text{"knife"} \rightarrow (1,0,0,0), \text{"gun"} \rightarrow (0,1,0,0), \text{"wire"} \rightarrow (0,0,1,0), \dots\}
 $$
-Now, a vector uniquely identifies a word and the vectors are not comparable for the classifier, which eliminates the problem with the previous approach.
+Now, a vector uniquely identifies a word and the vectors are not quantitatively comparable, which eliminates the problem with the previous approach.
 This solution can be further improved by counting the words in the training documents, TF-IDF weighting or co-occurrence matrices \cite{wordEmbeddings}.
 
-The third and final solution goes even further in the embedding of the semantics.
-Recent research by Mikolov et al. \cite{mikolov2013efficient} introduced a revolutionary algorithm \textit{Word2vec}, which uses a neural network to create a vectors of fixed length with its semantics compressed.
+The third and final solution goes further in the embedding of semantics.
+Recent research by Mikolov et al. \cite{mikolov2013efficient} introduced a revolutionary algorithm \textit{Word2vec}, which uses a neural network to create a vector of fixed length with its semantics compressed.
 Each dimension of a vector represents some concept, which can be somehow quantified, such as masculinity, age or liveliness \cite{mikolov2013linguistic}.
 The vectors are capturing semantic regularities, and therefore, the classifiers have a potential to perform better even for unknown words.
-This embedding ensures our ultimate assumption, that close vectors are also close by the meaning of their underlying words.
+This embedding satisfies our ultimate assumption that close vectors are also close by the meaning of their underlying words.
 
 Both the algorithm and the trained vectors are publicly available.
 Though we could use the algorithm to train our own vectors, it is much easier to adopt the already trained dataset.
-Since the meaning of the words is the same regardless of the area, there would be a very little gain in the training a custom dataset specialized on legal documents.
-The dictionary we will use is trained by the \textit{Google} company and is available on their official code archive \cite{word2vecGoogle}.
+Since the meaning of the words is the same regardless of the area, there would be a very little gain in the training of a custom dataset specialized on legal documents.
+The dictionary adopted here is trained by the \textit{Google} company and is available in their official code archive \cite{word2vecGoogle}.
 The pre-trained model contains 3 million unique words of 300-dimensional vectors, which was trained on a 300 billion word news dataset.
 For our purpose, a trimmed dataset of 300 thousand unique words without the phrases is sufficient \footnote{Downloaded from \url{https://github.com/eyaler/word2vec-slim}}.
 
-The second problem relates to the fact, that the classifiers usually need fixed input, but we currently computed vectors for each words of a sentence.
-Researches Vedantam et al. \cite{vedantam2015learning} applied a simple average of \textit{word2vec} vectors to the words in a phrase to get the final embedding.
-We can extend the idea to all sentences and achieve one vector per sentence by computing an average of all words in the sentence.
-To achieve more interesting results, it is possible to weight the words by their TF-IDF score in the overall average, however, the contribution is not necessary positive since the ordinary words can distinguish relevant sentence as well as the keyword.
-Besides, we embedded the keywords (words with high TF-IDF) in another representation, hence the TF-IDF weighting does not bring enough contribution to be worth the processing time.
-
+The second problem relates to the fact, that the classifiers usually need fixed input, but the computed vectors exist for each word of a sentence.
+Researchers Vedantam et al. \cite{vedantam2015learning} applied a simple average of \textit{word2vec} vectors to the words in a phrase to get the final embedding.
+The idea can be extended to whole sentences by computing an average of all words in the sentence.
+To achieve more interesting results, it is possible to weight the words by their TF-IDF score in the overall average, however, the contribution is not necessarily positive since the ordinary words can distinguish relevant sentence as well as the keyword.
+Besides, the keywords (words with high TF-IDF) are embedded in another representation introduced in the next section, hence the TF-IDF weighting does not bring enough contribution to be worth the processing time.
 
 \subsection{Keyword embedding}
-Next attribute is a vector computed from the keywords of a sentence.
-The NLP feature extraction determined keywords in the context of the whole documents, which means the first task is to find the working set of words by intersecting the sentence with the keywords.
+Next attribute is a vector computed from the keywords that appear in a sentence.
+The NLP feature extraction determined keywords in the context of the whole documents, which means the first task is to find the working set by intersecting the sentence with the keywords.
 In the process of intersecting, the \textit{subset tolerance approach} is applied, as defined in the section \ref{sec:nlp:statistical_comparison}.
 
-The next step is very similar to the approach mentioned in the previous section -- the words are converted into embedding by \textit{word2vec} dictionary and then averaged into one 300 dimensional vector.
-Indeed, the sentence meaning vectors contain the keywords as well, thus some information is redundant and one can argue that these two attributes appears too similar.
-However, the choice of right words plays a crucial role in the influence on classification, and the importance of both the attributes will be obvious in the evaluation chapter.
-
+The next step is very similar to the approach mentioned in the previous section -- the words are converted into an embedding by the \textit{word2vec} dictionary and then averaged into one 300 dimensional vector.
+Indeed, the sentence meaning vectors contain the keywords as well, thus some information is redundant and one can argue that these two attributes appear too similar.
+However, the choice of right words plays a crucial role in the influence on classification, and the importance of both the attributes will be justified in the evaluation chapter.
 
 \subsection{Entity embedding}
 \textit{Watson NLU} service is able to recognize extensive number of entity types (462) \footnote{\url{https://console.bluemix.net/docs/services/natural-language-understanding/entity-types-v1.html\#entity-types-and-subtypes-version-1-}}, 
@@ -1041,12 +1150,12 @@ The relations computed by Watson NLU keep the following structure:
 Note that the fields "location" and "score" were excluded to make the example compact.
 As the JSON example suggests, the important parts of the relation are its type ("locatedAt"), types of the entities ("Person", "Facility") and the text of the entities ("her", "courtroom").
 The relation embedding, therefore, needs to accommodate relation type, 2x entity type and 2x entities itself.
-The previous sections presented the \textit{word2vec} dictionary, which is able to convert common words into an vector.
-The same approach is used here for embedding of the entity words, since there is a high probability of them being in the dictionary.
+The previous sections presented the \textit{word2vec} dictionary, which is able to convert common words into a vector.
+The same approach is used here for embedding of the entity words since there is a high probability of them being in the dictionary.
 
 On the other hand, types of relations and entities are rather identifiers than meaningful words, and thus, they will hardly occur in the \textit{word2vec} dictionary.
 In this case, we can take advantage of the lists of all possible types, which is offered by Watson.
-There is a limited number of relation types (54) and entity types (49), which provides a transparent way of converting the type into a vector.
+There is a limited number of relation types (54) and entity types (49), which suggests a straightforward way of converting the type into a vector.
 The type is encoded by a vector of length equal to the number of types, in which each index represents one specific type.
 Then, the embedding contains zeros in all elements except for the index of the type it represents.
 This approach is called \textit{One-hot encoding} as defined by the Scikit-learn machine learning library \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}}.
@@ -1156,6 +1265,12 @@ As the best classifier showed to be the \textit{Random Forest} with 300 base est
 \textit{TBA - some results of the top-level model}
 
 Now, when the division to the two diverse types of documents is in place, a labeled document can proceed to the specialized relevance estimator.
+
+\begin{figure}[H]
+\caption{Feature importance from Random tree decision classification of case-related and law-related}
+\label{fig:case_law_feature_importance}
+\includegraphics[width=\textwidth]{img/case_law_feature_importance}
+\end{figure}
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
