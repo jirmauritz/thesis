@@ -1171,7 +1171,7 @@ To summarize, the final embedding of the relation consists of:
 
 
 \subsection{Category embedding}
-The category is an example of the attribute related to the document instead of the sentence.
+The category is an example of an attribute related to the document instead of the sentence.
 Similarly as the relation and entity types, the Watson NLU defined a fixed set of categories.
 There are five levels of categories arranged in a hierarchic tree structure, but not all categories contain a full range of levels.
 An example of a category with four levels might be
@@ -1189,6 +1189,25 @@ As the principle of one-hot vector was explained in the previous section (\ref{s
 Each category level has a fixed number of types, therefore, one-hot vectors are created for all levels and are concatenated in one vector of representing a full category.
 It is worth noting that the last (fifth) level is excluded in the embedding, since the absolute majority of categories get by with the first four levels, which left the last level largely unused.
 
+\subsection{Structural characteristics}
+\label{sec:structural_characteristics}
+All the previous attributes refer to the text and its semantics.
+Documents are, however, defined also by its structure in the sense of text formating.
+For example, some documents possess structure of a fixed form, such as police records, medical records, or other administrative documents.
+In this case, the arrangement of a text plays a crucial role in determining a type of a document, and therefore, also a relevance.
+The following set of structural attributes are explored further in the research to discover their contribution:
+\begin{itemize}
+\item document length in characters
+\item document length in words
+\item document length in sentences
+\item document length in new lines
+\item average length of a sentence in characters
+\item average length of a sentence in words
+\item average length of a word in characters
+\item number of empty lines
+\item number of special characters
+\end{itemize}
+
 %\subsection{Syntax structure}
 \section{Bottom-level model}
 \label{sec:bottom-level-models}
@@ -1196,15 +1215,16 @@ This section introduces the model that directly processes the extracted embeddin
 To achieve the best performance, it is crucial to split the predictions to elementary units and build on top of them.
 % TODO find a source to prove it
 The models are able to learn limited amount of information, especially in the case of insufficient number of training instances, and therefore, one should keep the models as simple as possible.
-In contrast, one could concatenate all inputs, apply them to a single large model and expect that it will be able to extract all important information.
+In contrast, one could concatenate all attributes, apply them to a single large model and expect that it will be able to extract all important information.
 This approach is not very likely to work in the environment with thousands of features, as in our case.
 
-Following this idea, we preset a series of models specialized on each of the attribute separately.
+Following this idea, we present a series of models specialized on each of the attribute separately.
 Besides better final performance in predicting the relevance (\ref{eval:allinone-vs-features}), another advantage is the transparent flow of information and better understanding of the models.
 Examining the intermediate results from the models, we are able to deduce which attributes (keywords, entities and relations) are the most discriminative in predicting of the relevance and which are not.
 
-\subsection{Machine learning model selection}
-The evaluation chapter contains a test on the most suitable machine learning model for the bottom-level predictions (\ref{eval:bottom-model-selection}).
+\subsection{Machine learning estimator selection}
+\label{sec:bottom-level-nn}
+The evaluation chapter contains a test on the most suitable machine learning estimators for the bottom-level predictions (\ref{eval:bottom-model-selection}).
 Besides the fact, that the neural networks achieved the best results, it is worth to explain, why they are naturally the most suitable model.
 
 Regarding attributes describing the sentences, the final solution was to apply the \textit{word2vec} dictionary to create an embedding.
@@ -1223,7 +1243,7 @@ Such a model is prepared to predict law-related vs case-related sentences as wel
 \begin{figure}[H]
 \caption{Bottom-level model structure}
 \label{fig:neural-network}
-TBA
+\includegraphics[width=\textwidth]{img/Bottom-level_NN}
 \end{figure}
 
 The \textit{sigmoid} activation function proved to be the most successful in all layers (\ref{eval:bottom-model-tuning}).
@@ -1242,18 +1262,81 @@ The goal of the Law-Case classifier is to assign a document to one of the classe
 As the Data Characteristics chapter (\ref{chp:data_characteristics}) defines the classes only loosely, the following paragraphs provide more specific and statistical definition.
 
 Case-related documents contain at least one specific information about the subjects or acts related to the case. 
-The authors of these documents are usually directly involved in the case or came into contact with the subjects.
+The authors of these documents are usually directly involved in the case or at least has come into contact with the subjects.
 They are mostly confidential, such as emails, medical records, emergency call records, police records or testimonies.
-Their main characteristic is an occurrence of a known entity, such as victim, defendant or place of the act.
+Their main characteristic is an occurrence of a known entity, such as victim, defendant or location of an event that is part of the case.
 
 Law-related documents do not contain any information specific to the case.
 They usually state facts that help lawyers argue about the legal aspects of the case and find disagreement and evidence.
-Examples of such documents are fragments of law code, description of similar cases from the past, policies of a company/school/office, news, books or articles.
+Examples of such documents are fragments of law code, description of similar cases from the past, policies of a company/school/office, news, books, or articles.
 Their main characteristic is a specific vocabulary, usually including the legal terminology.
 
 All 263 documents were labeled by one of the classes as part of the annotation process.
+The case related group is in majority with 199 document versus 64 law-related documents (32\% of all).
+This ratio implies that a model predicting all documents as case-relevant achieves accuracy of 0.68.
+Further in the text, this simple model will be referred to as a baseline model.
+Note that the evaluation metric inspected here is an accuracy score, in comparison with the relevance prediction where precision and recall are of interest.
+The reason for that is the equal nature of the two classes -- one is not more important than the other.
 To train the models, we had to establish a simplified assumption and mark all sentences with the same class as the document.
 As a result, the models were trained on all 14,368 sentences.
+
+The top-level model of Law-Case classifier is working with the following several sets of attributes.
+The first set is extracted and used as an input for the bottom-level models: sentence meaning, keywords, relations and entities.
+Their encoding is explained in the section \ref{sec:attributes}.
+The second set contains the structural characteristics of the document as explained in the section \ref{sec:structural_characteristics}.
+Next set of attributes is created by counting the entities that appear in the sentence.
+The assumption is that law-related documents do not contain as many entities as the case-related, since the explanation of laws uses neutral words, such as ``defendant'', ``subject'', ``suspect'', and similar.
+Next two attributes are first and second group of categories.
+The decision about including only first two levels was driven by the fact, that the third category was assigned to less than half of the documents and the forth category to less than one tenth.
+... write about case, law concepts ...
+
+\begin{figure}[h]
+\caption{Accuracies of bottom-layer models for prediction of case-related and law-related documents.}
+\label{fig:Case-Law_accuracies}
+\includegraphics[width=0.9\textwidth]{img/Case-Law_accuracies}
+\end{figure}
+
+The figure \ref{fig:Case-Law_accuracies} reveals the accuracies of bottom-level classifiers in the task of predicting the class of documents.
+The models were evaluated on each document after training on sentences of all other documents (Leave-One-Out method).
+One can notice rather poor performance with \textit{meaning} the most discriminative attribute.
+On the other hand, the \textit{entities} do not contribute very well to the predictions.
+Even though the results suggest low performance of the top-level model too, the combination of bottom-level models turns up to be surprisingly powerful.
+
+\begin{figure}[h]
+\caption{Importance of dimensions in sentence meaning word2vec vectors}
+\label{fig:vec_importance_caselaw}
+\includegraphics[width=\textwidth]{img/vec_importance_caselaw}
+\end{figure}
+
+To determine which attributes are actually beneficial and which are irrelevant, one can plot the importances of individual features suggested by \textit{Random Forest} classifier.
+The classifier computes \textit{gini index} \footnote{Measure of class impurity for determining the next feature to split on \\(\url{http://scikit-learn.org/stable/modules/tree.html\#tree}).} that not only drives the decision tree creation, but also signifies the feature importance.
+The evaluation in the figure \ref{fig:case_law_feature_importance} takes advantage of this ability and displays the features sorted by its importance.
+
+\begin{figure}[h]
+\caption{Feature importance from Random tree decision classification of case-related and law-related}
+\label{fig:case_law_feature_importance}
+\includegraphics[width=\textwidth]{img/case_law_feature_importance}
+\end{figure}
+
+The first three most important features are occupied by the bottom-level models meaning, relations and keywords.
+The entities model with its importance less than $0.03$ is useless in this settings and will not be considered in the final model.
+Some of the structural characteristics are successful, such as average length of word of document length.
+The significance of the word length might be caused by more detailed and professional terminology of law-related documents, which often includes longer words.
+The document length feature might be influenced by the long case-related testimonies, which is a specific artifact of our data set.
+Out of the entity counts, only the people were marked as important.
+The others will not be considered in the final model.
+The category is 
+
+
+\begin{figure}[h]
+\caption{First 3 components of PCA analysis plotted with labels according to the case and law related sentences}
+\label{fig:PCA_caselaw}
+\includegraphics[width=\textwidth]{img/PCA_caselaw}
+\end{figure}
+
+
+
+
 
 \textit{TBA - some results of the bottom-level model}
 
@@ -1266,20 +1349,30 @@ As the best classifier showed to be the \textit{Random Forest} with 300 base est
 
 Now, when the division to the two diverse types of documents is in place, a labeled document can proceed to the specialized relevance estimator.
 
-\begin{figure}[H]
-\caption{Feature importance from Random tree decision classification of case-related and law-related}
-\label{fig:case_law_feature_importance}
-\includegraphics[width=\textwidth]{img/case_law_feature_importance}
-\end{figure}
+
+
+
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
 
+% 17.7 % of sentences are relevant
+
+\begin{figure}[H]
+\caption{First 3 components of PCA analysis plotted with labels according to the sentence relevance}
+\label{fig:PCA_sent_relevance}
+\includegraphics[width=\textwidth]{img/PCA_sent_relevance}
+\end{figure}
 
 \section{Document relevance classifier}
 \label{sec:document-classifier}
 [Law-Document and Case-Document classifier]
 
+\begin{figure}[H]
+\caption{First 3 components of PCA analysis applied on sentence meanings with labels according to the document relevance}
+\label{fig:PCA_sent_relevance}
+\includegraphics[width=\textwidth]{img/PCA_doc_relevance}
+\end{figure}
 
 \chapter{Implementation}
 \section{Frameworks and libraries}
@@ -1325,13 +1418,44 @@ The final step is a removal of a hyphenation that was introduced to break new li
 % Case....0.839 
 % Doc ....0.863
 
-\subsection{Number of models}
+\subsection{Layered architecture}
 \label{eval:allinone-vs-features}
-% conclude research on whether put all features in one long vector or separate models
-% 1. one large model, concatenate all attribtues for sentence (keyword, entities, relations..)
-% 2. separate models for attribubtes, plus top-level model, examine relevance or law-case
+This experiment shows a comparison of two model architectures classifying case-related and law-related sentences.
+One architecture consists of only one model, which analyses all attributes to predict class, whereas the second architecture is designed in two layers, where top-level model predicts class based on output of the underlying models.
+
+The bottom-level models as well as the model in one-layer architecture are implemented by a neural network estimator with parameters as described in the section \ref{sec:bottom-level-nn}.
+The top-level model is implemented by Random Forest classifier with 200 base estimators and 70 as maximal depth of a tree.
+From the dataset of 263 documents, 40 case-related and 40 law-related were randomly selected to be the training set and the rest as testing set.
+With sentences as data points, one has to be careful not to include sentences of a single document in both training and testing data.
+Before the training process, the data sets were balanced in order to include the same number of sentences from both classes.
+Therefore, baseline model would achieve $0.50$ accuracy.
+
+The experiment was concluded in the following way.
+For the \textit{All-in-one} architecture, the attributes were being consecutively appended to the vector that served as an input to the model.
+The \textit{Separate} architecture, on the other hand, always trained bottom-level models on the individual attributes added so far, which output is used in the top-level model for predictions.
+Thanks to this design, one can easily compare the two architectures with increasing number of attributes.
+
+\begin{figure}[H]
+\caption{Performance of all-in-one model (one layer) vs separate features (two layers)}
+\label{fig:eval_all-in-one}
+\includegraphics[width=\textwidth]{img/eval_all-in-one}
+\end{figure}
+
+The figure \ref{fig:eval_all-in-one} shows accuracies of the model architectures.
+Notice that \textit{All-in-one} architecture is slightly more accurate up to the first three attributes; however, as the input vector prolongs, the ability to recognize patterns decreases.
+The \textit{Separate} architecture has a disadvantage that the bottom-level models cannot cooperate together and extract the cross-information.
+The advantage is that a few data is enough to train bottom-level models, and therefore the method scales better for increasing number of attributes.
+
+% taky vysvetlit proc je uspesnost tak nizka - v originalnim pouzivame LOO - vic dat
+The final table \ref{} shows higher accuracies, because instead of Leave One Out evaluation, here the Cross Validation is applied, which decreased the size of the training set. 
+The accuracy is, however, significantly above the level of baseline (0.50), which means the outcome can be used as an argument for the decision to pick the layered architecture.
 
 \subsection{Relations with types}
+As described in the section \ref{sec:relation_embedding}, the relation consists of embedded words and types.
+This experiment helped us confirm the theory, that the types are bringing a significant information value in classification of case-related and law-related documents.
+Accuracy of a single model predicting classes of sentences achieved accuracy of $0.82$ with both types and words (dimension 758) and only $0.79$ with only words without the types (dimension 600).
+The cross validation with stratified folds was applied to evaluate the result.
+Based on this small test, all further experiments and final model includes relations with types.
 % relations: acc with full vector with types: 82 \%, acc with only words (300+300) 79\% => types helps
 
 \subsection{LSTM RNN networks}
@@ -1341,7 +1465,24 @@ The final step is a removal of a hyphenation that was introduced to break new li
 % predict law-case based on training on all 190k words, predict class of word - 0.83
 
 \subsection{Word2vec contribution}
-% predict with embedded numbers - use embedding layer of keras with 300 000 as len(dictionary)
+To show the contribution of \textit{Word2vec} embedding, this experiment compares it with the conventional one-hot embedding.
+The accuracy score is computed for the same set of sentences, which were classified to the case-related and law-related by neural network explained in the section \ref{sec:bottom-level-nn}.
+
+Since the data points are sentences and both embeddings encode words, the following technique were used to create one vector for each sentence.
+The Word2vec embedding averaged the word vectors into one, and conventional embedding sums up the one-hot vectors to get a frequency vector.
+As the unique number of words in all sentences is $11,019$, the frequency vectors are exactly that long.
+
+\begin{figure}[h]
+\caption{Performance of conventional embedding in one-hot vectors vs Word2vec embedding}
+\label{fig:eval_word2vec_contribution}
+\includegraphics[width=\textwidth]{img/eval_word2vec_contribution}
+\end{figure}
+
+The figure \ref{fig:eval_word2vec_contribution} shows a very different learning curve of both models.
+The accuracies were computed for a validation set (10\% of data) for each epoch of learning.
+Whereas Word2vec embedding enables the model to learn new patterns systematically from fifth epoch, the conventional embedding undoubtedly lacks the ability to learn at all.
+It is worth to note that this outcome is very specific for our type and number of data, as many other experiments with one-hot embeddings are successful.  
+The conventional embedding is simply too large and sparse to deliver required amount of valuable information.
 
 
 \section{Parameter tuning}
