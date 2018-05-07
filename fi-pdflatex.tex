@@ -1285,10 +1285,12 @@ The first set is extracted and used as an input for the bottom-level models: sen
 Their encoding is explained in the section \ref{sec:attributes}.
 The second set contains the structural characteristics of the document as explained in the section \ref{sec:structural_characteristics}.
 Next set of attributes is created by counting the entities that appear in the sentence.
-The assumption is that law-related documents do not contain as many entities as the case-related, since the explanation of laws uses neutral words, such as ``defendant'', ``subject'', ``suspect'', and similar.
-Next two attributes are first and second group of categories.
-The decision about including only first two levels was driven by the fact, that the third category was assigned to less than half of the documents and the forth category to less than one tenth.
-... write about case, law concepts ...
+The assumption is that the law-related documents do not contain as many entities as the case-related, since the explanation of laws uses neutral words, such as ``defendant'', ``subject'', ``suspect'', and similar.
+Next two attributes are first and second level of categories.
+The decision about including only first two levels was driven by the fact, that the third category was assigned to less than a half of the documents and the forth category to less than one tenth.
+The last two attributes are derived from the concepts of documents.
+First, the concepts are organized into two groups -- case concepts and law concepts -- such that the case concepts appear in some case-related document but not in any law-related and opposite is true for the law concepts.
+Then, the attributes express the number of case and law concepts in the given document.
 
 \begin{figure}[h]
 \caption{Accuracies of bottom-layer models for prediction of case-related and law-related documents.}
@@ -1301,12 +1303,6 @@ The models were evaluated on each document after training on sentences of all ot
 One can notice rather poor performance with \textit{meaning} the most discriminative attribute.
 On the other hand, the \textit{entities} do not contribute very well to the predictions.
 Even though the results suggest low performance of the top-level model too, the combination of bottom-level models turns up to be surprisingly powerful.
-
-\begin{figure}[h]
-\caption{Importance of dimensions in sentence meaning word2vec vectors}
-\label{fig:vec_importance_caselaw}
-\includegraphics[width=\textwidth]{img/vec_importance_caselaw}
-\end{figure}
 
 To determine which attributes are actually beneficial and which are irrelevant, one can plot the importances of individual features suggested by \textit{Random Forest} classifier.
 The classifier computes \textit{gini index} \footnote{Measure of class impurity for determining the next feature to split on \\(\url{http://scikit-learn.org/stable/modules/tree.html\#tree}).} that not only drives the decision tree creation, but also signifies the feature importance.
@@ -1325,8 +1321,21 @@ The significance of the word length might be caused by more detailed and profess
 The document length feature might be influenced by the long case-related testimonies, which is a specific artifact of our data set.
 Out of the entity counts, only the people were marked as important.
 The others will not be considered in the final model.
-The category is 
+Interestingly, the first level of category is not relevant as much as the second level.
+This might be due to the general nature of the first level, which is probably sharing a single value for a large number of documents, and therefore, it looses the discriminative power.
+The final model considers only the second level.
+Regarding the concepts, they proved not to be very helpful in this classification task.
 
+\begin{figure}[h]
+\caption{Importance of dimensions in sentence meaning word2vec vectors}
+\label{fig:vec_importance_caselaw}
+\includegraphics[width=\textwidth]{img/vec_importance_caselaw}
+\end{figure}
+
+As the most discriminative attribute is the meaning, the next two paragraphs describe the behavior of sample points (sentences) with respect to this attribute.
+The figure \ref{fig:vec_importance_caselaw} shows the importance of each of the 300 dimensions of the vector.
+The importance is following the Zipf's law, as the importance seems to be decreasing exponentially with the ordered dimensions.
+Nevertheless, the dimensionality reduction did not help in the classification and the accuracy rather decreased.
 
 \begin{figure}[h]
 \caption{First 3 components of PCA analysis plotted with labels according to the case and law related sentences}
@@ -1334,24 +1343,15 @@ The category is
 \includegraphics[width=\textwidth]{img/PCA_caselaw}
 \end{figure}
 
+Next plot (\ref{fig:PCA_caselaw}) shows sentences plotted pairwise according to the first three principal components of the meaning attribute.
+It might seem that the law-related documents are located at the center and the case-related documents are more spread.
+However, this impression might be influenced by the fact, that there is three times fewer law-related documents.
+In any case, the data keep triangular shape with one corner more populated by case-related documents, which might be the reason for the success of the meaning attribute.
 
 
-
-
-\textit{TBA - some results of the bottom-level model}
-
-The top-level model is based on the two outputs (prob. of case-related and prob. of law-related) from each bottom-level model and encoded document category.
-To eliminate the influence of a document length, outputs are averaged for all sentences.
+The top-level model is based on the first 12 features in the figure \ref{fig:case_law_feature_importance}.
 In this case, the model is trained on the set of documents, which has only 263 instances, hence the neural networks are not applicable.
-As the best classifier showed to be the \textit{Random Forest} with 300 base estimators and maximum tree depth of 2 (\ref{eval:law-case-model-selection}).
-
-\textit{TBA - some results of the top-level model}
-
-Now, when the division to the two diverse types of documents is in place, a labeled document can proceed to the specialized relevance estimator.
-
-
-
-
+As the best classifier showed to be the \textit{Random Forest} (\ref{eval:law-case-model-selection}) with 20 base estimators and maximum tree depth of 7 (\ref{eval:law-case-model-tuning}). The final model achieved performance of $0.89$ on the set of all documents with Leave-One-Out method. Now, when the division to the two diverse types of documents is in place, the labeled documents can proceed to the relevance prediction.
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
@@ -1408,10 +1408,33 @@ The final step is a removal of a hyphenation that was introduced to break new li
 % ...SVM C=1.0              0.754
 % ...RF n_est=500 depth=20  0.845
 
-\subsection{Law-Case model selection}
+\subsection{Law-Case estimator selection}
 \label{eval:law-case-model-selection}
-% vyber law-case top-level classifier, vyhral to RF s 300 a 0.86 zatim
-% zkusil jsem na zaklade Conceptů - vybrat concepty z case_related a law_related, odebrat ty, co jsou v obou a potom pocitat, kolik konceptu ma dokument spolecnyho s temito mnozinami - jen 0.756, kazdopadne pro law_related ma 98% uspech, protoze 63 z 64 spravne uhadlo, z celkovyho 263 oznacilo 126 jako law_related, takze pridana hodnota je
+After all values of attributes from bottom-level models were pre-computed, the next step was to pick the best top-level estimator.
+The setting is the following:
+\begin{enumerate}
+\item low number of samples
+\item low number of features
+\item binary class
+\item quantitative and ordinal features
+\end{enumerate}
+This combination of features suggests that decision trees or their ensembles could be the best suited.
+Neural networks need more samples and SVM works best with a large number of features.
+The figure \ref{fig:eval_law-case-model-selection} shows the comparison.
+
+\begin{figure}[h]
+\caption{Estimator selection for case-related or law-related classification}
+\label{fig:eval_law-case-model-selection}
+\includegraphics[width=\textwidth]{img/eval_law-case-model-selection}
+\end{figure}
+
+One can notice that the two included ensembles (AdaBoost and Random Forest) are the most successful.
+Neural network (MLP) and Support Vector Machines (SVC) performed worse according to the expectation.
+All estimators ran with default parameters as they are adjusted by Scikit learn library.
+
+Undoubtedly, the AdaBoost Classifier outperformed all others, especially also the Random Forest.
+However, during the parameter tunning of both of these two classifiers, the Random Forest achieved better performance when tuned than the AdaBoost.
+Due to this finding, the final model is based on the Random Forest estimator.
 
 \subsection{Keyword type selection}
 % comparing keywords from case and doc to predict law-case
@@ -1458,9 +1481,6 @@ The cross validation with stratified folds was applied to evaluate the result.
 Based on this small test, all further experiments and final model includes relations with types.
 % relations: acc with full vector with types: 82 \%, acc with only words (300+300) 79\% => types helps
 
-\subsection{LSTM RNN networks}
-% tried LSTM RNN networks, which failed to recognize anything, - describe how I fed it, all text of each document
-
 \subsection{All words}
 % predict law-case based on training on all 190k words, predict class of word - 0.83
 
@@ -1487,11 +1507,25 @@ The conventional embedding is simply too large and sparse to deliver required am
 
 \section{Parameter tuning}
 
-\subsection{Bottom-level model}
+\subsection{Bottom-level Model}
 \label{eval:bottom-model-tuning}
 % tuning of the bottom-level NN, i.e. activation functions, optimizers and layers
 
-\subsection{Top-level models}
+\subsection{Law-Case Top-level Model}
+\label{eval:law-case-model-tuning}
+The outcome of the model selection in the section \ref{eval:law-case-model-selection} suggested Random Forests as the top-level model for predicting case-related and law-related documents. This section presents results from the parameter tunning.
+Specifically, the number of estimators and maximum depth of decision trees were tuned.
+
+\begin{figure}[h]
+\caption{Parameter tunning of the Random Forest classifier for case-related or law-related classification}
+\label{fig:eval_law-case-model-tunning}
+\includegraphics[width=\textwidth]{img/eval_law-case-model-tunning}
+\end{figure}
+
+The figure \ref{fig:eval_law-case-model-tunning} shows accuracy scores for different depths of trees.
+The maximum level of 7 together with 20 estimators (individual decision trees) performed the best with 0.882, therefore these parameters were plugged in the final model.
+Note that the tunning was performed with cross validation with 3 folds, which means the model was trained on only $2/3$ of data.
+In case the model is trained on all but one document (Leave-One-Out), the accuracy is 0.890.
 
 \section{Results}
 
@@ -1505,6 +1539,8 @@ The conventional embedding is simply too large and sparse to deliver required am
 % Matter of privacy - how to ensure the models do not enable to retrieve information about other case
 
 % case lookup - find similar cases
+
+% LSTM RNN networks - tried, but did not succeed, but maybe because not enough tunning
 
   \printbibliography[heading=bibintoc] %% Print the bibliography.
 
