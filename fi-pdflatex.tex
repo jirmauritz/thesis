@@ -11,11 +11,11 @@
            %% digital version of a document. Replace with `printed`
            %% to enable the default options for the printed version
            %% of a document.
-  table,   %% Causes the coloring of tables. Replace with `notable`
+  notable,   %% Causes the coloring of tables. Replace with `notable`
            %% to restore plain tables.
-  lof,     %% Prints the List of Figures. Replace with `nolof` to
+  nolof,     %% Prints the List of Figures. Replace with `nolof` to
            %% hide the List of Figures.
-  lot,     %% Prints the List of Tables. Replace with `nolot` to
+  nolot,     %% Prints the List of Tables. Replace with `nolot` to
            %% hide the List of Tables.
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
@@ -89,6 +89,7 @@
 \usepackage{amsmath,amssymb} % math
 \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
+\usepackage[table]{xcolor}
 
 \begin{document}
 \chapter*{Introduction}
@@ -781,7 +782,7 @@ for document relevancy.
 \label{fig:jaccard_table_strict}
 \footnotesize
 \begin{tabular}{|l||l||*{5}{c|}}\hline
-\rowcolor{orange!50}
+\rowcolor{gray!30}
 \makebox[4em]{\textbf{Feature}}&\backslashbox{\textbf{Document}}{\textbf{Tool}}
 &\makebox[3em]{\textbf{NLTK}}&\makebox[3em]{\textbf{Google}}
 &\makebox[3em]{\textbf{Watson}}&\makebox[3em]{\textbf{Aylien}}\\\hline\hline
@@ -819,7 +820,7 @@ Locations & Miller affidavit &0.00&0.06&0.00&0.00\\\hline
 \label{fig:jaccard_table_subset}
 \footnotesize
 \begin{tabular}{|l||l||*{5}{c|}}\hline
-\rowcolor{orange!50}
+\rowcolor{gray!30}
 \makebox[4em]{\textbf{Feature}}&\backslashbox{\textbf{Document}}{\textbf{Tool}}
 &\makebox[3em]{\textbf{NLTK}}&\makebox[3em]{\textbf{Google}}
 &\makebox[3em]{\textbf{Watson}}&\makebox[3em]{\textbf{Aylien}}\\\hline\hline
@@ -926,9 +927,8 @@ Still, we wanted to see how precise is the extraction, and so we present the \te
 \centering
 \caption{Jaccard index of the time-based entities extracted by Aylien.}
 \label{fig:jaccard_dates}
-\footnotesize
 \begin{tabular}{|l||*{5}{c|}}\hline
-\rowcolor{orange!50}
+\rowcolor{gray!30}
 \makebox[4em]{\textbf{Document}}&{\textbf{Jaccard index}}\\\hline\hline
 Millers affidavit & 0.07 \\\hline
 Davis affidavit &0.13\\\hline
@@ -937,7 +937,6 @@ Toxicology paper &0.00\\\hline
 Medical record &0.00\\\hline\hline
 \textbf{Average} &\textbf{0.04}\\\hline
 \end{tabular}
-\normalsize
 \end{figure}
 The \textit{Aylien} achieved non-zero results only in the longer documents and even then, the scores are under our estimation.
 As an example, a simple date in form "24. 12. 2017" is recognized as a phone rather than a date.
@@ -1021,6 +1020,22 @@ During this process, one has to keep in mind the main purpose: the numbers must 
 
 Based on the arguments made in the chapter \ref{chp:data_characteristics}, the units of the machine learning are sentences rather than documents.
 As a result, there is fewer data from which to compute the attributes and the representation of the attributes as well as the process of classification itself become simpler.
+
+\subsection{Text preprocessing}
+The extraction of features by NLP services and extraction of structural characteristics (sec. \ref{sec:structural_characteristics}) needs to be applied on the original raw text.
+However, for the purpose of the sentence meaning extraction (sec. \ref{sec:sentence-meaning}), the first step is a text preprocessing.
+
+The documents come into the Legato system in one of the two formats: a text in a digital form or an image.
+The latter needs to be converted into the former, which is achieved by the Optical Character Recognition (OCR).
+Unfortunately, the OCR technique is not perfect and leaves specific artifacts in the text.
+Therefore, we first apply the text processing, which filters, edits and removes these artifacts and prepares the text to be segmented into sentences.
+
+Firstly, all empty lines are removed and consecutive white spaces are converted into a single space character.
+Secondly, the OCR artifacts has to be removed.
+For example, the recognition puts '\&\#39;' instead of the apostrophe and '\&quot;' instead of the quotation.
+Another artifact of the OCR are coupled words with missing spaces -- a dictionary of English words is applied to break the words apart.
+Next, the text is converted into lowercase and filtered to keep only the alphanumerical characters.
+The final step is a removal of a hyphenation that was introduced to break new lines in the original document.
 
 \subsection{Sentence meaning embedding}
 \label{sec:sentence-meaning}
@@ -1375,23 +1390,128 @@ As the best classifier showed to be the \textit{Random Forest} (\ref{eval:law-ca
 \end{figure}
 
 \chapter{Implementation}
+Based on the research introduced in the previous chapters, a system for Classification of LAW Documents (Clawd) was designed and developed.
+Its purpose is to process textual information about legal cases, documents, and other user's inputs, pass the raw data to NLP services to extract features and evaluate relevance of the documents and its individual sentences.
+Clawd is a stand-alone web application independent of Legato, though Legato is the only system communicating with Clawd so far.
+The first section introduces the development tools, second explains the design and the last describes how Legato and Clawd are integrated.
+
 \section{Frameworks and libraries}
+The application is written completely in Python 3.4 following the PEP 8 style guide\footnote{Python coding conventions (\url{https://www.python.org/dev/peps/pep-0008/})}.
+As a web application framework, \textit{Django}\footnote{Python web framework (\url{https://www.djangoproject.com/})} has been applied.
+Besides the web interface, \textit{Django} provides many other features that ease the development and keep the architecture clear.
+For example, it manages database, logging, tests, security, caching, etc.
+
+% MongoDB
+The main decision about the database was between the relational and NoSQL database.
+Generally, the NoSQL databases are beneficial when either the database needs to be heavily distributed or the data are expected to be loosely defined without strict internal structure.
+The former is not this case but the latter applies.
+As the output of the NLP services is formated to a complex JSON, especially the entity relations, the structure of data is highly variable.
+Apart from that, the Clawd is indulgent in the choice of NLP services, which means there might be other data structures added in the future.
+To ensure the structure flexibility, Clawd stores the data in a NoSQL database specifically, \textit{MongoDB}.
+
+% NLP tools
+The following tools have been applied to process the text:
+\textit{NLTK}\footnote{Natural Language Toolkit for Python \url{http://www.nltk.org/}} library helps to split the text into sentences, remove stopwords and compute the TF-IDF score, 
+\textit{Gensim}\footnote{Topic modeling library \url{https://radimrehurek.com/gensim/}} provided a fast data structure for Word2vec vectors retrieval, \textit{datefinder}\footnote{Library for date extraction \url{http://datefinder.readthedocs.io/en/latest/}}
+helps extract dates from text and, finally,
+Watson Developer Cloud\footnote{Watson Services API \url{https://pypi.org/project/watson-developer-cloud/}}, which provided communication with \textit{Watson NLU} service to extract the most important features.
+The scientific computations and machine learning modeling is handled by \textit{Numpy}\footnote{Package for scientific computing \url{http://www.numpy.org/}}, which provides fast scientific computing,
+\textit{Pandas}\footnote{Python data analysis library \url{https://pandas.pydata.org/}}, which helps with exploratory data analysis,
+\textit{Scikit-learn}\footnote{Machine learning library \url{http://scikit-learn.org}}, which offers machine learning models and tools for their evaluation and
+\textit{Keras}\footnote{Neural network library \url{https://keras.io}} library, that enables high-level design of neural networks in Python.
+
+% celery, apache
+The application often needs to trigger time demanding tasks (neural networks learning, network communication, and text processing), despite the fact that the communication with Legato takes place in the meantime and all responses from Clawd must be immediate.
+For this reason, the tasks need to be organized in asynchronous queues, which is handled by the \textit{Celery} framework\footnote{Distributed task queue \url{http://www.celeryproject.org/}}.
+
+The web application is deployed on a \textit{Debian} server\footnote{Linux operating system \url{https://www.debian.org/}} inside the \textit{Apache} web container\footnote{HTTP server for modern operating systems \url{https://httpd.apache.org/}}.
+All communication with NLP services and Legato takes place in JSON format through HTTP protocol.
+
 \section{Design and implementation}
+Clawd is designed in three layers, as shown in the figure \ref{fig:Design}: the view layer (API), service layer and asynchronous task queue \textit{Celery}.
+Legato requests are served by the API, which passes the data to the service layer.
+If there are any time-demanding tasks, the service layer passes data to \textit{Celery} to be processed asynchronously.
+Quick tasks are computed by the service layer immediately and the answer is passed back to the API to return the response.
 
-\subsection{Text preprocessing}
-The documents come into the Legato system in one of the two formats: a text in a digital form or an image.
-The latter needs to be converted into the former, which is achieved by the Optical Character Recognition\footnote{recognition of text characters from a picture and conversion into a text in a digital form.} (OCR).
-Unfortunately, the OCR technique is not perfect and leaves specific artifacts in the text.
-Therefore, we first apply the text processing, which filters, edits and removes these artifacts and prepares the text to be segmented into sentences.
+\begin{figure}[h]
+\caption{Design of the Clawd system}
+\label{fig:Design}
+\includegraphics[width=\textwidth]{img/Design}
+\end{figure}
 
-Firstly, all empty lines are removed and consecutive white spaces are converted into a single space character.
-The structure of a document is lost with this edit, which might mean a loss of some information, however, we decided to focus on the semantics more than the structure.
-Secondly, the OCR artifacts has to be removed.
-For example, the recognition puts '\&\#39;' instead of the apostrophe and '\&quot;' instead of the quotation.
-Another artifact of the OCR are coupled words with missing spaces -- a dictionary of English language is applied to break the words apart.
-The final step is a removal of a hyphenation that was introduced to break new lines in the original document.
+\subsection{Application Programming Interface}
+The three main use cases of Clawd are 1) Storing a new case, comment, label or relevance -- in all these scenarios, the information is stored and models updated to yield new relevances, 2) Storing a new document -- here, the text is sent to the NLP services, text is preprocessed, models updated and summary is built and returned to Legato, and finally 3) Relevance retrieval -- in this case, no computations take place and the relevances stored in Clawd are returned.
+
+The synchronization is an additional use case, which is, however, not triggered by a user.
+Legato checks with Clawd after some period of time (usually one day), if the data are complete and up to date.
+The process is initiated by Legato, which sends a list of identifications of all cases and documents.
+Clawd deletes the extra objects not present in the list and answers with list of missing objects' identifications.
+The last step is a transfer of all missing data from Legato to Clawd.
+
+The documentation of Clawd's API is described in the table \ref{fig:api}.
+The interface is following the REST API guidelines.
+
+\begin{figure}[h]
+\centering
+\caption{Application programming interface of Clawd}
+\label{fig:api}
+\begin{tabular}{|m{2cm}|p{5.5cm}|p{5cm}|}
+\hline
+\rowcolor{gray!30}
+\textbf{Method}        & \textbf{Endpoint}   & \textbf{Description}   \\[10pt] \hline
+GET  & /case/\{\textit{caseId}\} & Retrieve information about the case. \\ \hline
+POST  & /case/\{\textit{caseId}\} & Creates a new case or updates existing. \\ \hline
+DELETE  & /case/\{\textit{caseId}\} & Deletes the specified case.  \\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Retrieve information about document. \\ \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Creates new document or updates existing. \\ \hline
+DELETE  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Deletes the specified document. \\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Retrieve relevance of the document. \\ \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Stores user relevance of the document.\\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par sent\_relevance & Get relevances of document's sentences.\\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par label & Retrieve label of the specified document. \\ \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par label & Stores label of the specified document. \\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par comment/\{\textit{commentId}\} & Retrieve comment of the document. \\ \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par comment/\{\textit{commentId}\} & Stores comment on the document. \\ \hline
+GET  & /case/\{\textit{caseId}\}/relevances & Retrieve relevances for all documents of the case. \\ \hline
+GET  & /sync\_proposal & Returns true if the synchronization is required. \\ \hline
+GET  & /sync & Synchronization of the database with Legato. \\ \hline
+\end{tabular}
+\end{figure}
+
+\subsection{Service layer}
+The Django applications are a natural way to achieve modularization of an application in Python.
+The service layer takes advantage of this feature and splits its functionality into four modules.
+
+The \textit{Feature extractor} module abstracts the rest of the application from the specific NLP services and implements their individual API's.
+It also computes other features that does not need to be extracted by remote service, but rather processed by a local library -- this is a case of date extraction.
+All features are stored in the database to be further processed by other modules.
+
+The \textit{Preprocessor} module applies the text preprocessing and attribute extraction as explained in the section \ref{sec:attributes}.
+The module also includes several dictionaries, such as \textit{Word2vec} or list of \textit{Watson} types of relations or entities, which are required to compute the attributes.
+
+The \textit{Predictor} module keeps track of all the models needed for prediction.
+For each case, it tracks bottom-level models for each attribute and two top-level models: for sentence and case classification.
+All tasks of \textit{Predictor} are time-demanding, therefore, they are all passed to the \textit{Celery}.
+
+The \textit{Data manager} keeps track of all data models in Clawd.
+Thanks to the ORM\footnote{Object-Relational Mapping -- automatic mapping of application objects to database entities} provided by Django, the module is able to abstract from the underlying database and define data models in a natural Python way of defining classes.
+The data models include Case, Doc, Sentence, Feature, Entity, Keyword, and Comment.
+
+
+
+
+
+
+\subsection{Celery}
+
 
 \section{Integration into Legato}
+
+\begin{figure}[h]
+\caption{Integration with Legato -- New File sequence diagram}
+\label{fig:integration_new_file}
+\includegraphics[width=\textwidth]{img/integration_new_file}
+\end{figure}
 
 \chapter{Evaluation}
 \label{chp:evaluation}
@@ -1528,6 +1648,8 @@ Note that the tunning was performed with cross validation with 3 folds, which me
 In case the model is trained on all but one document (Leave-One-Out), the accuracy is 0.890.
 
 \section{Results}
+% 1. print precision and recalls for all three relevances separately 
+% 2. try evaluate some short passages from document and show concrete examples how it works
 
 \chapter{Conclusion}
 
