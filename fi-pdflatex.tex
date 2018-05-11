@@ -47,9 +47,9 @@
     university    = mu,
     faculty       = fi,
     type          = mgr,
-    author        = Jiří Mauritz,
+    author        = {Jiří Mauritz},
     gender        = m,
-    advisor       = Ing. Libor Kubečka, 
+    advisor       = {RNDr. Zuzana Nevěřilová, Ph.D.}, 
     title         = {Automatic Classification of Legal Documents},
     TeXtitle      = {Automatic Classification of Legal Documents},
     keywords      = {machine learning, legal documents, natural language processing},
@@ -75,7 +75,7 @@
 \lstset{
   basicstyle      = \ttfamily,%
   identifierstyle = \color{black},%
-  keywordstyle    = \color{blueečnou práci zavádí studijní oddělení },%
+  keywordstyle    = \color{blue},%
   keywordstyle    = {[2]\color{cyan}},%
   keywordstyle    = {[3]\color{olive}},%
   stringstyle     = \color{teal},%
@@ -255,9 +255,18 @@ The system is now in development phase undergoing a number of user testing in U.
 
 
 \section{Use case}
+\label{sec:legato_usecase}
 Legato belongs to the group of E-Discovery systems, which provide an infrastructure mainly to the lawyers and attorneys, who need to collect legal documents from both sides (plaintiff and defendant) and possibly from other sources, such as the World Wide Web.
 The next phase of E-Discovery is the organization of documents and information retrieval tasks to find relevant pieces of information in the texts.
 \textit{Legato} is designed to ease and speed up the E-Discovery in general.
+
+Legato expects the following workflow of a paralegal working with the system.
+Firstly, the user obtains data from various sources and loads them into Legato.
+Subsequently, the user is able to skim through the documents to get high level overview of the case.
+The user categorizes the documents according to the type and source (doctor reports, police reports, personal emails, agreements, etc).
+Then, a rough prioritization takes place -- the user sees the most promising documents based on the entities recognized from the text.
+In the next phase, the user goes through the promising documents, makes notes, extracts important information, keywords and players to understand the case in depth.
+The last step is a report compilation, in which the user gathers collected notes and important documents to construct the most promising strategies for a defense or accusation.
 
 Users can upload documents in various formats (plain text, PDF, image, etc.), which is followed by a phase of post-processing.
 The document is converted into plain text or analyzed by the \textit{OCR} in case it is an image.
@@ -287,12 +296,11 @@ Thanks to the OCR analysis, the system is able to show a plain text version and 
 \end{figure}
 
 \section{Technical details}
-
-\begin{itemize}
-\item php, laravel
-\item servers: alpha, demo, ai
-\item Amazon Cloud Watch
-\end{itemize}
+The backend of Legato is written in PHP language using the \textit{Laravel}\footnote{PHP web framework \url{https://laravel.com}} web framework.
+All application instances run on \textit{Debian}\footnote{Stable Linux operating system \url{https://www.debian.org/}} server in the \textit{Apache}\footnote{Web container \url{https://httpd.apache.org/}} container.
+Legato stores all data into the \textit{PostgreSQL}\footnote{Open source relation SQL database \url{https://www.postgresql.org/}} database.
+There are multiple instances of Legato, depending on their purpose: alpha is the production instance, demo serves for the user testing and ai is enriched with innovative features.
+The \textit{Amazon Web Services}\footnote{Collection of cloud computing services \url{https://aws.amazon.com/}} ensures the infrastructure and enables deployment, monitoring and debugging services.
 
 \section{Research \& Advanced Features}
 \label{sec:legato_advanced}
@@ -345,12 +353,12 @@ This feature helps with structuralization of data and adds images into results o
 
 \subsection*{Optical Character Recognition}
 An \textit{Optical Character Recognition} (OCR) is the very essential part of every E-Discovery system.
-Although some documents are already in the electronic form, such as emails or PDF document, lawyers have to work with a large number of only-paper documents, that needs to be scanned.
+Although some documents are already in the electronic form, such as emails or PDF document, lawyers have to work with a large number of only-paper documents too, that needs to be scanned.
 OCR is then applied to the scanned documents to extract text in the electronic form.
 Even though there has been a wide investment in the algorithms for OCR, the result is never 100\% successful because the recognition leaves some "typos".
 The better algorithms use some statistical models to guess the most probable word.
 
-Research in \textit{Legato} team about the best OCR tool is still ongoing and the performance of this step is taken very seriously, as the result influences the outcome of all subsequent steps of E-Discovery.
+Research in \textit{Legato} team about the best OCR tool is still ongoing and the performance of this step is taken very seriously, as the result influences the outcome of all subsequent steps of the E-Discovery. The tool used at the moment is called \textit{Tesseract}\footnote{\url{https://github.com/tesseract-ocr/tesseract/wiki}}, which is one of the open source projects focused on OCR.
 
 
 
@@ -1367,11 +1375,13 @@ In any case, the data keep triangular shape with one corner more populated by ca
 The top-level model is based on the first 12 features in the figure \ref{fig:case_law_feature_importance}.
 In this case, the model is trained on the set of documents, which has only 263 instances, hence the neural networks are not applicable.
 As the best classifier showed to be the \textit{Random Forest} (\ref{eval:law-case-model-selection}) with 20 base estimators and maximum tree depth of 7 (\ref{eval:law-case-model-tuning}). The final model achieved performance of $0.89$ on the set of all documents with Leave-One-Out method. Now, when the division to the two diverse types of documents is in place, the labeled documents can proceed to the relevance prediction.
+Note that we will train the following classifiers separately according to the true case-related and law-related labels.
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
-
+The sentence relevance prediction is 
 % 17.7 % of sentences are relevant
+
 
 \begin{figure}[H]
 \caption{First 3 components of PCA analysis plotted with labels according to the sentence relevance}
@@ -1440,13 +1450,9 @@ Quick tasks are computed by the service layer immediately and the answer is pass
 \end{figure}
 
 \subsection{Application Programming Interface}
+\label{sec:api}
 The three main use cases of Clawd are 1) Storing a new case, comment, label or relevance -- in all these scenarios, the information is stored and models updated to yield new relevances, 2) Storing a new document -- here, the text is sent to the NLP services, text is preprocessed, models updated and summary is built and returned to Legato, and finally 3) Relevance retrieval -- in this case, no computations take place and the relevances stored in Clawd are returned.
-
-The synchronization is an additional use case, which is, however, not triggered by a user.
-Legato checks with Clawd after some period of time (usually one day), if the data are complete and up to date.
-The process is initiated by Legato, which sends a list of identifications of all cases and documents.
-Clawd deletes the extra objects not present in the list and answers with list of missing objects' identifications.
-The last step is a transfer of all missing data from Legato to Clawd.
+One extra use case, which is not initiated by user, is the synchronization step, that ensures the data in Clawd are consistent with data in Legato.
 
 The documentation of Clawd's API is described in the table \ref{fig:api}.
 The interface is following the REST API guidelines.
@@ -1455,16 +1461,16 @@ The interface is following the REST API guidelines.
 \centering
 \caption{Application programming interface of Clawd}
 \label{fig:api}
-\begin{tabular}{|m{2cm}|p{5.5cm}|p{5cm}|}
+\begin{tabular}{|m{2cm}|m{5.5cm}|m{5cm}|}
 \hline
 \rowcolor{gray!30}
-\textbf{Method}        & \textbf{Endpoint}   & \textbf{Description}   \\[10pt] \hline
-GET  & /case/\{\textit{caseId}\} & Retrieve information about the case. \\ \hline
+\textbf{Method} &  \textbf{Endpoint}   &  \vspace{0.2cm} \textbf{Description}   \\[10pt] \hline
+GET  &  /case/\{\textit{caseId}\} & Retrieve information about the case. \\ \hline
 POST  & /case/\{\textit{caseId}\} & Creates a new case or updates existing. \\ \hline
-DELETE  & /case/\{\textit{caseId}\} & Deletes the specified case.  \\ \hline
+DELETE  & /case/\{\textit{caseId}\} & Deletes a case.  \\[6pt] \hline
 GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Retrieve information about document. \\ \hline
 POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Creates new document or updates existing. \\ \hline
-DELETE  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Deletes the specified document. \\ \hline
+DELETE  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Deletes a document. \\[6pt] \hline
 GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Retrieve relevance of the document. \\ \hline
 POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Stores user relevance of the document.\\ \hline
 GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par sent\_relevance & Get relevances of document's sentences.\\ \hline
@@ -1495,23 +1501,75 @@ All tasks of \textit{Predictor} are time-demanding, therefore, they are all pass
 
 The \textit{Data manager} keeps track of all data models in Clawd.
 Thanks to the ORM\footnote{Object-Relational Mapping -- automatic mapping of application objects to database entities} provided by Django, the module is able to abstract from the underlying database and define data models in a natural Python way of defining classes.
-The data models include Case, Doc, Sentence, Feature, Entity, Keyword, and Comment.
-
-
-
-
-
+The data models include Case, Doc, Sentence, Feature, Entity, Keyword, and Classifier.
+All classifiers must be stored in a binary form.
 
 \subsection{Celery}
+The Celery handles a task management, but the execution itself runs on an implementation of so-called \textit{message broker}\footnote{\url{http://docs.celeryproject.org/en/latest/getting-started/brokers/}}.
+Even though the most common message brokers are \textit{RabbitMQ}\footnote{\url{https://www.rabbitmq.com/}}, \textit{Redis}, or \textit{Amazon SQS}\footnote{\url{https://aws.amazon.com/sqs/}}, Clawd uses \textit{MongoDB} instead.
+The reason is that the \textit{MongoDB} is already applied as the main data storage, and therefore, a new framework was considered unnecessary.
+
+\textit{Celery} manages tasks with network communication, training of the models and evaluating relevance on models.
+The tasks are being executed in multiple workers, which significantly increases the system's responsiveness.
+The efficiency is especially noticeable in case of an initial synchronization, when all data are passed from Legato to an empty Clawd.
 
 
 \section{Integration into Legato}
+As mentioned earlier, Clawd is a stand-alone application that is integrated with Legato through the exposed REST API.
+The communication was designed to be one-way only, hence all actions are initiated by Legato.
+The only results from Clawd visible by a user are the suggested relevances and the document's summary.
+Unfortunately, the Legato is not able to process and show sentence relevances so far, though Clawd provides the data.
+
+The section \ref{sec:api} describes three use cases of Clawd, plus synchronization.
+The first use cases (creation of a new case, comment, label, or relevance, and the relevance retrieval) is straight-forward, because the communication is simple storing of data in Clawd.
+When Legato stores some of the aforementioned objects, it simultaneously sends them to Clawd.
+
+The second use case (new document) is more sophisticated.
+The figure \ref{fig:integration_new_file} shows a sequence diagram of the communication among not only Legato and Clawd, but also the user, Watson NLU service and Celery.
+When a new document\footnote{The same data object is called \textit{File} in Legato and \textit{Document} in Clawd} is uploaded into Legato, a pipeline of preprocessing steps (explained in section \ref{sec:legato_usecase}) is applied.
+One of the steps is also a summary extraction by Clawd.
+When Clawd receives the document, it passes the data to Watson NLU service to extract features and stores the data from response.
+Next, Clawd builds the document summary from the features and answers to Legato, which is now able to include the summary into document's view.
+In the meantime, Clawd triggers follow-up tasks, which are processed by Clawd and include training of models and updating relevance.
+Note that in this case, the request to Watson was not handled by Celery, as the Legato waits for the response and so, the communication must be synchronous (Celery handles only asynchronous tasks).
 
 \begin{figure}[h]
 \caption{Integration with Legato -- New File sequence diagram}
 \label{fig:integration_new_file}
 \includegraphics[width=\textwidth]{img/integration_new_file}
 \end{figure}
+
+The third use case is a request for computed relevances.
+The main case dashboard in Legato contains a button for automatic relevance evaluation.
+If a user chooses to click on it, the relevances are requested from Clawd, processed by Legato, and shown on the document's view page, as can be seen in the figure \ref{fig:integration_documentsview}.
+User's own choices of relevances are shown in the left column and the predicted relevances are in the right column to enable comparison.
+
+\begin{figure}[h]
+\caption{Integration with Legato -- Document's view of real and suggested relevances}
+\label{fig:integration_documentsview}
+\includegraphics[width=0.8\textwidth]{img/integration_documentsview}
+\end{figure}
+
+The synchronization is an additional use case, which is, however, not triggered by a user.
+Legato checks with Clawd after some period of time (usually one day), if the data are complete and up to date.
+The process is initiated by Legato, which sends a list of identifications of all cases and documents.
+Clawd deletes the extra objects not present in the list and answers with list of missing objects' identifications.
+The last step is a transfer of all missing data from Legato to Clawd.
+
+The working instance of Legato that is integrated with Clawd is accessible for public on 
+\begin{quote}
+\begin{tabular}{|>{\centering\arraybackslash} m{10cm}|}
+\hline
+\vspace{2mm}
+\url{https://ai.demo.legato.sde.cz}
+\vspace{2mm}
+\hrulefill
+\end{tabular}
+\end{quote}
+with login \textit{clawd@gmail.com} and password \textit{clawd}.
+Users are free to create new cases and upload their own documents to evaluate the relevance.
+
+
 
 \chapter{Evaluation}
 \label{chp:evaluation}
@@ -1649,7 +1707,9 @@ In case the model is trained on all but one document (Leave-One-Out), the accura
 
 \section{Results}
 % 1. print precision and recalls for all three relevances separately 
-% 2. try evaluate some short passages from document and show concrete examples how it works
+% 2. compare with the algorithm already in Legato - Hot Words
+% 3. try evaluate some short passages from document and show concrete examples how it works
+
 
 \chapter{Conclusion}
 
