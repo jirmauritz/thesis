@@ -17,6 +17,7 @@
            %% hide the List of Figures.
   nolot,     %% Prints the List of Tables. Replace with `nolot` to
            %% hide the List of Tables.
+%   draft
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
 ]{fithesis3}
@@ -90,6 +91,7 @@
 \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 \usepackage[table]{xcolor}
+\usepackage{subcaption}
 
 \begin{document}
 \chapter*{Introduction}
@@ -198,6 +200,7 @@ Most of the similar researches focus either on the case retrieval or document re
 % 1. Automatically classifying case texts and predicting outcomes
 
 \section{Measuring relevance in legal domain}
+\label{sec:related_relevance}
 Many studies are concerned with the concept of relevance in the legal domain, formalization of its subjective nature and its measuring and evaluation (\cite{vanOpijnen2017relevance}, \cite{Hogan2010sensemaking}, \cite{Ashley2010analysis}).
 The following discussion takes into consideration a human ability to decide the relevance.
 
@@ -1261,7 +1264,7 @@ Incremental estimators enables to iteratively learn and improve on a new batch o
 Other incremental estimators solving classification problems include Naive Bayes (NB) or Stochastic Gradient Descent (SGD) learning.
 
 The final structure of the neural network has an input layer of dimension 300, two hidden layers of 6 and 3 neurons and 2 output neurons representing binary classes.
-Such a model is prepared to predict law-related vs case-related sentences as well as relevant vs irrelevant sentences. Note that even though there are three final classes of relevance (HOT, WARM, COLD), the WARM class is neglected to be decided by the top-level models.
+Such a model is prepared to predict law-related vs case-related sentences as well as relevant vs irrelevant sentences. Note that even though there are three final classes of relevance (HOT, WARM, COLD), the WARM class is neglected here and later decided by the top-level models.
 
 \begin{figure}[H]
 \caption{Bottom-level model structure}
@@ -1379,15 +1382,80 @@ Note that we will train the following classifiers separately according to the tr
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
-The sentence relevance prediction is 
-% 17.7 % of sentences are relevant
+The sentence relevance prediction is relatively harder task than the previous classification.
+Humans consider sentences relevant based on different factors.
+For the sake of simplicity, the system assumes the relevance depends on the words that appear in the sentence, especially keywords.
+In reality, the context of the document, case, and other external knowledge plays a significant role, which is ignored here.
+Another factor that makes the prediction difficult relates to the process of human annotation: in case there are multiple sentences with relevant information, a lawyer would highlight only one of them as important.
+As a result, the model trains on a dataset, where similar sentence appears as relevant and irrelevant at the same time.
 
 
+Instead of the accuracy, the observed evaluation score is now precision and recall.
+The precision expresses a percentage of correctly classified sentences out of all sentences that was classified as relevant.
+The recall expresses a percentage of correctly classified sentences out of all relevant sentences.
+As mentioned in the section \ref{sec:related_relevance}, the recall is usually more valued in the E-discovery, since the extra time of the lawyer spent on an irrelevant piece of information outbalance the situation, in which the lawyer is not notified about some relevant information.
+The section mentions the human performance in evaluating the relevance: precision ca 20\% and recall ca 50\%.
+These values set a baseline in the following experiments.
+
+Two groups of attributes are applied in the sentence predictions: general and case-specific. 
+The general attributes are trained on full set of documents and there is only one model for every case.
+Its purpose is to explain the general trends of the relevance.
+On the other hand, the case-specific attributes are trained on documents of only the same case and they are expressing the case-specific relevance.
+
+\subsection{General attributes}
+The general attributes include the \textit{word2vec} vectors: meaning, keywords and relations.
+The entities vector proved to be inefficient in the Law-Case model, therefore, it is not considered here.
+The bottom-level models (\ref{sec:bottom-level-models}) are applied to train the sentence relevance.
+For each document, the models were trained on all other documents and the sentences were assigned a probability, that it is relevant.
+This setting expects, that in the time of prediction, all other documents of the case are already uploaded.
+
+Thanks to the predicted probability, there is a straightforward tool to trade between the precision and recall.
+Let us define a parameter $p$ as the minimum probability for a sentence to be considered as relevant.
+With increasing $p$, the recall increases and precision decreases.
+
+The figure \ref{fig:sent_PandR} shows the precisions and recalls for all three general attributes with respect to the parameter $p$.
+Obviously, the keywords and relations failed to learn the features well, because the precision never increases with higher $p$.
+In contrast, the figure \ref{fig:sent_meaningP} indicates a more promising situation.
+For $p=0.5$, the model achieved more than 20\% of precision and crossed the 50\% of recall, which is the aforementioned human performance.
+
+\begin{figure}[h]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \caption{Meaning attribute}
+  \label{fig:sent_meaningP}
+  \includegraphics[width=\textwidth]{img/sent_meaningP}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \caption{Keywords attribute}
+  \label{fig:sent_keywordsP}
+  \includegraphics[width=\textwidth]{img/sent_keywordsP}
+\end{subfigure}%
+\\
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \caption{Relations attribute}
+  \label{fig:sent_relationsP}
+  \includegraphics[width=\textwidth]{img/sent_relationsP}
+\end{subfigure}
+\caption{Precision and recall of the general attributes}
+\label{fig:sent_PandR}
+\end{figure}
+
+Surprisingly, the meaning is again the superior attribute (similarly as in the Law-case classifier).
+It seems that the neural network does not really need to pick keywords or any other subattributes in the text, as it is able to extract them itself.
+This fact 
 \begin{figure}[H]
 \caption{First 3 components of PCA analysis plotted with labels according to the sentence relevance}
 \label{fig:PCA_sent_relevance}
 \includegraphics[width=\textwidth]{img/PCA_sent_relevance}
 \end{figure}
+
+\subsection{Case-specific attributes}
+% describe how they are created in case-preprocessor, vectors in sentences
+
+
+
 
 \section{Document relevance classifier}
 \label{sec:document-classifier}
