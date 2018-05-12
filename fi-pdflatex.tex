@@ -17,7 +17,7 @@
            %% hide the List of Figures.
   nolot,     %% Prints the List of Tables. Replace with `nolot` to
            %% hide the List of Tables.
-%   draft
+  draft
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
 ]{fithesis3}
@@ -368,26 +368,26 @@ Research in \textit{Legato} team about the best OCR tool is still ongoing and th
 \chapter{Data Characteristics}
 \label{chp:data_characteristics}
 One of the most important preconditions for building an efficient model is to understand the input data characteristics.
-People developed numerous models based on text classification that are suppose to classify text of any domain, however, at the expense of the efficiency.
+People developed numerous models based on text classification that are suppose to classify text of any domain, which is, however, at the expense of the efficiency.
 The specialized models always have the potential to outperform the general one.
-The real contribution of this work is the understanding of characteristics of the legal domain data and its application on the process of building a text classification model.
+The real contribution of this work is the exploration of characteristics in the legal data and its application on the process of building a classification model.
 This chapter will introduce our working dataset, its statistics and characteristics.
 
 \section{Dataset introduction}
-The end users of the Legato system are mostly the U.S. lawyers, which influences our choice of the dataset.
-The U.S. legal system is very specific with its own laws, constitution, trial process and most importantly for us -- terminology.
-Also, we have to take into consideration specifics in the form of the documents: medical records, police records, affidavits, emergency call transcripts etc.
-We do not claim that our application will not work for other than U.S. legal documents, however, the model might manage to recognize the structure and terminology of the U.S. documents more accurately.
+The end users of the Legato system are mostly the U.S. lawyers, which influences our choice of dataset.
+The U.S. legal system is very specific with its own laws, constitution, trial process and most importantly for us -- the terminology.
+Also, we have to take into consideration specifics in the structure of the documents: medical records, police records, affidavits, emergency call transcripts etc.
+We do not claim that our application will not work for other than U.S. legal documents; however, the model might manage to recognize the structure and terminology of the U.S. documents more accurately.
 
 Unfortunately, we have not acquired enough training data from the users of Legato, mainly because the legal cases are ongoing and the documents are too confidential to be included in a research.
 For the same reason, it is hard to find an authentic public trial documents on the Internet.
-We have found a solution thanks to an \textit{American Mock Trial Association} \footnote{http://www.collegemocktrial.org/} and \textit{Classroom Law Project} \footnote{\url{http://www.classroomlaw.org}}.
+We have found a solution thanks to the \textit{American Mock Trial Association} \footnote{\url{http://www.collegemocktrial.org/}} and \textit{Classroom Law Project} \footnote{\url{http://www.classroomlaw.org}}.
 Both associations create legal cases for educational purposes, which then serve as a material for the mock trial competitions.
 All their legal cases are fictional, though some of them were inspired by real-world situations and issues.
 Still, any resemblance to actual persons and events is purely coincidental.
 
-All 20 cases used as a training set are downloaded from two sites: Street Law, inc. \footnote{\url{http://streetlaw.org}} and Classroom Law Project \footnote{\url{http://www.classroomlaw.org}}.
-Not to be biased with one legal area, we included cases of diverse legal fields:
+All 20 cases, used as a training set, are downloaded from two mentioned associations.
+Not to be biased with one legal area, cases of diverse legal fields are included:
 \begin{itemize}
 \itemsep0em
 \item[2x] \textbf{School environment} \\ educational malpractice or indifference
@@ -401,25 +401,24 @@ Not to be biased with one legal area, we included cases of diverse legal fields:
 \end{itemize}
 All mock cases have a similar structure: there are approx. 5-8 testimonies of the involved people, called affidavits, and the rest of the documents are emails, medical records, police reports, emergency call transcripts, description of the past similar cases etc.
 The affidavits are up to 10 pages long, usually describing the issue in depth, whereas the other documents are usually one or two pages long.
-We excluded all extra information specific to the mock trials, explanations of the competitions and summaries: we do not expect these to be typical part of a case.
+All extra information specific to the mock trials, explanations of the competitions and summaries were excluded.
 Some extra headers and footers that contain metadata were also removed not to confuse the model training.
 
-During the model building, we need to take into account that the real cases might be more or less different from the mock cases.
-For instance, we do not expect the affidavits to appear in the real cases as much as in the mock cases.
-Also, we expect more emails and papers of unknown structure in real cases.
+During the model building, one needs to take into account that the real cases might be more or less different from the mock cases.
+For instance, the affidavits are not expected to appear in the real cases as much as in the mock cases.
+Also, more emails and papers of unknown structure are expected in real cases.
 Generally, we found two major shifts: 
 \begin{enumerate}
 \item real cases will most probably contain shorter documents
 \item real cases will contain many more unrelated documents
 \end{enumerate}
-We present solutions for both issues:
+This research presents solution for both issues:
 \begin{enumerate}
 \item 
 The length of the document should be an insignificant parameter when determining the documents relevancy.
-Therefore, we decided to focus on sentences rather than on a document as a whole.
-In other words, we determine relevance of the document by exploring the relevances of the individual sentences.
-As a result, the model is slightly simplified, however, we do not completely ignore the cross-sentence information, as we will see in the further chapters.
-Thanks to the sentence-based model, we should be able to eliminate an influence of the document length and judge the relevance without bias.
+Therefore, here the focus is on sentences rather than on a document as a whole.
+In other words, a relevance of a document is determined by exploring relevances of the individual sentences.
+As a result, the model is slightly simplified, but the cross-sentence information is not completely ignored, as will be seen in the further chapters.
 
 \item
 The second issue is caused by the lack of motivation to add unrelated documents during the creation of the mock cases.
@@ -428,15 +427,24 @@ A straight forward solution is to add some irrelevant documents from other cases
 
 \end{enumerate}
 
-\section{Annotation}
-- num of annotators
-- annotation of docs
-- annotation of sentences
+\section{Annotations}
+Thanks to the management of Legato, two annotators performed a labeling of both the sentences and documents of the dataset.
+The annotation process was concluded in the Legato system by two annotators.
+Each document is annotated by one of them and corrected by the other.
+They assigned each document a label HOT, WARM or COLD according to the relevance.
+The HOT label signifies strong relevance as it contains essential information needed for defend or accusation at the court.
+The WARM label means that the user should see the document, because it might contain valuable information about the case.
+The COLD label signifies that the document does not contain any relevant information.
+
+Besides the documents, the parts of the text were labeled as well.
+Annotators could highlight a passage from the text, which could span multiple sentences.
+The further processing marks a sentence as relevant, if and only if there is an intersection with some passage annotated as relevant.
+Only HOT and WARM documents contain relevant parts of the text.
 
 \section{Data statistics}
-As mentioned earlier, we are working with 20 cases with total of 261 documents, which means 13.15 documents per case in average.
-The documents together contain 234,798 words, thus average number of words per document is 900.
-We counted 14,518 unique words which is approx. 1.18 \% of English vocabulary according to the \textit{Oxford English Dictionary}  \cite{oxfordDictionaries}.
+As mentioned earlier, the dataset contains 20 cases, which together cover 263 documents. That is $13.15$ documents per case in average.
+The documents contain 234,798 words in total, thus the average number of words per document is 893.
+Counting only unique words, the vocabulary has a size of 14,518 words which is approx. 1.18 \% of English vocabulary according to the \textit{Oxford English Dictionary}  \cite{oxfordDictionaries}.
 
 \begin{figure}[h]
 \centering
@@ -461,30 +469,44 @@ for & 1942 & like & 386 \\\hline
 \normalsize
 \end{figure}
 
-In the left part of the figure \ref{fig:most_frequent}, we present counts of the most frequent words in the documents.
+In the left part of the figure \ref{fig:most_frequent}, counts of the most frequent words in the documents are presented.
 It is not a surprise that all top ten words are common stop words of English.
-The stop words are usually removed before any further processing of the text, however, they might carry valuable information too.
+The stop words are usually removed before any further processing of the text; however, they might carry valuable information too.
 For instance, recognition of the author or formality level can be determined based on the stop words usage.
-We can see that the usage of stop words is not different from the general English.
+One can notice that the usage of stop words is not different from the general English.
 
-The right side of the table shows most frequent words after we removed the stop words.
-Here, we can see clear influence of the cases from the school environment.
+The right side of the table shows most frequent words after the stop words removal.
+Here, the frequencies are clearly influences by the cases from the school environment.
 Next, the words "said" and "told" indicate that the documents often contain reporting of events and conversations.
 The other words again fit more or less in the general English.
 
-The word frequencies tell us that the vocabulary is not biased by any major trend.
-Lets now look at the keywords of the whole collection and discover words that occur more frequently than usual.
-The method used is explained in section \ref{algorithms_keywords} and we applied the same reference corpus (Reuters articles).
-The following are the keywords: city, school, know, got, joey, just, police, princess, time, person, really, like, child.
+The word frequencies show that the vocabulary is not biased by any strange artifacts in the text.
+The following statistic explores the \textit{keywords} of the collection, i.e. words that occur more frequently than usual.
+The method used is explained in the section \ref{algorithms_keywords}.
+During the scoring, the Reuters articles from \textit{NLTK} library served as the reference corpus.
+The keywords extracted from all documents are: city, school, know, got, joey, just, police, princess, time, person, really, like, child.
+Again, the school environment plays an important role.
 
-- most frequent words for crime vs. first amendment
-- most frequent words for relevant vs. unrelevant cases
+Out of the 263 documents, 107 are HOT, 85 WARM and 71 COLD, which confirms our idea about dominance of relevant documents.
+Interestingly, the average length of a document in sentences correlate to its relevance with 76 in HOT, 53 in WARM and 23 in COLD documents.
+This might be explained by the dominance of affidavits, which are usually relevant.
+The most common words in HOT documents are the reporting words, such as ``said'', ``told'' or ``would''. 
+In most common words of WARM documents appears the ``police'', ``time'' or ``new''.
+COLD documents, on the other hand, contain a lot of numbers (``1'' is in fact the most common one) and then ``metro'', ``officer'' or ``city''.
 
 \section{Types of documents}
-- non-sense docs (pics)
-- law related vs. case specific - loosely define
-\section{Linguistics}
+When looking at the documents, one is able to recognize some common features, which classifies them into groups.
+The testimonies are one large group of documents, yet they are closer to medical records, bills, call transcripts, police records, etc. than to the rest of the documents.
+The other distinctive group consists of documents that does not relate to the case itself but rather explain the law, policies, and past legal cases.
+No people, location, dates or other named entities appear in these documents.
+However, it is not true, that they are not relevant for the case.
+Usually, they consist of some passage from law code that relates to the act discussed in the case, which is likely a relevant piece of information for a lawyer.
 
+In this research, the first group of documents directly involved in the case will be referred to as the \textit{case-related} documents, and the second group will be referred to as the law-related documents.
+The precise definition and classification is elaborated in the section \ref{sec:law-case-classifier}.
+
+Besides the mentioned two groups, the dataset contains few other documents that do not seem to fit in either of them; however, none of them accounts for a group large enough, therefore, they are considered as outliers and assigned to one of the existing groups.
+For example, there are pictures, tables or newspapers.
 
 \chapter{NLP tool selection}
 The amount of text in legal documents can vary largely.
@@ -1131,12 +1153,12 @@ Most of the well-known names, such as "David", "George", or "Adele", organizatio
 Not only that we can now train a general model, in which each word has its own fixed representation, but also, the embeddings satisfy the expected semantic rules.
 For example, vectors representing names will be close together and the model has a chance to learn that names are in fact important regardless of the specific word.
 The figure \ref{fig:entity_distances} confirms our thought about larger distances between the types of entities.
-Here is clearly visible larger distances between names, locations and organizations than the distance among the entities of the same type.
+Here, one can immediately see the larger distances between names, locations and organizations than the distance among the entities of the same type.
 The general embedding is created by concatenation of a one-hot vector specifying the entity type and the \textit{word2vec} vector for the entity.
 
 \begin{figure}[h]
 \centering
-\caption{Distances among entity vectors in word2vec dictionary.}
+\caption{Distances among entity vectors in word2vec dictionary after PCA transformation.}
 \label{fig:entity_distances}
 \includegraphics[width=\textwidth]{img/entities_distances}
 \end{figure}
@@ -1374,7 +1396,6 @@ In any case, the data keep triangular shape with one corner more populated by ca
 The top-level model is based on the first 12 features in the figure \ref{fig:case_law_feature_importance}.
 In this case, the model is trained on the set of documents, which has only 263 instances, hence the neural networks are not applicable.
 As the best classifier showed to be the \textit{Random Forest} (\ref{eval:law-case-model-selection}) with 20 base estimators and maximum tree depth of 7 (\ref{eval:law-case-model-tuning}). The final model achieved performance of $0.89$ on the set of all documents with Leave-One-Out method. Now, when the division to the two diverse types of documents is in place, the labeled documents can proceed to the relevance prediction.
-Note that we will train the following classifiers separately according to the true case-related and law-related labels.
 
 \section{Sentence relevance classifier}
 \label{sec:sentence-classifier}
@@ -1451,10 +1472,13 @@ As only $17.7\%$ of the sentences are relevant, the red points are sparsely dist
 \subsection{Case-specific attributes}
 The lack of context, mentioned in the previous section, is partly solved by the case-specific attributes, which provides a context of the case.
 The attributes are computed as described in the section \ref{sec:entity_embedding}.
+Note that a vector for keywords is constructed in the same manner as for the entities, that is a fixed position for a keyword.
+Only case synopsis is applied in the creation of the vectors, in contrast with the application, where the vectors are complemented with keywords from documents.
 The prediction is evaluated on models that were trained exclusively on the documents from the given case.
 
 Due to the earlier model selection (\ref{eval:law-case-model-selection}), the Random Forest estimator with 20 estimators and 7 tree depth was chosen to evaluate the relevance.
 Its performance was not strikingly high with precision 17\% and recall 71\% for $p=0.45$, and precision 20\% and recall 35\% for $p=0.5$.
+Nevertheless, the performance is expected to be higher in the application, as the keyword and entity vectors will contain extra entries extracted from the documents.
 
 Multiple combinations of general and case-specific model comes forward.
 The figure \ref{fig:sent_finalP} shows two of them: \textit{AND} variant, where a sentence is considered relevant only in case both models agree, and \textit{OR} variant, where one of the models voting for a positive relevance is enough.
@@ -1485,7 +1509,7 @@ In comparison with the human performance, the recall is higher and the precision
 
 \section{Document relevance classifier}
 \label{sec:document-classifier}
-[Law-Document and Case-Document classifier]
+
 
 \begin{figure}[H]
 \caption{First 3 components of PCA analysis applied on sentence meanings with labels according to the document relevance}
