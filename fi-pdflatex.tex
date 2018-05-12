@@ -1099,6 +1099,7 @@ Indeed, the sentence meaning vectors contain the keywords as well, thus some inf
 However, the choice of right words plays a crucial role in the influence on classification, and the importance of both the attributes will be justified in the evaluation chapter.
 
 \subsection{Entity embedding}
+\label{sec:entity_embedding}
 \textit{Watson NLU} service is able to recognize extensive number of entity types (462) \footnote{\url{https://console.bluemix.net/docs/services/natural-language-understanding/entity-types-v1.html\#entity-types-and-subtypes-version-1-}}, 
 which include as obscure categories as "WebBrowserExtension" or "HockeyConference".
 For the purpose of this research, only 6 of them the following types are used:
@@ -1112,38 +1113,33 @@ For the purpose of this research, only 6 of them the following types are used:
 Note that also "Company" type is recognized, subsequently classified as "Organization".
 In addition, the concepts and dates are included as entities, since there is no difference in the way they might influence the relevance.
 
-The first draft of the entities embedding was based only on the entities appearing in the case.
-During the case preprocessing, the mentioned entities were extracted from the case synopsis and stored in a vector of fixed length for each entity type. For instance, a vector for people entities might look as follows:
+The case-specific embedding is based only on the entities that are important for the specific case.
+During the preprocessing, they are extracted from the case synopsis and stored in a vector of fixed length for each entity type. For instance, a vector for people entities might look as follows:
 $$
 (\text{"joey david", "thomas", "jesse hester", "obama", "", "", "", "", "", ""})
 $$
 The rest of the vector is left for entities from documents, which would be included based on their importance score (\textit{Watson NLU} attaches the score to each entity).
-Finally, the representation is a mask array of ones and zeros that indicates which entities are present in the sentence.
+More specifically, when an entity appears in a new document with a high score, it is appended in the vector and never deleted.
+Finally, the embedding itself is a mask array of ones and zeros that indicate which entities are present in the sentence.
 
 One problem with this embedding is that the vector acquires different meaning for every case.
 In a situation when a model learns that a name on the index $i$ indicates a relevant document, the model becomes not transferable to another case, where the vector contains different names.
-General model for any case would become impossible to train and even the case-specific models would face a lack of data to achieve a satisfactory performance.
+General model for any case becomes impossible to train due to a lack of data.
+Hence, the entities are also encoded in general embeddings independent of case.
 Fortunately, the \textit{word2vec} dictionary was trained on general texts including the entities as well.
 Most of the well-known names, such as "David", "George", or "Adele", organizations, such as "Mc Donald", "IBM", or "Facebook" and locations, such as "Prague", "Nigeria", or "Prater" are present in the dictionary.
-Not only that we can now train a general model, in which each word has its own fixed representation, but also the embeddings satisfy the expected semantic rules.
+Not only that we can now train a general model, in which each word has its own fixed representation, but also, the embeddings satisfy the expected semantic rules.
 For example, vectors representing names will be close together and the model has a chance to learn that names are in fact important regardless of the specific word.
+The figure \ref{fig:entity_distances} confirms our thought about larger distances between the types of entities.
+Here is clearly visible larger distances between names, locations and organizations than the distance among the entities of the same type.
+The general embedding is created by concatenation of a one-hot vector specifying the entity type and the \textit{word2vec} vector for the entity.
 
-
-\begin{figure}[H]
+\begin{figure}[h]
 \centering
 \caption{Distances among entity vectors in word2vec dictionary.}
 \label{fig:entity_distances}
-\begin{tabular}{|*{5}{c|}}
-  \hline
-           & David   & George  & IBM      & Facebook \\ \hline
-  David    & 0.0     &         &          &     \\ \hline
-  George   & 0.93944 & 0.0     &          &     \\ \hline
-  IBM      & 1.37978 & 1.41457 & 0.0      &     \\ \hline
-  Facebook & 1.37652 & 1.40856 & 1.319643 & 0.0 \\ \hline
-\end{tabular}
+\includegraphics[width=\textwidth]{img/entities_distances}
 \end{figure}
-
-TBA - explain the table and make conclusion
 
 \subsection{Relation embedding}
 \label{sec:relation_embedding}
@@ -1389,7 +1385,6 @@ In reality, the context of the document, case, and other external knowledge play
 Another factor that makes the prediction difficult relates to the process of human annotation: in case there are multiple sentences with relevant information, a lawyer would highlight only one of them as important.
 As a result, the model trains on a dataset, where similar sentence appears as relevant and irrelevant at the same time.
 
-
 Instead of the accuracy, the observed evaluation score is now precision and recall.
 The precision expresses a percentage of correctly classified sentences out of all sentences that was classified as relevant.
 The recall expresses a percentage of correctly classified sentences out of all relevant sentences.
@@ -1443,19 +1438,50 @@ For $p=0.5$, the model achieved more than 20\% of precision and crossed the 50\%
 \end{figure}
 
 Surprisingly, the meaning is again the superior attribute (similarly as in the Law-case classifier).
-It seems that the neural network does not really need to pick keywords or any other subattributes in the text, as it is able to extract them itself.
-This fact 
-\begin{figure}[H]
+It seems that the neural network does not really need to pick keywords or any other feature beforehand from the text, as it is able to extract them itself.
+The figure \ref{fig:PCA_sent_relevance} shows sentences plotted in the space of first three principal components according to the meaning attribute.
+As only $17.7\%$ of the sentences are relevant, the red points are sparsely distributed in the area. Unfortunately, there is not an evident separation of the sentence according to the relevance, which is an expected outcome due to the obstacles described earlier.
+
+\begin{figure}[h]
 \caption{First 3 components of PCA analysis plotted with labels according to the sentence relevance}
 \label{fig:PCA_sent_relevance}
 \includegraphics[width=\textwidth]{img/PCA_sent_relevance}
 \end{figure}
 
 \subsection{Case-specific attributes}
-% describe how they are created in case-preprocessor, vectors in sentences
+The lack of context, mentioned in the previous section, is partly solved by the case-specific attributes, which provides a context of the case.
+The attributes are computed as described in the section \ref{sec:entity_embedding}.
+The prediction is evaluated on models that were trained exclusively on the documents from the given case.
 
+Due to the earlier model selection (\ref{eval:law-case-model-selection}), the Random Forest estimator with 20 estimators and 7 tree depth was chosen to evaluate the relevance.
+Its performance was not strikingly high with precision 17\% and recall 71\% for $p=0.45$, and precision 20\% and recall 35\% for $p=0.5$.
 
+Multiple combinations of general and case-specific model comes forward.
+The figure \ref{fig:sent_finalP} shows two of them: \textit{AND} variant, where a sentence is considered relevant only in case both models agree, and \textit{OR} variant, where one of the models voting for a positive relevance is enough.
 
+\begin{figure}[h]
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \caption{\textit{AND} variant of the model}
+  \label{fig:sent_andP}
+  \includegraphics[width=\textwidth]{img/sent_andP}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \caption{\textit{OR} variant of the model}
+  \label{fig:sent_orP}
+  \includegraphics[width=\textwidth]{img/sent_orP}
+\end{subfigure}%
+\caption{Precision and recall of the general and case-specific attributes}
+\label{fig:sent_finalP}
+\end{figure}
+
+The \textit{or} models seems to be the more efficient variant
+The intuitive idea is that a sentence might be generally relevant without the case-specific keywords (especially in the law-related documents), but also the appearance of some important keyword might be an alert without the sentence being actually relevant according to the general characteristics.
+
+The final model is using the \textit{OR} combination of general and case-specific models (neural network for general and Random Forest for case-specific) with $p=0.55$.
+This setting yields final precision of $0.22$ and recall of $0.65$.
+In comparison with the human performance, the recall is higher and the precision is comparable.
 
 \section{Document relevance classifier}
 \label{sec:document-classifier}
