@@ -1773,15 +1773,20 @@ Users are free to create new cases and upload their own documents to evaluate th
 
 \section{Decision point evaluation}
 
-\subsection{Topology system of models}
-% popsat ze jsem zkusil pouzit features primo z celeho dokumentu, ale uspesnost byla nizsi nez pri pouziti vet a pak dokument
-
-\subsection{Bottom-level model selection}
+\subsection{Bottom-level estimator selection}
 \label{eval:bottom-model-selection}
-% Law-Case classification based on Sentence Meaning
-% ...Neural Networks        0.860
-% ...SVM C=1.0              0.754
-% ...RF n_est=500 depth=20  0.845
+The bottom-level model selection was based on the classification of case-related and law-related sentences from the sentence meaning.
+As mentioned earlier, it is expected that the neural network outperforms the other estimators due to the natural essence of the word2vec attribute.
+Nevertheless, it needs to be shown by an experiment, which results can be viewed in the figure \ref{fig:bottom_level_model_selection}.
+\begin{figure}[h]
+\caption{Bottom-level estimator selection for case-related or law-related classification of the sentence meaning}
+\label{fig:bottom_level_model_selection}
+\includegraphics[width=\textwidth]{img/bottom_level_model_selection}
+\end{figure}
+
+In contrast with the top-level estimator selection (\ref{eval:law-case-model-selection}), one can notice that the ensemble estimators and decision tree did not perform very well.
+That is a consequence of the multidimensional space of continuous variables, which is hard to understand by such simple rules as inequalities.
+The KNN algorithm, on the other hand, scored high, which might be due to the aforementioned property of the word2vec vectors -- the distances among them correspond to their semantic distance.
 
 \subsection{Law-Case estimator selection}
 \label{eval:law-case-model-selection}
@@ -1912,6 +1917,7 @@ Note that the tunning was performed with cross validation with 3 folds, which me
 In case the model is trained on all but one document (Leave-One-Out), the accuracy is 0.890.
 
 \section{Results}
+This section summarizes the final results of the classification, evaluates the individual models and show the performance on selected sentences and documents.
 
 Case-Law model
 Unfortunately, the contribution is too low to be worth the implementation, and therefore, the final model is left without the Law-Case model. However, the research was not pointless... might be better with more data.
@@ -1933,6 +1939,8 @@ Unfortunately, the contribution is too low to be worth the implementation, and t
 % case lookup - find similar cases
 
 % LSTM RNN networks - tried, but did not succeed, but maybe because not enough tunning
+
+% mention everlaw
 
   \printbibliography[heading=bibintoc] %% Print the bibliography.
 
