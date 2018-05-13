@@ -17,7 +17,7 @@
            %% hide the List of Figures.
   nolot,     %% Prints the List of Tables. Replace with `nolot` to
            %% hide the List of Tables.
-  draft
+%   draft
   %% More options are listed in the user guide at
   %% <http://mirrors.ctan.org/macros/latex/contrib/fithesis/guide/mu/fi.pdf>.
 ]{fithesis3}
@@ -48,19 +48,18 @@
     university    = mu,
     faculty       = fi,
     type          = mgr,
-    author        = {Jiří Mauritz},
+    author        = {Bc. Jiří Mauritz},
     gender        = m,
     advisor       = {RNDr. Zuzana Nevěřilová, Ph.D.}, 
     title         = {Automatic Classification of Legal Documents},
     TeXtitle      = {Automatic Classification of Legal Documents},
-    keywords      = {machine learning, legal documents, natural language processing},
-    TeXkeywords   = {machine learning, legal documents, natural language processing},
-    abstract      = {This is the abstract of my thesis, which can
-
-                     span multiple paragraphs.},
-    thanks        = {These are the acknowledgements for my thesis, which can
-
-                     span multiple paragraphs.},
+    keywords      = {electronic discovery, machine learning, legal domain, natural language processing},
+    TeXkeywords   = {electronic discovery, machine learning, legal domain, natural language processing},
+    abstract      = {The thesis focuses on an automation of electronic discovery by predicting relevance of legal documents.
+    The first contribution of this thesis is a description and understanding of the legal data characteristics and a research of the most suitable classification algorithm for the relevance prediction.
+    The second contribution is a design and implementation of a system for automatic classification of legal documents, which applies the knowledge from this research.
+    The system is integrated with the Legato system, which is a collaborative system for documents management that provides comprehensive control over legal cases.},
+    thanks        = {I would like to thank RNDr. Zuzana Nevěřilová, Ph.D. for her support, precious advices and professional guidance. Great thanks also belongs to Ing. Libor Kubečka for the technical guidance, valuable discussions, and patience. Finally, I would like to thank to my family and friends for the support during all my studies.},
     bib           = example.bib,
 }
 \usepackage{makeidx}      %% The `makeidx` package contains
@@ -96,13 +95,39 @@
 \begin{document}
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
+When lawyers, attorneys or paralegals obtain a legal case to work on, one of the first steps is the \textit{Electronic Discovery}.
+They need to search, gather, clean, and organize legal documents in order to find evidences in a legal case \cite{Conrad2010ediscovery}.
+With increasing amount of information in the electronic form, the lawyers increase emphasis on an efficient process of the \textit{Electronic Discovery}.
 
-introduction
+It is not uncommon that a legal case consists of hundreds to thousands of related documents, which a lawyer needs to scan through to understand a case and find a useful information, potentially an evidence.
+Therefore, many automated tools have emerged that are specifically designed to help in the \textit{Electronic Discovery}.
+The most basic ones enable more or less advanced full-text search, which is a well-studied field called \textit{Information Retrieval}.
+Other field, frequently applied in the legal domain, is the \textit{Artificial Intelligence}, which has delivered a numerous purposeful tools that are trying to substitute a lawyer in various tasks.
+The tool presented in this thesis belongs to this category.
+
+The goal of this research is to study, design and evaluate a mechanism that is able to highlight legal documents with important information and filter out the irrelevant.
+Such tool could possibly save the time spent on reading the documents and so, increase the lawyers' efficiency.
+The tool is not expected to be 100\% successful, as the relevance is a subjective factor and usually depends on a wide context, that is hard to acquire by the tool.
+Nevertheless, the tools with at least a reasonable performance has proven to be helpful in the past \cite{roitblat2010comparison}, especially the low-precision \& high-recall systems (more in the section \ref{sec:related_relevance}).
+
+The other contribution of this thesis is the implementation of the aforementioned tool and integration with the Legato system. 
+Legato is a collaborative system for legal documents management that provides comprehensive control over legal cases including full-text search, sorting of important information and visualization of events in time.
+The tool presented here belongs to other advanced features complementing the Legato system (\ref{sec:legato_advanced}).
+
+The thesis is structured in the following way.
+The \hyperref[chp:related_work]{first chapter} discusses the previous work on the artificial intelligence in the legal domain, similar tools and how the concept of relevance is understood in the legal domain.
+The \hyperref[chp:legato]{second chapter} introduces the Legato system, its main use cases and advanced features.
+In the \hyperref[chp:data_characteristics]{third chapter}, the working dataset is described and the exploratory analysis provides some insight into the data and its characteristics.
+The \hyperref[chp:nlp]{fourth chapter} presents a research of the natural language processing algorithms and tools to eventually pick the most suited for our purpose.
+Next, the \hyperref[chp:classification]{fifth chapter} elaborates the attributes and estimators applied to predict the relevance.
+The \hyperref[chp:implementation]{sixth chapter} explains the implementation of the tool that emerged based on this research and its integration with Legato.
+Finally, the \hyperref[chp:evaluation]{seventh chapter} shows some small experiments that helped assess intermediate decisions and evaluates the final models.
 
 \chapter{Related work}
+\label{chp:related_work}
 This chapter summarizes the previous work on the application of artificial intelligence in the legal domain. 
 The first section describes a general role of artificial intelligence in law and how it evolved in time.
-Researchers in this field focused mainly on decision-making systems to support work of the jury; however, this research focuses more on the information retrieval and knowledge discovery in the legal domain, also known as \textit{Electronic Discovery}, which brings a support for lawyers.
+Researchers in this field focused mainly on decision-making systems to support work of the jury; however, this research focuses more on the information retrieval and knowledge discovery in the legal domain, also known as the \textit{Electronic Discovery}, which brings a support for lawyers.
 Therefore, the second section looks more closely at this subfield by introducing state-of-the-art legal retrieval systems and underlines common characteristics with the research presented here.
 The last section discusses an issue of relevance in the legal context and related studies.
 
@@ -246,6 +271,7 @@ The four main concepts of UM are:
 % paper: Emerging AI & Law approaches to automating analysis and retrieval of electronically stored information in discovery proceedings
 
 \chapter{Background: Legato System}
+\label{chp:legato}
 The system introduced in this research is integrated into a proprietary web application \textit{Legato} developed by the \textit{SDE Software Solutions Ltd.} company.
 \textit{Legato} is a collaborative system for management of legal documents that provides comprehensive control over legal cases including full-text search, organizing of important information and visualizations.
 The system is now in development phase undergoing a number of user testing in U.S. and Czech environment.
@@ -509,6 +535,7 @@ Besides the mentioned two groups, the dataset contains few other documents that 
 For example, there are pictures, tables or newspapers.
 
 \chapter{NLP tool selection}
+\label{chp:nlp}
 The amount of text in legal documents can vary largely.
 Most of the documents we are working with stretch across one page, however, the average number of pages is six and we can find documents up to hundred pages long.
 The typical approach of the text processing is to convert the text into a document-term matrix that contains number of term occurrences in each document.
@@ -1023,6 +1050,7 @@ Despite a few mistakes, mostly recognizing numbers as people, the service was ab
 
 
 \chapter{Classification}
+\label{chp:classification}
 Data exploration in the chapter \ref{chp:data_characteristics} helped us clarify the language and style of the legal documents enough to design models for the relevance classification.
 % ... write about the outcomes of data characteristics chapter when they're done ...
 
@@ -1353,7 +1381,7 @@ The classifier computes \textit{gini index} \footnote{Measure of class impurity 
 The evaluation in the figure \ref{fig:case_law_feature_importance} takes advantage of this ability and displays the features sorted by its importance.
 
 \begin{figure}[h]
-\caption{Feature importance from Random tree decision classification of case-related and law-related}
+\caption{Feature importance from Random tree classification of case-related and law-related}
 \label{fig:case_law_feature_importance}
 \includegraphics[width=\textwidth]{img/case_law_feature_importance}
 \end{figure}
@@ -1509,15 +1537,66 @@ In comparison with the human performance, the recall is higher and the precision
 
 \section{Document relevance classifier}
 \label{sec:document-classifier}
+The previous two classifiers made decisions to guide the last one -- document relevance classifier -- to the correct result.
+The output from the sentence classifier is a direct input for the document classifier, included as the number of relevant sentences.
+The Law-Case classifier provided another attribute, which is a binary flag of the document's type.
+Other attributes include the structure as explained in the section \ref{sec:structural_characteristics}, input from the bottom-level attributes, category and counts of the individual entities.
+The bottom-level attributes includes meaning, keywords and relations, as in the case of previous classifiers.
+Here, however, the meaning is computed for each word of the document and the predictions are averaged.
+Since the case-specific features were already included in the sentence prediction, this model does not include any attributes specific to the case.
+
+The figure \ref{fig:doc_feature_importance} shows the attributes importances and guides us to select the best attributes for the document classifier.
+Indeed, the number of relevant sentences is the most important attribute, which is a positive fact and a confirmation that the sentence classifier is beneficial.
+All the next positions up to eighth are covered by the structural characteristics.
+We anticipated their importance to be high prior to the analysis, though they matter even more than expected.
+On the other hand, the counts of entities and bottom-level attributes have not proved to be discriminative enough to predict the relevance.
+
+It is worth to pinpoint one remarkable fact.
+The meaning attribute achieved importance of almost 14\% in the sentence classifier, whereas less than 4\% in the document classifier.
+One can notice that the number of words included in the meaning matters -- the sentence spans $15.9$ words in average, which brings enough specificity to train the models, compared to the $868$ words per document.
+It brings another confirmation that the sentence-focused analysis is contributory.
 
 
-\begin{figure}[H]
-\caption{First 3 components of PCA analysis applied on sentence meanings with labels according to the document relevance}
-\label{fig:PCA_sent_relevance}
-\includegraphics[width=\textwidth]{img/PCA_doc_relevance}
+\begin{figure}[h]
+\caption{Feature importance from Random tree classification of HOT, WARM and COLD relevance}
+\label{fig:doc_feature_importance}
+\includegraphics[width=\textwidth]{img/doc_feature_importance}
 \end{figure}
 
+% \begin{figure}[H]
+% \caption{First 3 components of PCA analysis applied on sentence meanings with labels according to the document relevance}
+% \label{fig:PCA_sent_relevance}
+% \includegraphics[width=\textwidth]{img/PCA_doc_relevance}
+% \end{figure}
+
+Due to the similar shape of data to the Law-Case classifier, the document classifier adopts the same estimator -- Random Forest (\ref{eval:law-case-model-selection}) -- with the same parameters (\ref{eval:law-case-model-tuning}).
+Brief testing of other parameters did not significantly increase the accuracy.
+The final model is trained by the Leave-One-Out method, which means 262 training documents and 1 testing.
+Based on the feature importance analysis displayed in the figure \ref{fig:doc_feature_importance}, only the first eight attributes were considered in the final model.
+
+The first variant is a classification into one of the three classes (HOT, WARM, COLD).
+To be able to confirm a success, one can compare the result to the baseline model, which predicts always the majority class (HOT) that would achieve an accuracy of 40\%.
+After multiple executions, our model achieved averaged accuracy of $0.738$ with standard deviation of $0.02$ and confidential interval $(0.726, 0.750)$.
+
+In the second variant, the model takes advantage of the fact, that there exits an order among the classes: WARM is semantically between COLD and HOT.
+Therefore, the model is learned on documents of binary values, which is achieved by converting all WARM documents to HOT, the probabilities of a document being HOT is computed, and finally, the classes are decided based on the thresholds $h$ and $w$.
+If the probability if higher than $h$, the class predicted is HOT, if the probability is lower than $w$, than the class is COLD, and otherwise, WARM is the output.
+The heat map in the figure \ref{fig:doc_two_class} shows the accuracies achieved when applying various values for $w$ and $h$.
+Even though the accuracies are close to 70\% for some combination of $h$ and $w$, it never exceeds the performance of the first variant.
+
+\begin{figure}[H]
+\caption{Heat map of accuracies for all values of parameters $w$ and $h$. Note that the values are showed in \%.}
+\label{fig:doc_two_class}
+\includegraphics[width=\textwidth]{img/doc_two_class}
+\end{figure}
+
+The precision and recall is impossible to compute due to the ternary problem instead of binary. In the evaluation chapter, the WARM and HOT labels will be merged to compute these two scores and compare the results with other systems.
+Lastly, it is worth to mention that the final model, as applied in the application, includes one more attribute -- the commentary.
+Users can comment on documents in Legato, which creates a potentially valuable information in the relevance prediction.
+Unfortunately, there are no ground data to either train or evaluate the performance of this attribute.
+
 \chapter{Implementation}
+\label{chp:implementation}
 Based on the research introduced in the previous chapters, a system for Classification of LAW Documents (Clawd) was designed and developed.
 Its purpose is to process textual information about legal cases, documents, and other user's inputs, pass the raw data to NLP services to extract features and evaluate relevance of the documents and its individual sentences.
 Clawd is a stand-alone web application independent of Legato, though Legato is the only system communicating with Clawd so far.
@@ -1732,10 +1811,6 @@ Undoubtedly, the AdaBoost Classifier outperformed all others, especially also th
 However, during the parameter tunning of both of these two classifiers, the Random Forest achieved better performance when tuned than the AdaBoost.
 Due to this finding, the final model is based on the Random Forest estimator.
 
-\subsection{Keyword type selection}
-% comparing keywords from case and doc to predict law-case
-% Case....0.839 
-% Doc ....0.863
 
 \subsection{Layered architecture}
 \label{eval:allinone-vs-features}
@@ -1777,8 +1852,6 @@ The cross validation with stratified folds was applied to evaluate the result.
 Based on this small test, all further experiments and final model includes relations with types.
 % relations: acc with full vector with types: 82 \%, acc with only words (300+300) 79\% => types helps
 
-\subsection{All words}
-% predict law-case based on training on all 190k words, predict class of word - 0.83
 
 \subsection{Word2vec contribution}
 To show the contribution of \textit{Word2vec} embedding, this experiment compares it with the conventional one-hot embedding.
@@ -1801,16 +1874,31 @@ It is worth to note that this outcome is very specific for our type and number o
 The conventional embedding is simply too large and sparse to deliver required amount of valuable information.
 
 
-\section{Parameter tuning}
+\subsection{Contribution of separate case and law-related models}
+This experiment evaluates the contribution of the idea to separate the documents to case-related and law-related.
+The results were obtained by measuring the accuracy of the document classifier on attributes as explained in the section \ref{sec:document-classifier}.
+The two variants differ in the inclusion or exclusion of a binary attribute specifying the case-related or law-related affiliation.
+Ten runs of the same settings (Random Forest with 20 estimators and 7 tree depth) were executed, which provided us with confidence intervals to conclude the contribution.
 
+The mean of the accuracy in the variant without the label is $0.736$ and with the label $0.743$.
+The average accuracy of the variant with the label is only by $0.7\%$ higher, which is very negligible increase since this amount corresponds to one or two documents out of all 263. 
+To conclude that the label flag is not a real contribution, one can check if the confidential intervals intersects: the $95\%$ interval for the variant with the label $(0.735, 0.751)$ truly intersects the $95\%$ interval of the other variant $(0.729, 0.742)$.
+
+
+% 0.733, 0.733, 0.733, 0.745, 0.749, 0.737, 0.726, 0.756, 0.726, 0.722 - without label
+% 0.745, 0.749, 0.749, 0.749, 0.741, 0.768, 0.722, 0.737, 0.726, 0.745 - with label
+% with label mean 0.743, and CI 0.735 - 0.751
+% without  label mean 0.736, and CI 0.729 - 0.742
+
+\section{Parameter tuning}
 \subsection{Bottom-level Model}
 \label{eval:bottom-model-tuning}
 % tuning of the bottom-level NN, i.e. activation functions, optimizers and layers
 
-\subsection{Law-Case Top-level Model}
+\subsection{Top-level Model}
 \label{eval:law-case-model-tuning}
-The outcome of the model selection in the section \ref{eval:law-case-model-selection} suggested Random Forests as the top-level model for predicting case-related and law-related documents. This section presents results from the parameter tunning.
-Specifically, the number of estimators and maximum depth of decision trees were tuned.
+The outcome of the model selection in the section \ref{eval:law-case-model-selection} suggested Random Forests as the top-level estimator.
+This section presents tunning of its parameters, specifically, the number of estimators and maximum depth of decision trees.
 
 \begin{figure}[h]
 \caption{Parameter tunning of the Random Forest classifier for case-related or law-related classification}
@@ -1824,7 +1912,11 @@ Note that the tunning was performed with cross validation with 3 folds, which me
 In case the model is trained on all but one document (Leave-One-Out), the accuracy is 0.890.
 
 \section{Results}
-% 1. print precision and recalls for all three relevances separately 
+
+Case-Law model
+Unfortunately, the contribution is too low to be worth the implementation, and therefore, the final model is left without the Law-Case model. However, the research was not pointless... might be better with more data.
+
+% 1. print precision and recalls for model with merged WARM and HOT
 % 2. compare with the algorithm already in Legato - Hot Words
 % 3. try evaluate some short passages from document and show concrete examples how it works
 
