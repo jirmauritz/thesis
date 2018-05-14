@@ -55,15 +55,15 @@
     TeXtitle      = {Automatic Classification of Legal Documents},
     keywords      = {electronic discovery, machine learning, legal domain, natural language processing},
     TeXkeywords   = {electronic discovery, machine learning, legal domain, natural language processing},
-    abstract      = {The thesis focuses on an automation of electronic discovery by predicting relevance of legal documents.
-    The first contribution of this thesis is a description and understanding of the legal data characteristics and a research of the most suitable classification algorithm for the relevance prediction.
+    abstract      = {The thesis focuses on automation of electronic discovery by predicting the relevance of legal documents.
+    The first contribution of this thesis is a description and understanding of the legal data characteristics and research of the most suitable classification algorithm for the relevance prediction.
     The second contribution is a design and implementation of a system for automatic classification of legal documents, which applies the knowledge from this research.
     The system is integrated with the Legato system, which is a collaborative system for documents management that provides comprehensive control over legal cases.},
-    thanks        = {I would like to thank RNDr. Zuzana Nevěřilová, Ph.D. for her support, precious advices and professional guidance. Great thanks also belongs to Ing. Libor Kubečka for the technical guidance, valuable discussions, and patience. Finally, I would like to thank to my family and friends for the support during all my studies.},
+    thanks        = {I would like to thank RNDr. Zuzana Nevěřilová, Ph.D. for her support, precious pieces of advice and professional guidance. Special thanks also go to Ing. Libor Kubečka for the technical guidance, valuable discussions, and patience. Finally, I would like to thank my family and friends for the support during all my studies.},
     bib           = example.bib,
 }
-\usepackage{makeidx}      %% The `makeidx` package contains
-\makeindex                %% helper commands for index typesetting.
+% \usepackage{makeidx}      %% The `makeidx` package contains
+% \makeindex                %% helper commands for index typesetting.
 %% These additional packages are used within the document:
 \usepackage{paralist} %% Compact list environments
 \usepackage{amsmath}  %% Mathematics
@@ -90,35 +90,36 @@
 \DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
 \DeclareMathOperator{\EX}{\mathbb{E}}% expected value
 \usepackage[table]{xcolor}
+\usepackage{tabularx}
 \usepackage{subcaption}
 
 \begin{document}
 \chapter*{Introduction}
 \addcontentsline{toc}{chapter}{Introduction}
 When lawyers, attorneys or paralegals obtain a legal case to work on, one of the first steps is the \textit{Electronic Discovery}.
-They need to search, gather, clean, and organize legal documents in order to find evidences in a legal case \cite{Conrad2010ediscovery}.
-With increasing amount of information in the electronic form, the lawyers increase emphasis on an efficient process of the \textit{Electronic Discovery}.
+They need to search, gather, clean, and organize legal documents in order to find pieces of evidence in a legal case \cite{Conrad2010ediscovery}.
+With increasing amount of information in the electronic form, the lawyers put more emphasis on an efficient process of \textit{Electronic Discovery}.
 
-It is not uncommon that a legal case consists of hundreds to thousands of related documents, which a lawyer needs to scan through to understand a case and find a useful information, potentially an evidence.
-Therefore, many automated tools have emerged that are specifically designed to help in the \textit{Electronic Discovery}.
+It is not uncommon that a legal case consists of hundreds to thousands of related documents, which a lawyer needs to scan through to understand a case and find useful information, potentially a shred of evidence.
+Therefore, many automated tools have emerged that are specifically designed to help in the \textit{Electronic Discovery} process.
 The most basic ones enable more or less advanced full-text search, which is a well-studied field called \textit{Information Retrieval}.
-Other field, frequently applied in the legal domain, is the \textit{Artificial Intelligence}, which has delivered a numerous purposeful tools that are trying to substitute a lawyer in various tasks.
+Another field, frequently applied in the legal domain, is the \textit{Artificial Intelligence}, which has delivered numerous purposeful tools that are trying to substitute a lawyer in various tasks.
 The tool presented in this thesis belongs to this category.
 
-The goal of this research is to study, design and evaluate a mechanism that is able to highlight legal documents with important information and filter out the irrelevant.
-Such tool could possibly save the time spent on reading the documents and so, increase the lawyers' efficiency.
-The tool is not expected to be 100\% successful, as the relevance is a subjective factor and usually depends on a wide context, that is hard to acquire by the tool.
-Nevertheless, the tools with at least a reasonable performance has proven to be helpful in the past \cite{roitblat2010comparison}, especially the low-precision \& high-recall systems (more in the section \ref{sec:related_relevance}).
+The goal of this research is to study, design and evaluate a mechanism that is able to highlight legal documents with valuable information and filter out the irrelevant.
+Such tool could save the time spent on reading the documents and thus, increase the lawyers' efficiency.
+The tool is not expected to be 100\% successful, as the relevance is a subjective factor and usually depends on a broad context, that is hard to acquire by the tool.
+Nevertheless, the tools with at least a reasonable performance have proven to be helpful in the past \cite{roitblat2010comparison}, especially the low-precision \& high-recall systems (more in the section \ref{sec:related_relevance}).
 
-The other contribution of this thesis is the implementation of the aforementioned tool and integration with the Legato system. 
-Legato is a collaborative system for legal documents management that provides comprehensive control over legal cases including full-text search, sorting of important information and visualization of events in time.
-The tool presented here belongs to other advanced features complementing the Legato system (\ref{sec:legato_advanced}).
+The other contribution of this thesis is the implementation of the tool mentioned above and integration with the Legato system. 
+Legato is a collaborative system for legal documents management that provides comprehensive control over legal cases including full-text search, sorting of relevant information and visualization of events in time.
+The tool presented here belongs to the group of advanced features complementing the Legato system (\ref{sec:legato_advanced}).
 
 The thesis is structured in the following way.
-The \hyperref[chp:related_work]{first chapter} discusses the previous work on the artificial intelligence in the legal domain, similar tools and how the concept of relevance is understood in the legal domain.
-The \hyperref[chp:legato]{second chapter} introduces the Legato system, its main use cases and advanced features.
-In the \hyperref[chp:data_characteristics]{third chapter}, the working dataset is described and the exploratory analysis provides some insight into the data and its characteristics.
-The \hyperref[chp:nlp]{fourth chapter} presents a research of the natural language processing algorithms and tools to eventually pick the most suited for our purpose.
+The \hyperref[chp:related_work]{first chapter} discusses the previous work on artificial intelligence in the legal domain, similar tools, and understanding of the concept of relevance.
+The \hyperref[chp:legato]{second chapter} introduces the Legato system, its primary use cases, and advanced features.
+In the \hyperref[chp:data_characteristics]{third chapter}, the working dataset is described, and the exploratory analysis provides some insight into the data and its characteristics.
+The \hyperref[chp:nlp]{fourth chapter} presents research of the natural language processing algorithms and tools to eventually pick the most suited for our purpose.
 Next, the \hyperref[chp:classification]{fifth chapter} elaborates the attributes and estimators applied to predict the relevance.
 The \hyperref[chp:implementation]{sixth chapter} explains the implementation of the tool that emerged based on this research and its integration with Legato.
 Finally, the \hyperref[chp:evaluation]{seventh chapter} shows some small experiments that helped assess intermediate decisions and evaluates the final models.
@@ -1307,9 +1308,9 @@ Even though the idea of extending network is not precise, as the embeddings are 
 
 Another reason, why neural network best suites our needs, is that it is an incremental estimator \cite{incrementalScikit}.
 Incremental estimators enables to iteratively learn and improve on a new batch of data without forgetting the old state.
-Other incremental estimators solving classification problems include Naive Bayes (NB) or Stochastic Gradient Descent (SGD) learning.
+Other incremental estimator solving classification problems is the Naive Bayes (NB) classifier.
 
-The final structure of the neural network has an input layer of dimension 300, two hidden layers of 6 and 3 neurons and 2 output neurons representing binary classes.
+The final structure of the neural network has an variable input layer dimension based on the attribute, two hidden layers of 16 and 8 neurons and 2 output neurons representing binary classes.
 Such a model is prepared to predict law-related vs case-related sentences as well as relevant vs irrelevant sentences. Note that even though there are three final classes of relevance (HOT, WARM, COLD), the WARM class is neglected here and later decided by the top-level models.
 
 \begin{figure}[H]
@@ -1318,8 +1319,8 @@ Such a model is prepared to predict law-related vs case-related sentences as wel
 \includegraphics[width=\textwidth]{img/Bottom-level_NN}
 \end{figure}
 
-The \textit{sigmoid} activation function proved to be the most successful in all layers (\ref{eval:bottom-model-tuning}).
-During the model training, an Adamax optimizer with learning rate of 0.02 was applied in 100 epochs and batch size of 10.
+The \textit{sigmoid} activation function showed to be the most successful in all layers.
+During the model training, an Adamax optimizer with learning rate of 0.02 was applied in 150 epochs and batch size of 20 to 100 depending on the number of training data.
 To prevent the overfitting, the model stopped learning in case of increasing loss on a validation set (10\% of training data).
 The applied loss function is called the Cross Entropy (CE), which is defined as follows:
 $$
@@ -1590,7 +1591,7 @@ Even though the accuracies are close to 70\% for some combination of $h$ and $w$
 \includegraphics[width=\textwidth]{img/doc_two_class}
 \end{figure}
 
-The precision and recall is impossible to compute due to the ternary problem instead of binary. In the evaluation chapter, the WARM and HOT labels will be merged to compute these two scores and compare the results with other systems.
+The precision and recall is impossible to compute due to the ternary problem instead of the binary. In the evaluation chapter, the WARM and HOT labels will be merged to compute these two scores and compare the results with other systems.
 Lastly, it is worth to mention that the final model, as applied in the application, includes one more attribute -- the commentary.
 Users can comment on documents in Legato, which creates a potentially valuable information in the relevance prediction.
 Unfortunately, there are no ground data to either train or evaluate the performance of this attribute.
@@ -1767,10 +1768,8 @@ with login \textit{clawd@gmail.com} and password \textit{clawd}.
 Users are free to create new cases and upload their own documents to evaluate the relevance.
 
 
-
 \chapter{Evaluation}
 \label{chp:evaluation}
-
 \section{Decision point evaluation}
 
 \subsection{Bottom-level estimator selection}
@@ -1880,6 +1879,7 @@ The conventional embedding is simply too large and sparse to deliver required am
 
 
 \subsection{Contribution of separate case and law-related models}
+\label{sec:eval_law_case_contribution}
 This experiment evaluates the contribution of the idea to separate the documents to case-related and law-related.
 The results were obtained by measuring the accuracy of the document classifier on attributes as explained in the section \ref{sec:document-classifier}.
 The two variants differ in the inclusion or exclusion of a binary attribute specifying the case-related or law-related affiliation.
@@ -1888,6 +1888,7 @@ Ten runs of the same settings (Random Forest with 20 estimators and 7 tree depth
 The mean of the accuracy in the variant without the label is $0.736$ and with the label $0.743$.
 The average accuracy of the variant with the label is only by $0.7\%$ higher, which is very negligible increase since this amount corresponds to one or two documents out of all 263. 
 To conclude that the label flag is not a real contribution, one can check if the confidential intervals intersects: the $95\%$ interval for the variant with the label $(0.735, 0.751)$ truly intersects the $95\%$ interval of the other variant $(0.729, 0.742)$.
+Based on this experiment, the Law-Case classifier is not included in the application.
 
 
 % 0.733, 0.733, 0.733, 0.745, 0.749, 0.737, 0.726, 0.756, 0.726, 0.722 - without label
@@ -1899,6 +1900,46 @@ To conclude that the label flag is not a real contribution, one can check if the
 \subsection{Bottom-level Model}
 \label{eval:bottom-model-tuning}
 % tuning of the bottom-level NN, i.e. activation functions, optimizers and layers
+Following the analysis from the estimator selection experiment (sec. \ref{eval:bottom-model-selection}), this section presents the parameter tunning of the estimator.
+Based on the previous experiments with the neural network, the chosen parameters and values to tune are the following:
+\begin{itemize}
+\item \# of neurons in the first layer: 128, 64, 32, 16
+\item \# of neurons in the second layer: 16, 8, 4, 2
+\item learning rate: 0.002, 0.005, 0.01, 0.02
+\item batch size: 20, 60, 100, 300, 500, 1000
+\item \# of epochs: 20, 100, 150
+\end{itemize}
+The activation function was not tuned since only the \textit{sigmoid} performed well, and therefore, was the only option.
+
+For the purpose of the tunning, the sentence meaning was applied as the training data with labels according to the case-related and law-related classes.
+The \textit{Scikit-learn} library provided a tool called \textit{GridSearchCV}\footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.GridSearchCV.html}}, which tries all possible combinations of the parameters and computes its accuracy in a parallel threads.
+
+\begin{figure}[H]
+\centering
+\caption{Neural network parameter tunning on sentence meaning and Law-Case classes}
+\label{fig:gridsearch}
+\begin{tabularx}{\textwidth}{|c|X|X|X|X|X||X|}
+\hline
+\rowcolor{gray!30}
+\textit{\#} & \textbf{Learning rate} & \textbf{Batch size} & \textbf{Epochs} & \textbf{First layer} &  \textbf{Second layer} & \textbf{Accuracy}  \\ \hline
+1 & 0.02 & 20 & 150 & 16 & 8 & 0.835  \\ \hline
+2 & 0.02 & 20 & 100 & 16 & 8 & 0.832\\ \hline
+3 & 0.02 & 20 & 100 & 32 & 4 & 0.832\\ \hline
+4 & 0.02 & 20 & 100 & 64 & 16 & 0.831\\ \hline
+5 & 0.02 & 20 & 150 & 32 & 8 & 0.831\\ \hline
+6 & 0.02 & 60 & 150 & 32 & 8 & 0.83\\ \hline
+7 & 0.02 & 20 & 100 & 32 & 8 & 0.83\\ \hline
+8 & 0.02 & 60 & 150 & 64 & 2 & 0.83\\ \hline
+9 & 0.02 & 100 & 150 & 32 & 4 & 0.829\\ \hline
+10 & 0.02 & 20 & 100 & 32 & 16 & 0.829\\ \hline
+\end{tabularx}
+\end{figure}
+
+The top ten results are shown in the table \ref{fig:gridsearch}.
+Notice that the accuracy does not necessarily increase with the increasing number of neurons.
+The first variant with the learning rate of $0.02$, $150$ epochs, $16$ neurons in the first layer and $8$ in the second layer is applied in the research, as well as in the application.
+It is worth noting that the batch size will be changed for different settings according to the size of the training dataset.
+Thanks to the early stopping criteria, which terminates the learning when the accuracy does not increase in 4 consecutive epochs, the number of epochs can be understood as an upper bound rather than a precise number.
 
 \subsection{Top-level Model}
 \label{eval:law-case-model-tuning}
@@ -1919,35 +1960,103 @@ In case the model is trained on all but one document (Leave-One-Out), the accura
 \section{Results}
 This section summarizes the final results of the classification, evaluates the individual models and show the performance on selected sentences and documents.
 
-Case-Law model
-Unfortunately, the contribution is too low to be worth the implementation, and therefore, the final model is left without the Law-Case model. However, the research was not pointless... might be better with more data.
+\subsection{Evaluation of Law-Case classifier}
+Unfortunately, the Law-Case classifier did not showed to be useful (\ref{sec:eval_law_case_contribution}) in the relevance prediction.
+As the application is focused primarily on the relevance, the contribution is too low to be worth the implementation, and therefore, the final application is left without the Law-Case model. 
 
-% 1. print precision and recalls for model with merged WARM and HOT
-% 2. compare with the algorithm already in Legato - Hot Words
-% 3. try evaluate some short passages from document and show concrete examples how it works
+However, the experiments were not pointless, since it discovers surprisingly poor relation between the intuition about the types of documents and its relevance.
+Also, the information about the class might be useful for lawyers in other tasks than a relevance prediction.
+Possibly, the model would be more efficient with several times larger corpus of documents, but this research lacks resources to conclude that.
 
+\subsection{Evaluation of Sentence classifier}
+As mentioned in the section \ref{sec:sentence-classifier}, the classification of sentences is a difficult tasks, mainly due to very subjective view on its relevance.
+The proposed Sentence classifier in the final setting achieved a precision of $0.22$ and recall of $0.65$.
+This means that there is a $65\%$ chance that a relevant sentence will be recognized by the tool.
+The positive fact is that if multiple sentences in a document are relevant, than there is a high probability that they will be recognized.
+The negative fact is that only one out of four to five sentences is truly relevant.
+This imprecision might be tolerated by users as the main focus is on the recall.
+
+To obtain a better insight about the algorithm, the following examples show specific sentences with their predicted and true relevances.
+All sentences are from the case ``Davis v. HappyLand Toy Company", where a little boy named Joey dies after he swallows toy beads.
+The HappyLand Toy Company is sued for the chemicals used in the toy.
+
+The first document is a testimony of the babysitter, who was looking after Joey when the incident happened.
+An example of a correctly classified sentence follows:
+(Note that the sentences are already preprocessed and sometimes cut in clauses)
+\begin{quote}
+``much worse though was that joey seemed to have some breathing problems''
+\end{quote}
+The sentence contains two words of interest: the name of the victim and a medical term that relates to his health (breathing problems).
+As the medical term probably appeared in other documents as well, its appearance could be the reason, why the sentence is predicted as relevant.
+
+Next sentence was recognized by the classification as relevant though it is not:
+\begin{quote}
+``i do a lot of babysitting for the palmer family and they recommended me to the davis family''
+\end{quote}
+Here, possibly the names (``palmer'' and ``davis'') caused the higher relevance, even though it is not necessary relevant for the case.
+
+No relevant sentence was classified as irrelevant, which means the recall is 1.
+However, the precision is only 4\% with 138 sentences classified as relevant out of 186.
+In this case, the high relevance is beneficial, since the document is subsequently correctly classified as HOT.
+
+The second document is a record of a doctor visit, where the annotator picked the name of the patient as relevant and the breathing troubles, as can be seen from the view \ref{fig:sent_example}.
+
+\begin{figure}[H]
+\caption{Example of a sentence relevance in WARM document}
+\label{fig:sent_example}
+\includegraphics[width=\textwidth]{img/sent_example}
+\end{figure}
+
+Our algorithm missed the patience name, but highlighted both sentences of the bottom paragraph.
+Therefore, both the precision and recall are $0.5$.
+The algorithm has troubles with the structured documents, because the OCR analysis sometimes adds strange signs to the sentences.
+For example, the above check boxes are present in the sentence as ``iii yes izl no''.
+
+\subsection{Evaluation of Document classifier}
+The document classifier achieved an accuracy of $0.74$ with a baseline of $0.40$, which is  a significant contribution (\ref{sec:document-classifier}); however, to compare the results with the previous studies, we need to compute the precision and recall.
+Hence, the following evaluation considers all WARM documents as HOT in the sake of the high-recall strategy.
+Again, the results are varying according to a threshold $p$, which is a limit that a sentence need to exceed to be considered as relevant.
+Results are displayed in the graph \ref{fig:doc_PR}.
+
+\begin{figure}[H]
+\caption{Precision and recall of the binary relevance prediction of documents}
+\label{fig:doc_PR}
+\includegraphics[width=\textwidth]{img/doc_PR}
+\end{figure}
+
+The results are considerably higher than in the case of sentences according to the expectation.
+On the other hand, the percentage of relevant documents is more than $73$, which makes the classification easier task than in the sentence environment, where only 17\% are relevant.
+For the same reason, the results are hard to compare with the previous research on the document relevance (\ref{sec:related_relevance}), where the precision was only $20\%$ and recall $50\%$, because the amount of relevant documents was as low as $9\%$.
+
+Next paragraph reviews the success rate of the ternary-class version of the model (which is implemented) on the mentioned case ``Davis v. HappyLand Toy Company".
+Even though only $55\%$ of all HOT cases were recognized as HOT, the rest of them were marked WARM.
+From 20 COLD documents, 11 were correctly recognized as COLD, but more importantly, only 2 of the misclassified documents were marked as HOT.
+The conclusion is that the prediction is not 100\% precise; however, it was able to learn basic patterns and behaves reasonably.
 
 \chapter{Conclusion}
+This thesis searched answers on the questions about the application of artificial intelligence in the E-discovery process, especially: how are the legal documents different from others, what makes a legal document relevant, what features of a legal document matters the most, if the structure is important in the relevance prediction, and what tools and estimators work best for relevance prediction in the legal domain.
+Some of the questions about the nature of the legal data are elaborated in the chapter Data Characteristics (\ref{chp:data_characteristics}), the important attributes for the relevance prediction are studied in the section \ref{sec:attributes} and the most suited estimators are examined in the Evaluation chapter (\ref{chp:evaluation}).
 
-% future work
-% - Watson NLU enables to create custom language model, which could recognize entities, keywords and relations even more precise if we feed it with legal data. We could not, since we have not enough text, but a future research could work with this.
+During the data analysis, two ideas on improvement of the relevance prediction were proposed: determining a document type prior to the relevance, and shifting of focus on sentences rather than documents.
+The first idea failed to prove to be useful, which was influenced the further research and implementation.
+On the other hand, focusing on sentences showed to be a beneficial step towards an efficient relevance prediction.
+As a result, the performance of the presented models reached higher efficiency than human annotators and similar results as other tools in the same domain.
 
-% - Watson NLU enables 462 entities - possible to include all of them
+Besides the research, a simultaneous outcome of the thesis was also the implementation of a system that applies the mentioned techniques and is integrated with an E-discovery system Legato.
+The system presented here is already implemented in the instance of the Legato that contains innovative features.
+If the user testing confirms usability and usefulness of the extension, it will reach the final release.
 
-% Matter of privacy - how to ensure the models do not enable to retrieve information about other case
+Many aspects of the system, such as training of the models, parameter tunning, or overall system configuration, can be further improved in the future.
+Due to the fact that the models were trained on a relatively small dataset, they will tend to overfit and most likely fail on new types of documents. There is still multiple possibilities how to improve the system.
+The future work might consider wider range of entities since the \textit{Watsion NLU} provides 462 types, from which only 6 were applied.
+Other improvement could train a recurrent neural network to learn patterns in the sequence of words, instead of converted attributes.
+Also, the \textit{Watson NLU} provides a possibility to create a custom language model, which could recognize entities, keywords and relations even more precise when focused exclusively on the legal text. The present research could not utilize this feature due to small amount of training data.
 
-% case lookup - find similar cases
+The relevance prediction, as well as other advanced features applying artificial intelligence, will become an essential part of each innovative E-discovery system.
+There are still opportunities for further enhancements, which might rapidly speed up and ease the work for lawyers.
+Hopefully, the presented research helps lawyers and software developers in future decisions to achieve these enhancements.
 
-% LSTM RNN networks - tried, but did not succeed, but maybe because not enough tunning
-
-% mention everlaw
-
-  \printbibliography[heading=bibintoc] %% Print the bibliography.
-
-  \makeatletter\thesis@blocks@clear\makeatother
-  \phantomsection %% Print the index and insert it into the
-  \addcontentsline{toc}{chapter}{\indexname} %% table of contents.
-  \printindex
+\printbibliography[heading=bibintoc] %% Print the bibliography.
 
 \appendix %% Start the appendices.
 \chapter{An appendix}
