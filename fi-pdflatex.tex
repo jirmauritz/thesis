@@ -128,17 +128,17 @@ Finally, the \hyperref[chp:evaluation]{seventh chapter} shows some small experim
 \label{chp:related_work}
 This chapter summarizes the previous work on the application of artificial intelligence in the legal domain. 
 The first section describes a general role of artificial intelligence in law and how it evolved in time.
-Researchers in this field focused mainly on decision-making systems to support work of the jury; however, this research focuses more on the information retrieval and knowledge discovery in the legal domain, also known as the \textit{Electronic Discovery}, which brings a support for lawyers.
-Therefore, the second section looks more closely at this subfield by introducing state-of-the-art legal retrieval systems and underlines common characteristics with the research presented here.
+Researchers in this field focused mainly on decision-making systems to support work of the jury; however, this research focuses more on the information retrieval and knowledge discovery in the legal domain, also known as the \textit{Electronic Discovery}, which brings support for lawyers.
+Therefore, the second section looks more closely at this subfield by introducing state-of-the-art legal retrieval systems and underlines shared characteristics with the research presented here.
 The last section discusses an issue of relevance in the legal context and related studies.
 
 \section{Artificial Intelligence and Law}
 The global publishing company \textit{Springer} introduced a journal \textit{Artificial Intelligence and Law} \footnote{\url{https://link.springer.com/journal/10506}} in 1992 which contains 426 published articles (as of March 2018) describing theoretical and empirical studies in artificial intelligence (AI) from the legal perspective.
-Though the journal consists of articles concerned with AI as a new trend that needs to be bound by law, such as legal aspects of autonomous vehicles \cite{Prakken2017autonomous}, robot sex \cite{Frank2017robotSex} or responsibility of autonomous machines \cite{Brozek2017AIresponsibility}, it also contains researches of new innovative AI systems that perform automatic reasoning and knowledge extraction in the legal domain.
-The collection of AI-law related articles provides enough information to create a brief overview of how this field has evolved over time.
+Though the journal consists of articles concerned with AI as a new trend that needs to be bound by law, such as legal aspects of autonomous vehicles \cite{Prakken2017autonomous}, robot sex \cite{Frank2017robotSex} or responsibility of autonomous machines \cite{Brozek2017AIresponsibility}, it also contains studies of new innovative AI systems that perform automatic reasoning and knowledge extraction in the legal domain.
+The collection of AI-law related articles provides enough information to create a brief overview of how this field has evolved.
 
 The first legal search engines enabled retrieving results by first-order logic rules and fixed pieces of text \cite{Turtle1995legalRetrieval}.
-In the early 1990s, the concept of full-text search has become widely used and users could enjoy a retrieval by a plain natural language \cite{Turtle1995legalRetrieval}.
+In the early 1990s, the concept of full-text search has become widely used, and therefore, users could enjoy a retrieval by a plain natural language \cite{Turtle1995legalRetrieval}.
 Shortly after, researchers started to focus on AI when creating a new legal retrieval system, such as legal text management system \textit{Flexlaw} (\citeyear{Smith1995flexlaw}) \cite{Smith1995flexlaw}, integrated decision support system \textit{DataLex WorkStations} (\citeyear{Greenleaf1995datalex}) \cite{Greenleaf1995datalex}, or system for heuristic retrieval of legal arguments \textit{BankXX} (\citeyear{Rissland1996bankxx}) \cite{Rissland1996bankxx}.
 As the machine learning was still quite nascent, the mentioned systems are a fusion of expert and AI systems with expert knowledge as the essential part of the system.
 A sign of such fusion is an attempt to formalize the \textit{legal argument} (\cite{Freeman1996argument}, \cite{Bench-Capon1997argument} and most recently \cite{ashley2013information}) as an element between the \textit{rules} (expert systems) and \textit{models} (AI systems).
@@ -146,27 +146,25 @@ A sign of such fusion is an attempt to formalize the \textit{legal argument} (\c
 At the turn of the century, an attempt to conceptualize the legal domain for the design of legal knowledge systems brought a number of ontologies, such as McCarty's language for legal discourse, Stamper's norma formalism, or Valente's functional ontology \cite{Visser1998ontologies}.
 The ontologies are categorizing the knowledge and breaking it into predicate relations, which express properties of objects, rules in the form of implications and second-order expressions adding more explanatory power.
 Unfortunately, they are not very widely applied, except for the Valente's Functional Ontology for Law (FOLaw) \cite{VanEngers2008folaw}.
-The conclusion of the research comparing four main ontologies is
-\begin{quote}
-``None  of  the  ontologies  seems  to  have  adequate  provisions  to  specify  legal procedures.'' --- \citeauthor{Visser1998ontologies} \cite{Visser1998ontologies}
-\end{quote}
+The conclusion of the research comparing the four main ontologies is the following:
+``None  of  the  ontologies  seems  to  have  adequate  provisions  to  specify  legal procedures.'' \cite{Visser1998ontologies}.
 
 Consequently, the formalistic implementations of the syllogistic model in legal domain were criticized (\cite{Shapira1999fuzzy}, \cite{Philipps1999nn}).
 Researchers realized that the deductions starting at axioms and following prescribed rules are limiting and introduce imprecise standards in the legal reasoning.
 One of the possible solutions is to use relaxed formalisms, such as fuzzy logic \cite{Shapira1999fuzzy} or neural networks \cite{Philipps1999nn}.
-Philipps et al. suggest that the usual perspective of rules as a set of linguistic entities (sentences, words, etc.) is not general and abstract enough to express the knowledge \cite{Philipps1999nn}.
+Philipps et al. suggest that the usual perspective of rules applying linguistic entities (sentences, words, etc.) is not general and abstract enough to express the knowledge \cite{Philipps1999nn}.
 They compare the lawyer's work to the learning and producing results of the neural network.
-Examples of real-world applications following this scheme are the neural approach to legal reasoning system for family law in Australia \cite{Stranieri1999nn}, modeling the French Council of State decisions in NEUROLEX \cite{Bourcier1999nn}, or a decision  support  system   in the field of insurance using a neural network \cite{Borgulya1999nn}.
+Examples of real-world applications following this scheme are the neural approach to legal reasoning system for family law in Australia \cite{Stranieri1999nn}, modeling the French Council of State decisions in NEUROLEX \cite{Bourcier1999nn}, or a decision support system in the field of insurance using a neural network \cite{Borgulya1999nn}.
 
 % odstavec o 2000 - 2010 - jak pribyvalo dat -> data mining, lepsi modely
-Despite all the effort, lawyers were rather skeptical about AI helping in the legal domain, as can be seen in the article \citetitle{oskamp2002ainotsomuch} by \citeauthor{oskamp2002ainotsomuch} (\citeyear{oskamp2002ainotsomuch}) \cite{oskamp2002ainotsomuch}.
+Despite all the effort, lawyers were quite skeptical about AI helping in the legal domain, as can be seen in the article \citetitle{oskamp2002ainotsomuch} by \citeauthor{oskamp2002ainotsomuch} (\citeyear{oskamp2002ainotsomuch}) \cite{oskamp2002ainotsomuch}.
 The main problem seemed to be the lack of legal data, which could not have been applied to train and evaluate the AI models.
 This, however, changed during the first decade of the new century with the rise of the Internet.
 New collections of documents and structured databases enabled growth of a data exploration techniques:
-\textit{data mining} was applied to find implicit information from multiple heterogeneous sources (\citetitle{Dahbur2003crimes} \cite{Dahbur2003crimes}), \textit{heuristic search} method was used in case-based reasoning system AGATHA \cite{Chorley2005agatha}, and \textit{text summarization} was applied in extracting the important parts of law from the XML corpus of judgments of the UK House of Lords \cite{Hachey2006summarization}.
+\textit{data mining} was applied to find implicit information from multiple heterogeneous sources (\citetitle{Dahbur2003crimes} \cite{Dahbur2003crimes}), \textit{heuristic search} method was used in the case-based reasoning system AGATHA \cite{Chorley2005agatha}, and \textit{text summarization} was applied in extracting the important parts of law from the XML corpus of judgments of the UK House of Lords \cite{Hachey2006summarization}.
 
 % odstavec o 2010 - present - jak se zacly nastroje specializovat
-During the last few years, the automated tools helping in legal realm have become more specialized, yet properly tuned.
+During the last few years, the automated tools helping in legal realm have become more specialized, yet adequately tuned.
 These include automated tool for finding patents related to a particular topic \cite{Abood2018patent}, detection of tax evasion by networks of transactions with their corresponding audit observables \cite{Hemberg2016tax}, and finding and modeling contradictions in judicial statements \cite{Carey2013contradiction} \cite{marneffe2008contradiction}.
 
 % bayesian networks
@@ -183,8 +181,8 @@ The \textit{Bayesian Network} enables to visualize the legal arguments and is ab
 The probabilities of unlikely events are especially of great importance since judges need to distinguish between coincidence and purpose.
 
 \section{Electronic Discovery}
-Electronic Discovery, also known as E-discovery or Electronic Data Discovery (EDD), is a process of searching, gathering, cleansing, and organizing of legal documents in order to find evidence in a civil or criminal legal case \cite{Conrad2010ediscovery}.
-The field of Information Retrieval (IR) is an essential part of the E-Discovery, as it provides efficient full-text search among the documents.
+The \textit{Electronic Discovery}, also known as \textit{E-discovery} or \textit{Electronic Data Discovery} (EDD), is a process of searching, gathering, cleansing, and organizing of legal documents in order to find an evidence in a civil or criminal legal case \cite{Conrad2010ediscovery}.
+The field of \textit{Information Retrieval} (IR) is an essential part of the \textit{E-Discovery}, as it provides efficient full-text search among the documents.
 \citeauthor{Conrad2010ediscovery} mentions how the IR can be supplemented by AI techniques in his work \citetitle{Conrad2010ediscovery} \cite{Conrad2010ediscovery}:
 \begin{enumerate}
 \item Intelligent relevance feedback
@@ -197,30 +195,30 @@ The E-mail and Social network have become naturally a source of legal arguments 
 Anticipatory E-Discovery is a new practice of corporates to prepare for a possible legal hold on some of their products or intellectual property.
 
 The fourth category includes mainly the clustering and categorization of documents to organize them into separate groups.
-A research under \textit{Xerox Research Center Europe} introduced a machine learning classifier \textit{CategoriX}, which works with a fixed set of document categories and predicts document's category with probabilistic latent semantic analysis (PLSA) \cite{barnett2009classification}.
+Research under \textit{Xerox Research Center Europe} introduced a machine learning classifier \textit{CategoriX}, which works with a fixed set of document categories and predicts document's category with probabilistic latent semantic analysis (PLSA) \cite{barnett2009classification}.
 The mentioned technique is usually applied in the topic modeling of documents and is briefly explained in the section \ref{topic_modeling} as it is one of the working attributes of the system proposed here.
-Research of Noortwijk et al. presents the \textit{Copac} system, which categorizes whole legal cases instead of documents.
-Moreover, they relaxed the set of categories and enable users to define their own by selecting examples of positive and negative samples \cite{van2006ranking}.
+Research of Noortwijk et al. presents the \textit{Copac} system, which categorizes whole legal cases instead of documents \cite{van2006ranking}.
+Moreover, they relaxed the set of categories and enabled users to define their own by selecting examples of positive and negative samples \cite{van2006ranking}.
 
-The main goal of this research is the relevance prediction.
+The primary goal of this research is the relevance prediction.
 However, the categorization of documents is also part of this research, because the preparation for the relevance prediction is labeling documents as case-related or law-related (\ref{sec:law-case-classifier}).
-The paper \citetitle{thompson2001automatic} compares three algorithms for legal document classification: k-NN, decision tree algorithm, and a machine learning rule induction algorithm Ripper \cite{thompson2001automatic}.
+The paper \citetitle{thompson2001automatic} compares three algorithms for legal document classification: k-NN, decision tree algorithm, and a rule induction algorithm Ripper \cite{thompson2001automatic}.
 They conclude the decision tree and Ripper algorithms outperform the k-NN with Ripper being best by recall measure.
-For the purpose of the categorization discussed in this research, a decision tree was applied for its satisfactory performance, simplicity, and transparentness.
+For the categorization discussed in this research, a decision tree was applied for its satisfactory performance, simplicity, and transparentness.
 Moreover, the ensemble of decision trees -- Random Forest -- helped us to boost the performance.
 
 The first enhancement of IR -- Intelligent relevance feedback -- best explains the workflow of the system proposed here.
-By feedback, \citeauthor{Conrad2010ediscovery} means consultation of the suggested relevance by the system to the user, which might lead to recomputation of the relevances \cite{Conrad2010ediscovery}.
+By feedback, \citeauthor{Conrad2010ediscovery} means a consultation of the suggested relevance with the user, which might lead to recomputation \cite{Conrad2010ediscovery}.
 This iterative process has proven to increase the accuracy of the predictions \cite{Conrad2010ediscovery}.
 On the other hand, Zhao et al. show that more than one round of the feedback selection process is not helpful \cite{zhao2009feedback}.
 The proposed system provides a possibility of immediate feedback through relevance settings of individual documents.
-Relevances within the scope of the particular legal case are updated after each feedback.
+Each feedback causes an update of relevances within the scope of a particular legal case.
 
 To compare the existing systems with the proposed, it is worth noting that most of them implement a slightly different use case.
-Their goal is to pick relevant documents out of a massive storage of legal texts, in which documents might relate to multiple cases, whereas here the goal is to pick relevant documents out of a relatively small collection that is uploaded to the system by the lawyer.
+Their goal is to pick relevant documents out of massive storage of legal texts, in which documents might relate to multiple cases, whereas here the goal is to pick relevant documents out of a relatively small collection that is uploaded to the system by the lawyer.
 The proposed system is not allowed to share documents among cases nor look for information elsewhere than what is selected by the lawyer.
 This task is somewhat more difficult since the prediction model starts to learn almost from the beginning with each new case.
-Most of the similar researches focus either on the case retrieval or document retrieval from a global storage, hence the use case of the proposed system seems to be too unusual to be included in any recent research.
+Most of the similar studies focus either on the case or document retrieval from a global storage, hence the use case of the proposed system seems to be too unusual to be included in the recent public research.
 
 % Papers predicting outcomes of new cases based on previous
 % 1. Automatically classifying case texts and predicting outcomes
@@ -271,10 +269,10 @@ The four main concepts of UM are:
 
 % paper: Emerging AI & Law approaches to automating analysis and retrieval of electronically stored information in discovery proceedings
 
-\chapter{Background: Legato System}
+\chapter{Legato System}
 \label{chp:legato}
-The system introduced in this research is integrated into a proprietary web application \textit{Legato} developed by the \textit{SDE Software Solutions Ltd.} company.
-\textit{Legato} is a collaborative system for management of legal documents that provides comprehensive control over legal cases including full-text search, organizing of important information and visualizations.
+The system introduced in this research is integrated with a proprietary web application \textit{Legato} developed by the \textit{SDE Software Solutions Ltd.} company.
+\textit{Legato} is a collaborative system for management of legal documents that provides comprehensive control over legal cases including full-text search, organizing of relevant information and visualizations.
 The system is now in development phase undergoing a number of user testing in U.S. and Czech environment.
 
 \begin{figure}[h]
@@ -283,41 +281,39 @@ The system is now in development phase undergoing a number of user testing in U.
 \includegraphics[width=\textwidth]{img/Legato-Dashboard}
 \end{figure}
 
-
 \section{Use case}
 \label{sec:legato_usecase}
-Legato belongs to the group of E-Discovery systems, which provide an infrastructure mainly to the lawyers and attorneys, who need to collect legal documents from both sides (plaintiff and defendant) and possibly from other sources, such as the World Wide Web.
-The next phase of E-Discovery is the organization of documents and information retrieval tasks to find relevant pieces of information in the texts.
+Legato belongs to the group of E-Discovery systems that provide an infrastructure mainly to the lawyers and attorneys, who need to collect legal documents from either side (plaintiff or defendant) and possibly from other sources, such as the World Wide Web.
+The next phase of E-Discovery in Legato includes organization of documents, information retrieval tasks, and finding relevant pieces of information in the texts.
 \textit{Legato} is designed to ease and speed up the E-Discovery in general.
 
-Legato expects the following workflow of a paralegal working with the system.
+Legato expects the following workflow of a user working with the system.
 Firstly, the user obtains data from various sources and loads them into Legato.
-Subsequently, the user is able to skim through the documents to get high level overview of the case.
-The user categorizes the documents according to the type and source (doctor reports, police reports, personal emails, agreements, etc).
+Subsequently, the user can skim through the documents to get a high-level overview of the case.
+The user categorizes the documents according to the type and source (medical reports, police reports, personal emails, agreements, etc.).
 Then, a rough prioritization takes place -- the user sees the most promising documents based on the entities recognized from the text.
-In the next phase, the user goes through the promising documents, makes notes, extracts important information, keywords and players to understand the case in depth.
-The last step is a report compilation, in which the user gathers collected notes and important documents to construct the most promising strategies for a defense or accusation.
+In the next phase, the user goes through the promising documents, makes notes, extracts essential information (e.g., keywords or people involved in the case) to understand the case in depth.
+The last step is a report compilation, in which the user gathers collected notes and important documents to construct the most promising strategies for defense or accusation.
 
 Users can upload documents in various formats (plain text, PDF, image, etc.), which is followed by a phase of post-processing.
 The document is converted into plain text or analyzed by the \textit{OCR} in case it is an image.
 Then, it is analyzed by third-party libraries to extract additional features.
 So far, there are only two types of documents: emails and others.
-Emails are treated specially for their metadata and are further utilized to provide deeper insight into data (more in \ref{sec:legato_advanced}).
+Emails are treated specially for their metadata and are further utilized to provide deeper insight into the case (more in \ref{sec:legato_advanced}).
 
 Figure \ref{fig:legato_dashboard} displays a home page of a legal case in the \textit{Legato}.
-Here, the user is able to see various statistics about the case including a number of emails and other documents, number of document labels, number of players, number of days of active work on the case, recent case activity, case summary, overview of relevance and main keywords.
+Here, the user sees various statistics about the case including the number of emails and other documents, number of document labels, number of players, number of days of active work on the case, recent case activity, case summary, an overview of relevance and prevailing keywords.
 
 Labels serve users for annotation of documents by custom text tags.
-Some users might label the origin of documents, others might distinguish confidential document from the public one and others might label simply their favorites.
+Some users might label the origin of documents; others might distinguish confidential document from the public one, and some might label their favorites.
 
 The term \textit{player} is understood as a person, who appears and is directly involved in the case.
 At the moment, \textit{Legato} has no tool to automatically recognize players from documents other than extracting sender and receiver from emails.
-In the future, users will be able to add their own players and NLP tools will help to recognize them from the documents.
+In the future, users will be able to add their own players and NLP tools will help to recognize them from the documents automatically.
 
 The figure \ref{fig:legato_document} shows a document detail page.
-Besides reading, users can highlight arbitrary part of a document and add a commentary.
-Thanks to the OCR analysis, the system is able to show a plain text version and enables text selection, full-text search, and copying.
-
+Besides reading, users can highlight arbitrary part of a document and add commentary.
+Thanks to the OCR analysis, the system can show a plain text version of the analyzed file and enables text selection, full-text search, and copying.
 
 \begin{figure}[h]
 \caption{Legato -- Document}
@@ -330,34 +326,29 @@ The backend of Legato is written in PHP language using the \textit{Laravel}\foot
 All application instances run on \textit{Debian}\footnote{Stable Linux operating system \url{https://www.debian.org/}} server in the \textit{Apache}\footnote{Web container \url{https://httpd.apache.org/}} container.
 Legato stores all data into the \textit{PostgreSQL}\footnote{Open source relation SQL database \url{https://www.postgresql.org/}} database.
 There are multiple instances of Legato, depending on their purpose: alpha is the production instance, demo serves for the user testing and ai is enriched with innovative features.
-The \textit{Amazon Web Services}\footnote{Collection of cloud computing services \url{https://aws.amazon.com/}} ensures the infrastructure and enables deployment, monitoring and debugging services.
+The \textit{Amazon Web Services}\footnote{Collection of cloud computing services \url{https://aws.amazon.com/}} ensures the infrastructure reliability and enables quick deployment, real-time monitoring and interactive debugging.
 
 \section{Research \& Advanced Features}
 \label{sec:legato_advanced}
-Thanks to the progressive attitude of \textit{Legato} management, multiple advanced features were proposed.
-The ideas of management and developers are often amazing features with a rich functionality; however, only some of them intersect with the user's requirement, which explains the excessive user testing.
+Multiple advanced features were proposed to be part of Legato.
+After each proposal, the excessive user testing needs to take place to ensure the usability and usefulness of the features.
+The following section presents the successful ones that are already implemented in Legato.
 
 \subsection*{Natural Language Processing}
 One of the most important features is the recognition of named entities in the text (more in the section \ref{sec:named_entities}).
-Named entities, such as people, companies, locations or dates are key pieces of text that lawyers might look for.
-As management of \textit{Legato} is aware of that, they are intensively researching the most suitable tool for named entity extraction together with other natural language processing (NLP) features.
+Named entities, such as people, companies, locations or dates are critical pieces of text that lawyers might look for.
+As a result, Legato researches the most suitable tool for the named entity extraction together with other natural language processing (NLP) features.
 One of the most wanted features is the \textit{text summarization}, which could accelerate the process of reading and sorting of documents.
-Unfortunately, the \textit{text summarization} is too abstract and still very hard task for automated NLP systems to be competitive with humans.
+Unfortunately, the \textit{text summarization} is too abstract and still very hard task for automated NLP systems to be handled at least competitive to humans.
 
 % Email reconstruction and timeline
 \subsection*{Email reconstruction}
-One of the features that are already implemented, is the email reconstruction and timeline.
-Emails contain enough structured metadata for the full reconstruction of conversations including senders, receivers, subjects and dates (fig. \ref{fig:legato_email}).
-
-\begin{figure}[h]
-\caption{Legato -- Email}
-\label{fig:legato_email}
-\includegraphics[width=\textwidth]{img/Legato-Email}
-\end{figure}
+One of the features that are already implemented is the email reconstruction and timeline.
+Emails contain enough structured metadata for the full reconstruction of conversations including senders, receivers, subjects, and dates.
 
 \subsection*{Timeline}
-Dates are also applied in the timeline visualization (fig. \ref{fig:legato_timeline}), which consists of points representing emails horizontally arranged by date.
-The color of points marks the relevance and the size represents the number of emails in the conversation.
+Dates extracted from emails are applied in the timeline visualization (fig. \ref{fig:legato_timeline}), which consists of points representing emails horizontally arranged by date.
+The color of points marks the relevance, and the size represents the number of emails in the conversation.
 When a conversation stretches across multiple days, the points are connected by a line.
 
 \begin{figure}[h]
@@ -367,8 +358,8 @@ When a conversation stretches across multiple days, the points are connected by 
 \end{figure}
 
 \subsection*{Communication chart}
-Due to quite reliable identification of the players in the communication, it is possible to draw a circular communication chart (fig. \ref{fig:legato_communication}).
-Players' names are printed into a circular shape and two players are connected if and only if there exists an email that was sent from one to the other.
+Due to quite reliable identification of players in communication, it is possible to draw a circular communication chart (fig. \ref{fig:legato_communication}).
+The chart shows players' names in a circular shape, where two players are connected if and only if there exists an email that one sent to the other.
 
 \begin{figure}[h]
 \caption{Legato -- Communication chart}
@@ -378,42 +369,40 @@ Players' names are printed into a circular shape and two players are connected i
 
 \subsection*{Annotation of images}
 Another already implemented feature is the image annotator.
-Whenever an image is uploaded into \textit{Legato}, Google Vision API \footnote{\url{https://cloud.google.com/vision/}} automatically recognized concepts in the picture and creates tags.
-This feature helps with structuralization of data and adds images into results of full-text searches.
+Whenever an image is uploaded into \textit{Legato}, Google Vision API \footnote{\url{https://cloud.google.com/vision/}} automatically recognizes concepts in the picture and creates tags.
+This feature helps with structuralization of data and adds images to results of the full-text search.
 
 \subsection*{Optical Character Recognition}
 An \textit{Optical Character Recognition} (OCR) is the very essential part of every E-Discovery system.
-Although some documents are already in the electronic form, such as emails or PDF document, lawyers have to work with a large number of only-paper documents too, that needs to be scanned.
+Although some documents are already in the electronic form, such as emails or PDF documents, lawyers have to work with many paper-only documents, that needs to be scanned.
 OCR is then applied to the scanned documents to extract text in the electronic form.
-Even though there has been a wide investment in the algorithms for OCR, the result is never 100\% successful because the recognition leaves some "typos".
-The better algorithms use some statistical models to guess the most probable word.
+Even though there has been extensive investment in the algorithms for OCR, the result is never 100\% successful because the recognition leaves typographical errors.
+The more advanced algorithms use statistical models to guess the most probable word.
 
-Research in \textit{Legato} team about the best OCR tool is still ongoing and the performance of this step is taken very seriously, as the result influences the outcome of all subsequent steps of the E-Discovery. The tool used at the moment is called \textit{Tesseract}\footnote{\url{https://github.com/tesseract-ocr/tesseract/wiki}}, which is one of the open source projects focused on OCR.
-
-
+Research in \textit{Legato} team about the best OCR tool is still ongoing, and the performance of this preprocessing is taken very seriously, as the result influences the outcome of all subsequent steps of E-Discovery. The tool used at the moment is called \textit{Tesseract}\footnote{\url{https://github.com/tesseract-ocr/tesseract/wiki}}, which is one of the open source projects focused on OCR.
 
 \chapter{Data Characteristics}
 \label{chp:data_characteristics}
 One of the most important preconditions for building an efficient model is to understand the input data characteristics.
-People developed numerous models based on text classification that are suppose to classify text of any domain, which is, however, at the expense of the efficiency.
-The specialized models always have the potential to outperform the general one.
+People developed numerous models based on text classification that are supposed to classify text of any domain, which is, however, at the expense of the efficiency.
+The specialized models always have potential to outperform the general one.
 The real contribution of this work is the exploration of characteristics in the legal data and its application on the process of building a classification model.
-This chapter will introduce our working dataset, its statistics and characteristics.
+This chapter will introduce our working dataset, its statistics, and characteristics.
 
 \section{Dataset introduction}
 The end users of the Legato system are mostly the U.S. lawyers, which influences our choice of dataset.
-The U.S. legal system is very specific with its own laws, constitution, trial process and most importantly for us -- the terminology.
-Also, we have to take into consideration specifics in the structure of the documents: medical records, police records, affidavits, emergency call transcripts etc.
+The U.S. legal system is quite specific with its own laws, constitution, trial process and most importantly for us -- the terminology.
+Also, we have to take into consideration specifics in the structure of the documents: medical records, police records, affidavits, emergency call transcripts, etc.
 We do not claim that our application will not work for other than U.S. legal documents; however, the model might manage to recognize the structure and terminology of the U.S. documents more accurately.
 
-Unfortunately, we have not acquired enough training data from the users of Legato, mainly because the legal cases are ongoing and the documents are too confidential to be included in a research.
-For the same reason, it is hard to find an authentic public trial documents on the Internet.
+Unfortunately, we have not acquired enough training data from the users of Legato, mainly because the legal cases are ongoing and the documents are confidential, and thus cannot be included in the research.
+For the same reason, it is hard to find authentic public trial documents on the Internet.
 We have found a solution thanks to the \textit{American Mock Trial Association} \footnote{\url{http://www.collegemocktrial.org/}} and \textit{Classroom Law Project} \footnote{\url{http://www.classroomlaw.org}}.
 Both associations create legal cases for educational purposes, which then serve as a material for the mock trial competitions.
-All their legal cases are fictional, though some of them were inspired by real-world situations and issues.
+All their legal cases are fictional, though some of them were inspired by real-world situations.
 Still, any resemblance to actual persons and events is purely coincidental.
 
-All 20 cases, used as a training set, are downloaded from two mentioned associations.
+All 20 cases, used as a training set, were downloaded from two mentioned associations.
 Not to be biased with one legal area, cases of diverse legal fields are included:
 \begin{itemize}
 \itemsep0em
@@ -423,54 +412,55 @@ Not to be biased with one legal area, cases of diverse legal fields are included
 \item[3x] \textbf{Inmate partner violence} \\ domestic violence by a current or former partner
 \item[3x] \textbf{First Amendment} \\ breach of freedom of speech, religion, press etc.
 \item[4x] \textbf{Child neglect} \\ child injury or death caused by parents, baby-sitter or teacher
-\item[2x] \textbf{Sex crime} \\ sexual harassment and disease transmissions
+\item[2x] \textbf{Sex crime} \\ sexual harassment and intentional disease transmissions
 \item[3x] \textbf{Tort law } \\ fault leading to suffer or harm, without breaching any contract
 \end{itemize}
-All mock cases have a similar structure: there are approx. 5-8 testimonies of the involved people, called affidavits, and the rest of the documents are emails, medical records, police reports, emergency call transcripts, description of the past similar cases etc.
-The affidavits are up to 10 pages long, usually describing the issue in depth, whereas the other documents are usually one or two pages long.
+All mock cases have a similar structure: there are approx. 5-8 testimonies of the involved people called affidavits, and the rest of the documents are emails, medical records, police reports, emergency call transcripts, description of the past similar cases etc.
+The affidavits are up to 10 pages long, usually describing the issue in depth, whereas the other documents are generally one or two pages long.
 All extra information specific to the mock trials, explanations of the competitions and summaries were excluded.
 Some extra headers and footers that contain metadata were also removed not to confuse the model training.
 
 During the model building, one needs to take into account that the real cases might be more or less different from the mock cases.
 For instance, the affidavits are not expected to appear in the real cases as much as in the mock cases.
-Also, more emails and papers of unknown structure are expected in real cases.
+Also, one can expect more emails and papers of unknown structure in real cases.
 Generally, we found two major shifts: 
 \begin{enumerate}
-\item real cases will most probably contain shorter documents
-\item real cases will contain many more unrelated documents
+\item the real cases will most likely contain shorter documents
+\item the real cases will contain more unrelated documents
 \end{enumerate}
-This research presents solution for both issues:
+This research presents a solution for both issues:
 \begin{enumerate}
 \item 
-The length of the document should be an insignificant parameter when determining the documents relevancy.
-Therefore, here the focus is on sentences rather than on a document as a whole.
-In other words, a relevance of a document is determined by exploring relevances of the individual sentences.
+The length of a document should be an insignificant parameter when determining the document's relevancy.
+Therefore, the following research focuses is on sentences rather than on a document as a whole.
+In other words, the relevance of a document is determined by exploring relevances of the individual sentences.
 As a result, the model is slightly simplified, but the cross-sentence information is not completely ignored, as will be seen in the further chapters.
 
 \item
 The second issue is caused by the lack of motivation to add unrelated documents during the creation of the mock cases.
-Still, we can find some documents that are related to the case but are not relevant, e.g. resume of a defendant.
-A straight forward solution is to add some irrelevant documents from other cases to simulate the balance in a real situation.
+Still, we can find some documents that are related to the case but are not relevant, e.g., resume of a defendant.
+A straightforward solution is to add some irrelevant documents from other cases to simulate the balance in a real situation.
+However, this adaptation probably will not be necessary as the models need balanced classes for efficient learning, and therefore, a dominance of irrelevant documents would only bias the classification.
 
 \end{enumerate}
 
 \section{Annotations}
-Thanks to the management of Legato, two annotators performed a labeling of both the sentences and documents of the dataset.
+For the purpose of evaluation of the proposed system, two annotators performed labeling of both the sentences and documents of the dataset.
 The annotation process was concluded in the Legato system by two annotators.
-Each document is annotated by one of them and corrected by the other.
-They assigned each document a label HOT, WARM or COLD according to the relevance.
-The HOT label signifies strong relevance as it contains essential information needed for defend or accusation at the court.
-The WARM label means that the user should see the document, because it might contain valuable information about the case.
+Each document was annotated by one of them and corrected by the other.
+They assigned every document a label HOT, WARM or COLD according to the relevance.
+The HOT label signifies strong relevance as it contains essential information needed for defense or accusation at the court.
+The WARM label means that the lawyer should see the document because it might contain valuable information about the case.
 The COLD label signifies that the document does not contain any relevant information.
 
 Besides the documents, the parts of the text were labeled as well.
-Annotators could highlight a passage from the text, which could span multiple sentences.
+Annotators were highlighting passages from the text, which could span multiple sentences.
 The further processing marks a sentence as relevant, if and only if there is an intersection with some passage annotated as relevant.
 Only HOT and WARM documents contain relevant parts of the text.
 
 \section{Data statistics}
-As mentioned earlier, the dataset contains 20 cases, which together cover 263 documents. That is $13.15$ documents per case in average.
-The documents contain 234,798 words in total, thus the average number of words per document is 893.
+As mentioned earlier, the dataset contains 20 cases, which together cover 263 documents. That is $13.15$ documents per case on average.
+The documents contain 234,798 words in total, which means the average number of words per document is 893.
 Counting only unique words, the vocabulary has a size of 14,518 words which is approx. 1.18 \% of English vocabulary according to the \textit{Oxford English Dictionary}  \cite{oxfordDictionaries}.
 
 \begin{figure}[h]
@@ -496,44 +486,45 @@ for & 1942 & like & 386 \\\hline
 \normalsize
 \end{figure}
 
-In the left part of the figure \ref{fig:most_frequent}, counts of the most frequent words in the documents are presented.
+The left part of the figure \ref{fig:most_frequent} presents counts of the most frequent words in the documents.
 It is not a surprise that all top ten words are common stop words of English.
 The stop words are usually removed before any further processing of the text; however, they might carry valuable information too.
 For instance, recognition of the author or formality level can be determined based on the stop words usage.
 One can notice that the usage of stop words is not different from the general English.
 
 The right side of the table shows most frequent words after the stop words removal.
-Here, the frequencies are clearly influences by the cases from the school environment.
-Next, the words "said" and "told" indicate that the documents often contain reporting of events and conversations.
+Here, the frequencies are clearly influenced by the cases from the school environment.
+Next, the words ``said'' and ``told'' indicate that the documents often contain reporting of events and conversations.
 The other words again fit more or less in the general English.
+The word frequencies show that no strange artifacts in the text bias the vocabulary.
 
-The word frequencies show that the vocabulary is not biased by any strange artifacts in the text.
-The following statistic explores the \textit{keywords} of the collection, i.e. words that occur more frequently than usual.
+The following statistics explore the \textit{keywords} of the collection, i.e., words that occur more frequently than usual.
 The method used is explained in the section \ref{algorithms_keywords}.
 During the scoring, the Reuters articles from \textit{NLTK} library served as the reference corpus.
-The keywords extracted from all documents are: city, school, know, got, joey, just, police, princess, time, person, really, like, child.
+The keywords extracted from all documents are: city, school, know, got, joey, just, police, princess, time, person, really, like, and child.
 Again, the school environment plays an important role.
 
-Out of the 263 documents, 107 are HOT, 85 WARM and 71 COLD, which confirms our idea about dominance of relevant documents.
-Interestingly, the average length of a document in sentences correlate to its relevance with 76 in HOT, 53 in WARM and 23 in COLD documents.
-This might be explained by the dominance of affidavits, which are usually relevant.
+Out of the 263 documents, 107 are HOT, 85 WARM and 71 COLD, which confirms our idea about the dominance of relevant documents.
+Interestingly, the length of a document in sentences correlates to its relevance with 76 sentences in average in HOT documents, 53 in WARM and 23 in COLD.
+This might be explained by the dominance of affidavits, which are usually relevant and people there explain incidents in long sentences.
 The most common words in HOT documents are the reporting words, such as ``said'', ``told'' or ``would''. 
 In most common words of WARM documents appears the ``police'', ``time'' or ``new''.
-COLD documents, on the other hand, contain a lot of numbers (``1'' is in fact the most common one) and then ``metro'', ``officer'' or ``city''.
+COLD documents, on the other hand, contain a lot of numbers (``1'' is, in fact, the most common one) and then ``metro'', ``officer'' or ``city''.
 
 \section{Types of documents}
-When looking at the documents, one is able to recognize some common features, which classifies them into groups.
+When looking at the documents, one can recognize some common features, which groups them into distinct classes.
 The testimonies are one large group of documents, yet they are closer to medical records, bills, call transcripts, police records, etc. than to the rest of the documents.
-The other distinctive group consists of documents that does not relate to the case itself but rather explain the law, policies, and past legal cases.
+The other distinctive group consists of documents that do not relate to the case itself but rather explain the law, policies, and past legal cases.
 No people, location, dates or other named entities appear in these documents.
-However, it is not true, that they are not relevant for the case.
-Usually, they consist of some passage from law code that relates to the act discussed in the case, which is likely a relevant piece of information for a lawyer.
+However, it is not true, that they are not relevant to the case.
+Usually, they consist of some passage from law code that relates to the incidents discussed in the case, which is likely a relevant piece of information for a lawyer.
 
 In this research, the first group of documents directly involved in the case will be referred to as the \textit{case-related} documents, and the second group will be referred to as the law-related documents.
-The precise definition and classification is elaborated in the section \ref{sec:law-case-classifier}.
+The precise definition and classification are elaborated in the section \ref{sec:law-case-classifier}.
 
-Besides the mentioned two groups, the dataset contains few other documents that do not seem to fit in either of them; however, none of them accounts for a group large enough, therefore, they are considered as outliers and assigned to one of the existing groups.
-For example, there are pictures, tables or newspapers.
+Besides the mentioned two groups, the dataset contains few other documents that do not seem to fit in either of them.
+Nevertheless, none of them accounts for a group large enough, and therefore, they are considered as outliers and assigned to one of the existing groups.
+These include pictures, tables, or newspapers.
 
 \chapter{NLP tool selection}
 \label{chp:nlp}
@@ -1060,7 +1051,7 @@ Next sections describe the system of models that predicts the document relevance
 Due to a large number of features, the system is structured into layers, where the top-level models make predictions based on the outputs of the bottom-level models.
 The section \ref{sec:bottom-level-models} introduces the bottom-level models, which are specialized on each feature separately and are able to understand the word embeddings.
 The top-level layer is formed by a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
-First is the \textit{Law-Case classifier} \ref{sec:law-case-classifier}, second is the \textit{Sentence classifier} \ref{sec:sentence-classifier} and the last is the \textit{Document classifier} \ref{sec:document-classifier}.
+First is the \textit{Law-Case classifier} (Section \ref{sec:law-case-classifier}), second is the \textit{Sentence classifier} (Section \ref{sec:sentence-classifier}) and the last is the \textit{Document classifier} (Section \ref{sec:document-classifier}).
 Each of them needs a different set of inputs and applies different machine learning model.
 The following figure visually explains the system of models.
 For further details about the individual classifiers, see the related sections.
@@ -1078,7 +1069,7 @@ TBA
 To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes that will be most helpful in determining the classes.
 Technically, all machine learning models are built to process numbers as input variables.
 Since we work here with the text only, we have to find a way how to convert all keywords, entities, relations, syntactic structure, and other features into the numerical representation.
-During this process, one has to keep in mind the main purpose: the numbers must internally hide information about the relevance.
+During this process, one has to keep in mind the main purpose: the numbers must internally capture information about the relevance.
 
 Based on the arguments made in the chapter \ref{chp:data_characteristics}, the units of the machine learning are sentences rather than documents.
 As a result, there is fewer data from which to compute the attributes and the representation of the attributes as well as the process of classification itself become simpler.
@@ -1113,7 +1104,7 @@ As a result, the classifier understands two words with close numbers as close by
 Since the numbers were assigned without any order, there is undoubtedly a lot of misinterpretation.
 
 The next solution is often applied in the information retrieval systems.
-Instead of one number, we can represent the word embedding by a vector, with all elements zeroed but one.
+Instead of one number, we can represent the word embedding by a vector, with all elements zeros but one.
 Each word is assigned an unique index, on which the vector keeps a value of one.
 $$
 \{\text{"knife"} \rightarrow (1,0,0,0), \text{"gun"} \rightarrow (0,1,0,0), \text{"wire"} \rightarrow (0,0,1,0), \dots\}
@@ -1122,13 +1113,13 @@ Now, a vector uniquely identifies a word and the vectors are not quantitatively 
 This solution can be further improved by counting the words in the training documents, TF-IDF weighting or co-occurrence matrices \cite{wordEmbeddings}.
 
 The third and final solution goes further in the embedding of semantics.
-Recent research by Mikolov et al. \cite{mikolov2013efficient} introduced a revolutionary algorithm \textit{Word2vec}, which uses a neural network to create a vector of fixed length with its semantics compressed.
+Recent research by Mikolov et al. \cite{mikolov2013efficient} introduced a revolutionary algorithm \textit{Word2vec}, which uses a neural network to create a vector of fixed length that compresses semantics of the word it represents.
 Each dimension of a vector represents some concept, which can be somehow quantified, such as masculinity, age or liveliness \cite{mikolov2013linguistic}.
 The vectors are capturing semantic regularities, and therefore, the classifiers have a potential to perform better even for unknown words.
 This embedding satisfies our ultimate assumption that close vectors are also close by the meaning of their underlying words.
 
-Both the algorithm and the trained vectors are publicly available.
-Though we could use the algorithm to train our own vectors, it is much easier to adopt the already trained dataset.
+Both the algorithm and the trained embeddings are publicly available.
+Though there is a possibility of applying the algorithm to compute our own embeddings, the obtained dataset is too small to reliably train a model, and thus it is more efficient to adopt the dataset based on available models trained thoroughly in the past.
 Since the meaning of the words is the same regardless of the area, there would be a very little gain in the training of a custom dataset specialized on legal documents.
 The dictionary adopted here is trained by the \textit{Google} company and is available in their official code archive \cite{word2vecGoogle}.
 The pre-trained model contains 3 million unique words of 300-dimensional vectors, which was trained on a 300 billion word news dataset.
@@ -1151,7 +1142,7 @@ However, the choice of right words plays a crucial role in the influence on clas
 
 \subsection{Entity embedding}
 \label{sec:entity_embedding}
-\textit{Watson NLU} service is able to recognize extensive number of entity types (462) \footnote{\url{https://console.bluemix.net/docs/services/natural-language-understanding/entity-types-v1.html\#entity-types-and-subtypes-version-1-}}, 
+\textit{Watson NLU} service is able to recognize extensive number of entity types (462)\footnote{\url{https://console.bluemix.net/docs/services/natural-language-understanding/entity-types-v1.html}}, 
 which include as obscure categories as "WebBrowserExtension" or "HockeyConference".
 For the purpose of this research, only 6 of them the following types are used:
 \begin{itemize}
@@ -1233,13 +1224,13 @@ The type is encoded by a vector of length equal to the number of types, in which
 Then, the embedding contains zeros in all elements except for the index of the type it represents.
 This approach is called \textit{One-hot encoding} as defined by the Scikit-learn machine learning library \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}}.
 
-To summarize, the final embedding of the relation consists of:
+To summarize, the final embedding of the relation consists of
 \begin{itemize}
-\item relation type in one-hot vector (length 54)
-\item entity type of the subject in one-hot vector (length 49)
-\item entity type of the object in one-hot vector (length 49)
-\item the subject in word2vec vector (length 300)
-\item the object in word2vec vector (length 300)
+\item relation type in one-hot vector (length 54),
+\item entity type of the subject in one-hot vector (length 49),
+\item entity type of the object in one-hot vector (length 49),
+\item the subject in word2vec vector (length 300),
+\item the object in word2vec vector (length 300).
 \end{itemize}
 
 
@@ -1599,7 +1590,7 @@ Unfortunately, there are no ground data to either train or evaluate the performa
 \chapter{Implementation}
 \label{chp:implementation}
 Based on the research introduced in the previous chapters, a system for Classification of LAW Documents (Clawd) was designed and developed.
-Its purpose is to process textual information about legal cases, documents, and other user's inputs, pass the raw data to NLP services to extract features and evaluate relevance of the documents and its individual sentences.
+Its purpose is to process textual information about legal cases, documents, and other user's inputs, extract features and evaluate relevance of the documents and its individual sentences.
 Clawd is a stand-alone web application independent of Legato, though Legato is the only system communicating with Clawd so far.
 The first section introduces the development tools, second explains the design and the last describes how Legato and Clawd are integrated.
 
@@ -1634,6 +1625,7 @@ For this reason, the tasks need to be organized in asynchronous queues, which is
 
 The web application is deployed on a \textit{Debian} server\footnote{Linux operating system \url{https://www.debian.org/}} inside the \textit{Apache} web container\footnote{HTTP server for modern operating systems \url{https://httpd.apache.org/}}.
 All communication with NLP services and Legato takes place in JSON format through HTTP protocol.
+At this time, the Legato and Clawd are deployed on the same machine, hence no secured communication is necessary.
 
 \section{Design and implementation}
 Clawd is designed in three layers, as shown in the figure \ref{fig:Design}: the view layer (API), service layer and asynchronous task queue \textit{Celery}.
@@ -1652,35 +1644,8 @@ Quick tasks are computed by the service layer immediately and the answer is pass
 The three main use cases of Clawd are 1) Storing a new case, comment, label or relevance -- in all these scenarios, the information is stored and models updated to yield new relevances, 2) Storing a new document -- here, the text is sent to the NLP services, text is preprocessed, models updated and summary is built and returned to Legato, and finally 3) Relevance retrieval -- in this case, no computations take place and the relevances stored in Clawd are returned.
 One extra use case, which is not initiated by user, is the synchronization step, that ensures the data in Clawd are consistent with data in Legato.
 
-The documentation of Clawd's API is described in the table \ref{fig:api}.
+The documentation of Clawd's API is described in the attachments (\ref{att:api}).
 The interface is following the REST API guidelines.
-
-\begin{figure}[h]
-\centering
-\caption{Application programming interface of Clawd}
-\label{fig:api}
-\begin{tabular}{|m{2cm}|m{5.5cm}|m{5cm}|}
-\hline
-\rowcolor{gray!30}
-\textbf{Method} &  \textbf{Endpoint}   &  \vspace{0.2cm} \textbf{Description}   \\[10pt] \hline
-GET  &  /case/\{\textit{caseId}\} & Retrieve information about the case. \\ \hline
-POST  & /case/\{\textit{caseId}\} & Creates a new case or updates existing. \\ \hline
-DELETE  & /case/\{\textit{caseId}\} & Deletes a case.  \\[6pt] \hline
-GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Retrieve information about document. \\ \hline
-POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Creates new document or updates existing. \\ \hline
-DELETE  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Deletes a document. \\[6pt] \hline
-GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Retrieve relevance of the document. \\ \hline
-POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Stores user relevance of the document.\\ \hline
-GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par sent\_relevance & Get relevances of document's sentences.\\ \hline
-GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par label & Retrieve label of the specified document. \\ \hline
-POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par label & Stores label of the specified document. \\ \hline
-GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par comment/\{\textit{commentId}\} & Retrieve comment of the document. \\ \hline
-POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par comment/\{\textit{commentId}\} & Stores comment on the document. \\ \hline
-GET  & /case/\{\textit{caseId}\}/relevances & Retrieve relevances for all documents of the case. \\ \hline
-GET  & /sync\_proposal & Returns true if the synchronization is required. \\ \hline
-GET  & /sync & Synchronization of the database with Legato. \\ \hline
-\end{tabular}
-\end{figure}
 
 \subsection{Service layer}
 The Django applications are a natural way to achieve modularization of an application in Python.
@@ -1708,11 +1673,11 @@ Even though the most common message brokers are \textit{RabbitMQ}\footnote{\url{
 The reason is that the \textit{MongoDB} is already applied as the main data storage, and therefore, a new framework was considered unnecessary.
 
 \textit{Celery} manages tasks with network communication, training of the models and evaluating relevance on models.
-The tasks are being executed in multiple workers, which significantly increases the system's responsiveness.
+These tasks are being executed in multiple workers, which significantly increases the system's responsiveness.
 The efficiency is especially noticeable in case of an initial synchronization, when all data are passed from Legato to an empty Clawd.
 
 
-\section{Integration into Legato}
+\section{Integration with Legato}
 As mentioned earlier, Clawd is a stand-alone application that is integrated with Legato through the exposed REST API.
 The communication was designed to be one-way only, hence all actions are initiated by Legato.
 The only results from Clawd visible by a user are the suggested relevances and the document's summary.
@@ -1724,9 +1689,9 @@ When Legato stores some of the aforementioned objects, it simultaneously sends t
 
 The second use case (new document) is more sophisticated.
 The figure \ref{fig:integration_new_file} shows a sequence diagram of the communication among not only Legato and Clawd, but also the user, Watson NLU service and Celery.
-When a new document\footnote{The same data object is called \textit{File} in Legato and \textit{Document} in Clawd} is uploaded into Legato, a pipeline of preprocessing steps (explained in section \ref{sec:legato_usecase}) is applied.
+When a new document\footnote{The same data object is called \textit{File} in Legato and \textit{Document} in Clawd} arrives in Legato, a pipeline of preprocessing steps (explained in section \ref{sec:legato_usecase}) is applied.
 One of the steps is also a summary extraction by Clawd.
-When Clawd receives the document, it passes the data to Watson NLU service to extract features and stores the data from response.
+When Clawd receives the document, it passes the data to the Watson NLU service to extract features and stores the response.
 Next, Clawd builds the document summary from the features and answers to Legato, which is now able to include the summary into document's view.
 In the meantime, Clawd triggers follow-up tasks, which are processed by Clawd and include training of models and updating relevance.
 Note that in this case, the request to Watson was not handled by Celery, as the Legato waits for the response and so, the communication must be synchronous (Celery handles only asynchronous tasks).
@@ -1756,13 +1721,13 @@ The last step is a transfer of all missing data from Legato to Clawd.
 
 The working instance of Legato that is integrated with Clawd is accessible for public on 
 \begin{quote}
-\begin{tabular}{|>{\centering\arraybackslash} m{10cm}|}
+\begin{tabularx}{10.45cm}{|>{\centering\arraybackslash} m{10cm}|}
 \hline
 \vspace{2mm}
 \url{https://ai.demo.legato.sde.cz}
-\vspace{2mm}
-\hrulefill
-\end{tabular}
+\vspace{2mm} \\
+\hline
+\end{tabularx}
 \end{quote}
 with login \textit{clawd@gmail.com} and password \textit{clawd}.
 Users are free to create new cases and upload their own documents to evaluate the relevance.
@@ -2059,7 +2024,33 @@ Hopefully, the presented research helps lawyers and software developers in futur
 \printbibliography[heading=bibintoc] %% Print the bibliography.
 
 \appendix %% Start the appendices.
-\chapter{An appendix}
-Here you can insert the appendices of your thesis.
+\chapter{Attachments}
+\section{Implementation}
+\newpage
+\section{Application programming interface of Clawd}
+\label{att:api}
+\centering
+\begin{tabularx}{13.6cm}{|m{2cm}|m{5.3cm}|m{5cm}|}
+\rowcolor{gray!30}
+\hline
+\textbf{Method} &  \textbf{Endpoint}   &  \vspace{3mm} \textbf{Description}   \\[8pt] \hline
+GET  &  /case/\{\textit{caseId}\} & \vspace{2mm} Retrieve the case. \\[6pt] \hline
+POST  & /case/\{\textit{caseId}\} & Creates a new case or updates existing. \\ \hline
+DELETE  & /case/\{\textit{caseId}\} & \vspace{2mm} Deletes a case.  \\[6pt] \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & \vspace{2mm} Retrieve the document. \\[6pt] \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & Creates new document or updates existing. \\ \hline
+DELETE  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\} & \vspace{2mm} Deletes a document. \\[6pt] \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Retrieve relevance of the document. \\ \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par relevance & Stores user relevance of the document.\\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par sent\_relevance & Get relevances of document's sentences.\\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par label & Retrieve label of the specified document. \\ \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par label & Stores label of the specified document. \\ \hline
+GET  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par comment/\{\textit{commentId}\} & Retrieve comment of the document. \\ \hline
+POST  & /case/\{\textit{caseId}\}/doc/\{\textit{docId}\}/\par comment/\{\textit{commentId}\} & Stores comment on the document. \\ \hline
+GET  & /case/\{\textit{caseId}\}/relevances & Retrieve relevances for all documents of the case. \\ \hline
+GET  & /sync\_proposal & Returns true if the synchronization is required. \\ \hline
+GET  & /sync & Synchronization of the database with Legato. \\ \hline
+\end{tabularx}
+More detailed description can be found on the link \url{https://app.swaggerhub.com/apis/jirmauritz/Clawd/1.0.0#/}
 
 \end{document}
