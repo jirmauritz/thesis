@@ -528,36 +528,37 @@ These include pictures, tables, or newspapers.
 
 \chapter{NLP tool selection}
 \label{chp:nlp}
-The amount of text in legal documents can vary largely.
-Most of the documents we are working with stretch across one page, however, the average number of pages is six and we can find documents up to hundred pages long.
-The typical approach of the text processing is to convert the text into a document-term matrix that contains number of term occurrences in each document.
-The problem with this approach is that the long documents are represented by a vector, which \emph{information gain} is rather low.
+The amount of text in legal documents can vary greatly.
+In the presented dataset, most of the documents stretch across one page, though the average number of pages is six and some documents contain up to ten pages.
+The typical approach of text processing is to convert it into a document-term matrix that contains the counts of term occurrences in each document.
+Unfortunately, the problem with this approach is that the long documents are represented by a vector, which \emph{information gain} is rather low.
 High \emph{information gain} implies that the numerical representation captures the general idea, the purpose of the document, and characteristics of similarity/dissimilarity with other documents.
 
-To address the issue, we decided to represent a document with specific features extracted by one or more NLP tools rather than plain words of the document.
-We are looking for the most interesting pieces of information in the text, such as people, locations, dates, crime-related words or email addresses.
-Nowadays, one can find numerous services providing extraction of such features.
-We have chosen some of them and have collected results from testing on our mock legal case.
-We compared results of the NLP services and a survey, in which participants labeled features from the text in a similar way as an NLP tool.
+To address the issue, the following research represents a document with specific features extracted by one or more NLP tools rather than plain words of the document.
+One can look for the most interesting pieces of information in the text, such as people, locations, dates, crime-related words or email addresses.
+Nowadays, there are numerous services providing extraction of such features.
+This chapter presents some of them and collects results from testing on one of the mock legal cases.
+Simultaneously, a survey on text processing was conducted, in which participants labeled features from the text in a similar way as the NLP tools.
+Consequently, the results of the NLP services and a survey are compared to choose the most suitable for further research. 
 
-It is important to note that the field of NLP feature extraction is a well-studied topic and the tools produce very stable results, probably using rather similar algorithms (which are described in the following section). Even though we could dedicate part of this work to developing well-suited algorithms for NLP feature extraction, we decided to take advantage of the existing tools and put the focus on processing and application of the features to the high-quality data mining and machine learning algorithms. 
+It is important to note that the field of NLP feature extraction is a well-studied topic and the tools produce very stable results, probably using somewhat similar algorithms (which are described in the following section). Even though we could dedicate part of this work to developing well-suited algorithms for NLP feature extraction, we decided to take advantage of the existing tools and put the focus on processing and application of the features to the high-quality data mining and machine learning algorithms. 
 
 \section{NLP Algorithms}
-First, let us introduce the features and well-known algorithms for their extraction from a text in general.
-Note that the further mentioned tools might use modified or even different techniques for extraction of the features.
+First, let us introduce the features and well-known algorithms for their extraction from text in general.
+Note that the further mentioned tools might use modified or different techniques for extraction of the features.
 
 \subsection{Keywords}
 \label{algorithms_keywords}
-\emph{Keywords} are people, places, words, ideas, which are understood as important in the given context. 
-In our case, the context is the document, hence we expect the keyword to reflect what the document is really about.
+\emph{Keywords} are people, places, words, or ideas that are understood as important in the given context. 
+In the presented research, the context is a document, and thus the keyword is expected to reflect the real semantic essence of the document.
 Then, the \textit{keyness} is a quality measure of the importance in the given text.
 \cite[ch. 4]{scott2006textual}
 
-We do not restrict the keyword to be one word because most of the tools are able to extract multi-word keywords, so-called \textit{key phrases}.
+We do not restrict the keyword to be one word because most of the tools are able to extract multi-word keywords, also called \textit{key phrases}.
 By combining words together, the phrases usually gain a new meaning that cannot be inferred from the individual words.
 Therefore, if we assumed only one-word keywords, we would never find the keyness hidden in the phrases.
 
-The process of identifying keywords is driven by two factors.
+Two factors drive the process of identifying keywords.
 First, the more often a word occurs in the document, the more likely it is a keyword.
 And second, the more often a word occurs generally in a speech, the less likely it is a keyword of any document.
 \cite[ch. 4]{scott2006textual}
@@ -570,43 +571,42 @@ $$
 \text{idf}_t = \log{\frac{N}{\text{df}_t}}
 $$
 where $N$ is the total number of documents and df$_{t}$ is a \textit{document frequency}, which is equal to the number of documents containing term $t$.
-It is important to take a logarithm of the expression because the \textit{inverted document frequency} can become very large with a large collection of documents and we need it to be comparable with the \textit{term frequency}, which is rather small.
+It is crucial to take a logarithm of the expression because the \textit{inverted document frequency} increases dramatically with enlarging collection of documents, and at the same time, it needs to be comparable with the \textit{term frequency}, which is rather small.
 
 The tf-idf weight is computed as follows \cite[ch. 6]{manning2008introduction}:
 $$
 \text{tf-idf}_{t, d} = \text{tf}_{t,d} \times \text{idf}_t
 $$
-The \textit{term frequency} ensures higher weight for more frequent terms in the document and \textit{inverse document frequency} ensures higher weight for more obscure words. Now, tf-idf$_{t, d}$ can be a good approximation of our keyness measure and is often used in the keyword extraction technique with the same same. The last step is to establish a threshold value that distinguishes keywords and non-keywords by comparing it to the tf-idf values of the terms.
+The \textit{term frequency} ensures higher weight for more frequent terms in the document and \textit{inverse document frequency} ensures higher weight for more obscure words. Now, tf-idf$_{t, d}$ can be a good approximation of the keyness measure and is often used in the keyword extraction. The last step is to establish a threshold value that distinguishes keywords and non-keywords by comparing it to the tf-idf values of the terms.
 
 \subsection{Named Entity Recognition}
 \label{sec:named_entities}
 To extract valuable information from the text, it is necessary to include \textit{named entities} (NEs).
 They are entities that can be referred to with a proper name \cite[ch. 21]{jurafsky2014speech}.
-In the speech, NEs are always noun phrases representing people, places, things, organizations, temporal or numerical expressions, events etc.
+In the speech, NEs are always noun phrases representing entities such as people, places, things, organizations, temporal or numerical expressions or events.
 
-Lets pinpoint how important the named entities are in the context of legal cases.
+Let us pinpoint how important the named entities are in the context of legal cases.
 Consider a typical use case of our application: a lawyer is searching through hundreds of emails with different senders and receivers.
-The name of the only victim, place, and date of the crime are known.
-If the lawyer is forced to manually search through the documents, they will filter the emails by occurrences of the aforementioned facts in the text.
-All of the facts are named entities, which can be extracted from each document automatically and eventually lead the algorithm to increase the relevance of documents accordingly.
-Thanks to the named entities, the algorithm performs the classification in the same manner as the lawyer would do, which is our goal.
+The name of the victim, place, and date of the crime are known.
+If the lawyer is forced to search through the documents manually, they will filter the emails by occurrences of the aforementioned words in the text.
+All of the words are named entities, which can be extracted from each document automatically and eventually lead the algorithm to increase the relevance of documents accordingly.
+Thanks to the named entities, the algorithm performs the classification in the same manner as the lawyer would do, which is the goal.
 
 The academic approach to find a \textit{named entity} is often based on the statistical sequence model \cite[ch. 21]{jurafsky2014speech}.
-Entity type and boundaries are found with one pass over the text according to a set of rules.
-The rules include \textit{Part-of-Speech Tagging} 
-\footnote{Detailed information about POS Tagging can be found in chapter 10 of \citetitle{jurafsky2014speech} by \citeauthor{jurafsky2014speech} \cite{jurafsky2014speech}}
+An entity type and boundaries are found with one pass over the text according to a set of rules.
+The rules include \textit{Part-of-Speech Tagging}\footnote{Detailed information about POS Tagging can be found in chapter 10 of \citetitle{jurafsky2014speech} by \citeauthor{jurafsky2014speech} \cite{jurafsky2014speech}}
 , which helps to find the noun phrases, and therefore, the boundaries.
 Next, the \textit{word shapes} are examined, which are simple string representations that generalize a group of expressions.
-For instance, replacing any letter for X and any digit for d, we can describe a unique word shape dd XX, which represents hours of the day written in US format, such as 12 am or 03 PM. 
+For instance, replacing any letter for X and any digit for d, one can describe a unique word shape dd XX, which represents hours of the day written in US format, such as 12 am or 03 PM. 
 Other rules include prefix matching or dictionary of predefined named entities.
 
 In comparison to the academic approach, the commercial approach is based on the combination of updated dictionaries, rules and supervised machine learning \cite{chiticariu2013rule}.
-In the word of Big Data, it has become easier to collect large dictionaries of given names, family names, organizations or geological places (gazetteers).
+In the world of Big Data, it has become easier to collect large dictionaries of given names, family names, organizations or geological places (gazetteers).
 The named entity recognition is performed by multiple passes over the text data.
 First, the high-precision but low-recall rules are applied, then more entities are added by substring search of the previous entities.
 In the next phase, the entities are consulted with the dictionaries and only then, the statistical sequence model is applied considering all the features from the previous stages \cite[ch. 21]{jurafsky2014speech}.
 
-Further in the thesis and the application, we will work with the following set of \textit{named entities}:
+Further in the thesis and the application, the following set of \textit{named entities} is considered:
 \begin{itemize}
 \item Person
 \item Organization
@@ -618,177 +618,169 @@ Further in the thesis and the application, we will work with the following set o
 \end{itemize}
 
 \subsection{Relations}
-Once we have extracted the \textit{named entities}, we can start looking for the relationships between them.
-As soon as we recognize entities and their relations, the main semantic meaning of a sentence is usually fully extracted.
-In the legal environment, we can illustrate the added value of a relation by a testimony, in which a witness tells about both a person and a location, however, we are interested in the document only if there is a relation between these two.
+Once the extraction of the \textit{named entities} is done, one can start looking for the relationships between them.
+In the legal environment, we can illustrate the added value of a relation by a testimony, in which a witness tells about both a person and a location; however, we are interested in the document only if there is a relation between these two.
 
-Lets see how the relations are represented.
-Most of the \textit{relations extraction} algorithms are focused on binary relations only.
+Most of the \textit{relations extraction} algorithms are focused only on binary relations.
 Multi-entity relations would be very expensive to extract.
-We will borrow the representation from the Resource Description Framework (RDF) \cite{lassila1999resource} and define the relation as a triple
+Often, a representation of the Resource Description Framework (RDF)\cite{lassila1999resource} is applied to define the relation as a triple
 $$
 \text{<subject, predicate, object>}
 $$
 where the \textit{subject} is an entity that performs an activity specified in the \textit{predicate} with respect to the \textit{object}.
-In our context, the \textit{predicate} is the type of the relation; it can be, for example, "employed-by", "built", "son-of" or "cheated-on".
+In the presented context, the \textit{predicate} is the type of the relation; it can be, for example, "employed-by", "built", "son-of" or "cheated-on".
 
 The following groups of algorithms can be applied to extract the relations: \textbf{hand-written patterns}, \textbf{supervised machine learning}, \textbf{semi-supervised}, and \textbf{unsupervised}.
-We will introduce the first two
-\footnote{For more detailed description, see \citetitle{jurafsky2014speech} \cite{jurafsky2014speech}.}.
+We will introduce the first two of them\footnote{For more detailed description, see \citetitle{jurafsky2014speech} \cite{jurafsky2014speech}.}.
 
 \subsubsection{\textbf{Hand-written patterns}}
 The work \citetitle{hearst1992automatic} by \citeauthor{hearst1992automatic} \cite{hearst1992automatic} describes the first idea of using patterns to extract relations.
-The entity names are ignored and a relation is recognized by a set of patterns.
+The entity names are ignored, and only a set of patterns recognizes a relation.
 The patterns are based on the lexicology (POS tagging), the syntax (syntax tree) and the type of the entity (person, location, etc.).
 For example, the pattern \cite[sec. 21.2]{jurafsky2014speech}
 $$
 NP_0\text{ such as }NP_1 \{, NP_2 ..., (\text{and|or})NP_i \}, i \geq 1
 $$
-is able to catch the relation hyponym for many occurrences, for instance, a sentence
+is able to catch the relation hyponym for many occurrences. For instance, a sentence
 $$
 \text{... by any poison, such as Cyanide, Arsenic or Ricin ...}
 $$
 would generate relations 
 \begin{itemize}
-\item <poison, hyponym of, Cyanide>
-\item <poison, hyponym of, Arsenic>
-\item <poison, hyponym of, Ricin>
+\item <poison, hyponym of, Cyanide>,
+\item <poison, hyponym of, Arsenic>, and
+\item <poison, hyponym of, Ricin>.
 \end{itemize}
-An example of a pattern using entity type \cite[sec. 21.2]{jurafsky2014speech}
+An example of a pattern using entity type 
 $$
 \text{\textbf{PERSON} (named|appointed|chose|...) \textbf{PERSON} Prep? \textbf{POSITION}}
 $$
-will determine a relation "named". 
+will determine a relation ``named''\cite[sec. 21.2]{jurafsky2014speech}. 
 
-The big disadvantage of the pattern-based recognition is that the patterns need to be written by hand, which takes a lot of work. On the other hand, the precision of such method is usually high since the patterns are directed by a human.
+A significant disadvantage of the pattern-based recognition is that the patterns need to be written by hand, which takes a lot of work. On the other side, the precision of such method is usually high since humans write the patterns.
 
 \subsubsection{\textbf{Supervised machine learning}}
-The second approach is to annotate a corpus of relations and entities and consider it as a training set in the machine learning.
-More precisely, features are extracted from the sentences and are served to the machine learning algorithm as an input.
-With the relation types as the output labels, the algorithm is prepared to be trained automatically.
+The second approach suggests to annotate a corpus of relations and entities and consider it as a training set in the machine learning.
+More precisely, features are extracted from the sentences and are served to the machine learning model as an input.
+With the relation types as the output labels, the model is prepared to be trained automatically
 \cite[sec 21.2]{jurafsky2014speech}.
 
-The features can consist of unigrams or bigrams of the words in the sentence, especially between the subject and object. Next, the named entity types, POS tags or features from the syntax tree can be included as well. Sometimes the number of words between the subject and object or stemmed version of the words is also be considered \cite[sec. 21.2]{jurafsky2014speech}.
+The features can consist of unigrams or bigrams of the words in the sentence, especially between the subject and object. Next, the named entity types, POS tags or features from the syntax tree can be included as well. Sometimes the number of words between the subject and object or stemmed version of the words is also considered \cite[sec. 21.2]{jurafsky2014speech}.
 
 The algorithm uses two models for the relations extraction.
 The first decides whether there exists a relation between two given entities, and the second one recognizes its type. First, the algorithm finds all pairs of entities in the sentence, test it with the first model, and only the positive results are tested on type with the second model \cite[sec. 21.2]{jurafsky2014speech}.
 
-The supervised method has a potential to be very accurate on general inputs, however, to achieve a better results than pattern-based models, a large training dataset is required.
+The supervised method has a potential to be very accurate on general inputs; however, to achieve better results than pattern-based models, an extensive training dataset is required.
 Therefore, the \textit{Distant Supervision for Relation Extraction} was invented to solve the problem \cite{mintz2009distant}.
 It is an elegant way, how to obtain a large training dataset.
-The DBpedia \footnote{Comprehensive database of structured facts extracted from Wikipedia: \mbox{\url{http://wiki.dbpedia.org/}}} or 
-Google Knowledge Graph \footnote{Database of world knowledge structured in a graph: \url{https://www.google.com/intl/bn/insidesearch/features/search/knowledge.html}}
+The DBpedia\footnote{Comprehensive database of structured facts extracted from Wikipedia: \mbox{\url{http://wiki.dbpedia.org/}}} and 
+Google Knowledge Graph\footnote{Database of world knowledge structured in a graph: \url{https://www.google.com/intl/bn/insidesearch/features/search/knowledge.html}}
 provide enough information about some of the relations between real-world objects.
-The algorithm is able to extract full relations with subject, object and relation type.
+The algorithm can extract full relations with a subject, object and relation type.
 To gather the training data, the algorithm searches a page about the subject on Wikipedia and finds a sentence with the specified object.
 Then, it is ready to adopt the text as an input data for the training phase.
-This approach delivers a lot of diverse sentences, in which we are confident about the relation type, and thus the training dataset is rich enough to create a reliable model.
+This approach delivers a large number of sentences, in which the confidence about the relation type is high, and thus the training dataset is rich enough to create a reliable model.
 
 \subsection{Topic Modeling}
 \label{topic_modeling}
 The \textit{Topic modeling} is a statistical approach for finding general topics that appear in the document.
-The keywords are already able to discover some trends of a document, however, unlike the topics, they have to appear in the text.
+The keywords are already able to discover some trends in a document; however, unlike the topics, they have to appear in the text.
 
-Prior to the topic recognition, a fixed set of topics have to be defined.
-The more advanced algorithms creates a hierarchical topic structure rather than a simple list.
+Before the topic recognition, a fixed set of topics have to be defined.
+The more advanced algorithms create a hierarchical topic structure rather than a simple list.
 The usual process of topic modeling is to assign probabilities of all topics to every word in the dictionary.
-Then, if we consider a document as a bag-of-words
-\footnote{Representation of a document that forgets ordering and counts of the words and keeps them in a simple set.}, 
-we can compute the overall probability that a document has a specific topic only from its words.
+Then, considering a document as a bag-of-words\footnote{Representation of a document that forgets ordering and counts of the words and keeps them in a simple set.}, 
+one can compute the overall probability that a document has a specific topic only from its words.
 
 One of the well-known algorithms for the topic modeling is called the \textit{Latent Dirichlet allocation} developed by \citeauthor{blei2003latent} in \citeyear{blei2003latent} \cite{blei2003latent}.
 The model assumes that every document has a fixed distribution of topics it belongs to.
-Let's further assume that the words of a document were withdrawn from a specific distribution defined in the following way.
+Furthermore, it assumes that the words of a document were withdrawn from a specific distribution defined in the following way.
 \begin{enumerate}
 \item Pick a topic distribution of each document according to a \textit{Dirichlet distribution}.
 \item Pick a word distribution for each topic.
 \item For all words in all documents, generate the word as follows:
 \begin{enumerate}
   \item Pick a random topic according to the distribution of topics for the document.
-  \item Pick a random word from the distribution of words for the topic chosen in the step a).
+  \item Pick a random word from the distribution of words for the topic chosen in step a).
 \end{enumerate}
 \end{enumerate}
-The generation scheme tells us the probability theory for documents and topics, however, it does not tell us how to recognize the topics from the fixed documents.
+The generation scheme tells us the probability theory for documents and topics; however, it does not tell us how to recognize the topics from the fixed documents.
 To apply the theory, we need to reverse the process and assume that the documents were created by this generation process, and eventually guess the topic.
 One of the iterative methods, which achieves this goal, is called the \textit{Collapsed Gibbs Sampling} \cite{xiao2010efficient}.
-Put simply, the initialization phase picks a random topic for each word in all documents and each next phase goes over every word and changes its topic by computing the probabilities, assuming that all the other words are correctly labeled.
-
-
+Put simply, the initialization stage picks a random topic for each word in all documents, and each next stage goes over every word and changes its topic by computing the probabilities, assuming that all the other words are correctly labeled.
 
 \subsection{Document Category}
-There are two types of categories we are interested in.
+There are two types of categories of interest.
 The first is more related to the structure of the text and tells us where the document is coming from. 
-Such types can be for instance email, medical record, police record, affidavit, etc.
-The Legato system is prepared to work with such categories, and therefore, we rely on the input to contain the information about the first type.
-
+Such type can be, for instance, email, medical record, police record, or affidavit.
 The second type is related to the meaning of the text.
-Semantically, it is very similar to the topics introduced in the section \ref{topic_modeling}, and the only difference is that we need the most dominant topic to be chosen as a representative.
+Semantically, it is very similar to the topics introduced in the section \ref{topic_modeling}, and the only difference is that the category is the most dominant topic.
 
 \section{Introduction of the tools}
 
 \subsection{NLTK: The Natural Language Toolkit}
-As a baseline for the commercial NLP tools, we included the open source python framework \textit{NLTK} \cite{bird2004nltk}.
-Although it was originally developed for educational purposes, it is now broadly used by students, researchers and public to process the textual data in python.
+As a baseline for the commercial NLP tools,  the open source python framework \textit{NLTK} is included\cite{bird2004nltk}.
+Although it was initially developed for educational purposes, it is now broadly used by researchers and public to process the textual data in python.
 
-\textit{NLTK} consists of multiple modules, which can be used as a pipeline during the text processing. 
-The basic modules run the tokenizer, POS tagging, and syntactic analysis.
+\textit{NLTK} consists of multiple modules, which can be applied in a pipeline during the text processing. 
+The basic modules apply the tokenizer, POS tagging, and syntactic analysis.
 More advanced modules are dealing with the information extraction and knowledge representation.
 The framework comes with large preprocessed corpora that can be used as reference corpora during the keyword or NE extraction \cite{bird2009natural}.
 
-The commercial NLP tools do not need any settings since they are already configured and the configuration is basically the key to their success.
-Nevertheless, the \textit{NLTK} is more a framework than a tool and we have to take the time to set the variables right.
-It also brings a great advantage of highly configurable settings.
-In the next two paragraphs, we explain our approach to extracting the keywords and entities in the \textit{NLTK}.
+The commercial NLP tools do not need any settings since they are already configured, and in fact, the configuration is the key to their success.
+Nevertheless, the \textit{NLTK} is more a framework than a tool and one has to take the time to set the parameters correctly.
+It also brings a significant advantage of high configurability.
+The next two paragraphs explain the approach of extracting the keywords and entities in the \textit{NLTK} for the purpose of the comparison.
 
-We applied the \textit{TF-IDF} algorithm to compute the keywords, as explained in \ref{algorithms_keywords}.
 Firstly, we removed the stop words and filtered only meaningful words.
-The list of stop words was used as defined by the \textit{Scikit-learn library} \footnote{Machine learning library for python \cite{pedregosa2011scikit}}.
+The list of stop words was used as defined by the \textit{Scikit-learn library}\footnote{Machine learning library for python \cite{pedregosa2011scikit}}.
 To remove the nonsense words, we compared them against a dictionary of the \textit{Brown corpus}, which is the first text corpus of American English of about 1 million words \cite{brownCorpus}.
 Next, we filtered only nouns and finally, computed the \textit{TF-IDF} score against the \textit{Reuters} reference corpus \cite[sec. 2.1]{bird2009natural}, which contains more than 10,000 news articles with 1.3 million words.
 We have chosen the journalistic context because it was the closest domain to the legal environment.
-This procedure outputs a score for each word in a document and the final keywords are those, which \textit{TF-IDF} score was more than a threshold of 0.15.
+This procedure outputs a score for each word in a document, and the final keywords are those, which \textit{TF-IDF} score exceeded a threshold of 0.15.
 
 The entity extraction requires fewer settings since the NE tagger is already trained by the library \cite[sec. 7.5]{bird2009natural}.
-We split the text into sentences and consequently sentences into tokens \footnote{token = word as a string without a disambiguated meaning}.
+We split the text into sentences and consequently sentences into tokens\footnote{token = word as a string without a disambiguated meaning}.
 Next step is to extract the part-of-speech tags for each token.
-The tokens together with the \textit{POS tags} are the input data into the \textit{NE chunker}, which is able to mark words as named entities and also determine its type.
+The tokens together with the \textit{POS tags} are the input data into the \textit{NE chunker}, which can consequently mark words as named entities and also determine its type.
 
 
 \subsection{Google Cloud Natural Language}
 Google has a long-standing experience with the text processing, especially in the field of information retrieval.
-They decided to provide their knowledge of semantic text analysis in a service called Cloud Natural Language \cite{googleNLP}.
+The company decided to provide their knowledge of semantic text analysis in a service called \textit{Cloud Natural Language} \cite{googleNLP}.
 Google makes no secret of their approach: the same Deep Learning models that power the Google Search are also employed in the NLP service.
 
-The tool is able to recognize entities, syntactic structure of sentences, category and sentiment of the text.
-The sentiment analysis is recently very interesting topic because companies want to know public opinion of themselves.
-However, the sentiment in legal documents is usually neutral and does not play a key role in the relevance classification, therefore we decided not to consider sentiment as a feature.
+The tool can recognize entities, syntactic structure of sentences, category and sentiment of the text.
+The sentiment analysis has recently become a point of interest for companies as they want to know public opinion of themselves.
+However, the sentiment in legal documents is usually neutral and does not play a vital role in the relevance classification. Therefore we decided not to consider sentiment as a feature.
 
-The \textit{Cloud Natural Language} tool also adds a level of confidence to every entity and category so that the user see how strong each feature is. Moreover, the tool replies with a Wikipedia article for every entity, if exists. Another useful feature is the Translation API, which converts text among many different languages and is able to recognize sources of an unknown language. Worth noting that the input does not have to be a pure text but also speech in the audio format or text in a picture.
+The \textit{Cloud Natural Language} tool also adds a score to every entity and category so that a user sees how confident the service is about each feature. Moreover, the service replies with a Wikipedia article for every entity, if it exists. Another useful feature is the Translation API, which converts text among many different languages and is able to recognize sources of an unknown language. Worth noting that the input does not have to be a pure text but also speech in the audio format or text in a picture.
 
 \subsection{Watson Natural Language Understanding}
+\label{sec:watson}
 In March 2017, the IBM announced retirement of the \textit{AlchemyAPI} service, which was designed to understand the semantics of text and image by advanced techniques \cite{alchemyRetirement}.
 One component of the service was also the \textit{AlchemyLanguage}, providing all NLP features, such as entity, sentiment and topic recognition.
 As a replacement, a new service emerged: the \textit{Natural Language Understanding} service \cite{watsonNLP}.
 
 Besides typical NLP features, such as keywords, entities, relations, category, sentiment or topics (which are called concepts in the \textit{NLU}), the service provides emotion recognition (joy, anger, fear, etc.) and metadata recognition.
-The latter includes basic information about the author, title, prominent page image, and publication date.
-Unfortunately, this feature is available only for HTML pages, which is usually not the type of our documents, hence we will not take advantage of the metadata recognition.
+The latter includes information about the author, title, prominent page image, and publication date.
+Unfortunately, this feature is available only for HTML pages, which is usually not the format of legal documents, hence we will not take advantage of the metadata recognition.
 
 One of the most promising features of the \textit{NLU} service is the model customization.
-All the NLP features are always recognized with respect to some general language model, which consists of words from all aspects and domains of our language.
-This might be a disadvantage, especially when our documents are actually always of one type and contains words from a specific domain.
-For instance, the general model would always consider law, justice or  sentence as keywords in our legal documents, however, they might appear in most of the documents and become not relevant anymore in the legal domain.
+The service always recognizes NLP features with respect to some general language model, which consists of words from all aspects and domains of our language.
+This might be a disadvantage, especially when the documents are always of one type and contain words from a specific domain.
+For instance, the general model would always consider law, justice or sentence as keywords in the legal documents; however, they might appear in most of the documents and become not relevant anymore in the legal domain.
 The \textit{NLU} service enables a user to create its own language model and load it into the cloud.
-More than one model can be active and the user can switch between them before each query.
+More than one model can be active, and the user can switch between them before each query.
 
 \subsection{Aylien}
 \textit{Aylien} is a software package of information retrieval, machine learning, and natural language processing \cite{aylienNLP}, which provides competitive features to the mentioned NLP services from Google and IBM.
 
-In addition to the classical NLP features, \textit{Aylien} provides summarization, which essentially picks the most important sentences from the text. In fact, this feature makes a good sense in our legal domain. Next innovative feature looks for related phrases, which are semantically as close to the original phrase as possible. Another advantage of \textit{Aylien} is that it includes time-based entities in the named entity recognition, specifically, dates. The previously mentioned services surprisingly ignore the time and date expressions most of the time.
+In addition to the classical NLP features, \textit{Aylien} provides summarization, which essentially picks the most important sentences from the text. Next innovative feature looks for related phrases, which are semantically as close to the original expression as possible. Another advantage of \textit{Aylien} is that it includes time-based entities in the named entity recognition, specifically, the dates. The previously mentioned services surprisingly ignore the time and date expressions most of the time.
 
-Next interesting feature of \textit{Aylien} is the hashtag suggestion, however, it is basically the topic modeling as we described it in \ref{topic_modeling}.
-In the same manner, the article extraction is another term for the IBMs metadata recognition.
-Truly new feature is the aspect-based sentiment analysis, in which the sentiment is recognized for each aspect, not generally for the whole text.
+Next compelling feature of \textit{Aylien} is the hashtag suggestion, which turns out to be the topic modeling as we described it in \ref{topic_modeling}.
+Next feature -- the article extraction -- is another name for the metadata recognition, applied by IBM (\ref{sec:watson}).
+Genuinely new feature is the aspect-based sentiment analysis, in which the sentiment is recognized for each aspect, not generally for the whole text.
 For example, an analysis of hotel reviews can discover angry opinions on Wi-Fi signal but an excellent rating of the staff.
 
 \section{Comparison}
@@ -796,35 +788,36 @@ To compare the tools, we had to restrict the evaluation set only to the common f
 Specifically, the \textit{keywords} and \textit{named entities}: persons, organizations, and locations.
 Without any comparison, we also evaluated the relations, which were supported only by \textit{Watson NLU}, and dates supported only by \textit{Aylien}.
 
-\subsection{Testing data: Legal mock case}
-Of course, we could not use any real-world case for our testing and analysis due to privacy reasons, therefore, we analyzed a legal mock case called \textit{Davis v. HappyLand Toy Company}\cite{american2015davis} created by the \textit{American Mock Trial Association}\footnote{http://www.collegemocktrial.org/}.
+\subsection{Testing data: Mock legal case}
+\label{sec:davis_legal_case}
+Indeed, we could not use any real-world case for our testing and analysis due to privacy reasons.
+Therefore, we analyzed a mock legal case called \textit{Davis v. HappyLand Toy Company}\cite{american2015davis} created by the \textit{American Mock Trial Association}\footnote{http://www.collegemocktrial.org/}.
 
 Briefly described, the case puts a father of a child, who was killed by swallowed part of a toy, against the company that produced the dangerous toy. For our use case, we picked five most interesting and distinct documents: 
 \begin{enumerate}
-\item An email of an inter-company communication about the substances used in the toy.
-\item Affidavit (testimony) of the father.
-\item Affidavit of the babysitter, who looked after the child at the moment of the fatality.
+\item An email of the inter-company communication about the substances used in the toy.
+\item An affidavit (testimony) of the father.
+\item An affidavit of the babysitter, who looked after the child at the moment of the fatality.
 \item Medical record from the autopsy of the child.
 \item Journal paper about the origin, behavior, look, and impacts on a human body of the substance used in the toy.
 \end{enumerate}
 
 \subsection{Survey}
-The survey was created in a way that no knowledge of the law is necessary, the questions are simple and clearly stated.
-Some of the documents are several pages long, hence the survey can be saved and finished later.
+The survey was created so that no prior knowledge of the law is necessary.
+The questions are simple and clearly stated.
+Some of the documents are several pages long, and thus the survey can be saved and finished later.
 The respondents were not provided with any extra information about the legal case so that the results are comparable with the NLP tools, which have no information as well.
-The survey was completed by five developers of the Legato system.
+Five developers of the Legato system completed the survey.
 
 We asked the same set of questions for every document.
 First two questions asked about the keywords.
-We have split the one-word phrases and multi-word phrases and required both with at least 10 one-word keywords.
-Next, the respondent has to type people, organizations, and locations that appear in the text.
-Moreover, we require relationships between people and dates together with a label specifying which event is related to the date.
+We have split the one-word phrases and multi-word phrases and required at least ten entries for both.
+Next, the respondent is supposed to type in people, organizations, and locations that appear in the text.
+Furthermore, the survey asks for relationships between people, dates, and event related to each date.
 Next two questions were related to the semantics and were not used to evaluate the tools.
-We asked the respondents to copy a short passage from the text that could be used as an evidence at the court.
-The second question asks for a short summary of the whole document.
-Both of the questions will be later applied in the training and evaluation of the models
-for document relevancy.
-
+We asked the respondents to copy a short passage from the text that could be used as evidence at the court.
+The second question asks for a summary of the whole document.
+The survey could not be attached to the thesis for the excessive documents' lengths, but it is available on the link \url{https://goo.gl/forms/4dfZuI2ayhzOMMT43}.
 
 \subsection{Statistical comparison}
 \label{sec:nlp:statistical_comparison}
@@ -904,30 +897,31 @@ Locations & Miller affidavit &0.27&0.61&0.67&0.29\\\hline
 \normalsize
 \end{figure}
 
-Since the survey was completed by only five respondents, we decided to unify results for each answer.
+Since only five respondents completed the survey, we decided to unify results for each answer.
+More precisely, an entry was considered as a keyword (person, organization, etc.) if and only if at least one respondent typed it in the survey.
 The standard approach how to compute agreement between two sources is the \textit{Cohens kappa measure} \cite{smeeton1985kappa}.
-The problem with \textit{kappa measure} is that the sources assign a fixed number of items to classes, which is not our situation.
-In our case, the number of items is variable and we do not have any classes.
-We care about the agreement between the sets.
-Therefore, we are using a measure for the distance between sets, the \textit{Jaccard index} \cite{levandowsky1971distance}, defined as follows:
+The problem with \textit{kappa measure} is that the sources assign a fixed number of items to classes, which is not the situation here.
+In this case, the number of items is variable, and there are no classes.
+In contrast, here the agreement between the sets is of interest.
+Therefore, the analysis applies a measure for the distance between sets, the \textit{Jaccard index} \cite{levandowsky1971distance}, defined as follows:
 $$
 J(A, B) = \frac{|A \cap B|}{|A \cup B|}
 $$
-Since the union is always larger than or equal to the intersection, we get $0 \leq J(A, B) \leq 1$ for any sets $A$, $B$. 
+Since the union is always larger than or equal to the intersection, it holds for the result that $0 \leq J(A, B) \leq 1$ for any sets $A$, $B$. 
 When $J(A,B)=1$, the sets are identical and when $J(A,B)=0$, the sets do not share any item.
 
 The next step is to define when two items (keywords and entities) are equal.
 We have defined two approaches in comparing the equality: \textit{strict approach}, and \textit{subset tolerance approach}.
 
-In the \textit{strict approach}, all items are converted to lower case, so that the names, organizations, locations and other items are compared regardless of the capital letters.
-Apart from that, no changes are made to the items and the comparison is based on a strict string equality.
-As a consequence, for instance, full name and given name alone are not equal, even if the text represents the same person. 
+In the \textit{strict approach}, all items are converted to lower case, so that names, organizations, locations and other items are compared regardless of the capital letters.
+Apart from that, no changes are made to the items, and the comparison is based on strict string equality.
+As a consequence, for instance, the full name and given name are not equal, even if the text represents the same person. 
 E.g. for sets $A=\{\text{"Joey Davis", "Brett"}\}$ and $B=\{\text{"Joey", "Brett"}\}$ the Jaccard index is 
 $$
 J(A, B) = \frac{|\{\text{"Brett"}\}|}{|\{\text{"Joey Davis", "Joey", "Brett"}\}|} = 1/3
 $$
-Figure \ref{fig:jaccard_table_strict} shows \textit{Jaccard indices} using the strict approach for each combination of tool, feature and document compared with the ground truth, which is the survey output.
-The "\textbf{Average}" row displays the mean over all documents for each tool and feature.
+Figure \ref{fig:jaccard_table_strict} shows \textit{Jaccard indices} using the \textit{strict approach} for each combination of tool, feature and document compared with the ground truth, which is the survey output.
+The ``Average'' row displays the mean over all documents for each tool and feature.
 
 The \textit{subset tolerance approach} converts the items to lower case in the same manner as the \textit{strict approach}.
 Then, two items are equal if one is a subset of the other or they are strictly equal.
@@ -942,38 +936,38 @@ One can notice that the score is always equal or higher compared to the \textit{
 \subsubsection{\textbf{Keywords}}
 All tools except for the \textit{Google Cloud Natural Language} service provide the keywords extraction.
 The \textit{Jaccard index} is generally very low in the case of the keywords.
-There is usually a lot of words to choose from and even the respondents agreed only on few of them.
-We can notice the best scores in the case of the email due to the short length of the text.
-The \textit{Watson NLU} achieved the best score, however, it did not perform much better than our baseline \textit{NLTK}.
-\textit{Aylien} scores high in the \textit{subset tolerance approach} because it extracts very long keywords, which have a high probability of being superset of some of the real keyword.
+There is usually a lot of words to choose from, and even the respondents agreed only on few of them.
+One can notice the best scores in the case of the email due to the short length of the text.
+The \textit{Watson NLU} achieved the best score; however, it did not perform much better than our baseline \textit{NLTK}.
+\textit{Aylien} scores high in the \textit{subset tolerance approach} because it extracts very long keywords, which have a high probability of being a superset of some of the real keyword.
 
 \subsubsection{\textbf{People}}
 The scores for the people extraction were surprisingly high.
 In the \textit{strict approach}, the \textit{NLTK} failed because of its limitation of recognizing only one-word items.
 People names mostly appeared with both given and family name and the \textit{NLTK} recognized the name separately as two items.
-On the other hand, when the subsets are tolerated, the \textit{NLTK} achieved very good result.
+On the other hand, when the subsets are tolerated, the \textit{NLTK} achieved a satisfying result.
 The winner of this category is the \textit{Watson NLU}, which is superior for every document and approach.
 \textit{Aylien} service achieved a better score than \textit{Google CNL}, especially in the case of the longer documents.
 
 \subsubsection{\textbf{Organizations}}
 The \textit{NLTK} achieved the lowest score for the same reason as in the case of the people extraction since the names of organizations also consist of more than one word.
 In the strict variant, all other tools performed significantly better than the baseline, yet the best score again achieved the \textit{Watson NLU} service.
-In this category, \textit{Google CNL} outperformed the \textit{Aylien} service in the \textit{strict approach}, however, we can see reversed result in the \textit{subset tolerance approach}.
-One of the possible explanations is the fact that \textit{Google} is able to precisely determine borders of the entities but they are not so often common with the survey output.
-Whereas \textit{Aylien} usually fails at determining the borders since the organizations often consist of many words but the items contain the right information in the subsets.
-The Medical record, unfortunately, does not contain many organizations, therefore none services were successful.
+In this category, \textit{Google CNL} outperformed the \textit{Aylien} service in the \textit{strict approach}, though we can see a reversed result in the \textit{subset tolerance approach}.
+One of the possible explanations is the fact that \textit{Google} can precisely determine borders of the entities but the words are not so often shared with the survey output.
+In comparison, \textit{Aylien} usually fails at determining the borders since the organizations often consist of many words but the items contain the right information in the subsets.
+Since the Medical record, unfortunately, does not contain many organizations, none services were successful.
 
 \subsubsection{\textbf{Locations}}
 The extraction of the locations was quite chaotic and diverse by the respondents as well as by the tools.
 The location can be understood as a named entity which is unique in the world, such as Hype park in London, 107 Myers street or Moscow, whereas someone understands the location as any expression specifying the environment, such as living room, school or a car.
-The latter type was mostly recognized by the \textit{Google CNL} and the other tools recognized the first type.
+The \textit{Google CNL} mostly recognized the latter type and the other tools recognized the former.
 Moreover, there were not enough location entities in the documents to draw a meaningful conclusion from the results.
-In the strict variant, we ascribe win of the \textit{NLTK} service to a coincidence, as its simple model extracted many words starting with capitals, hence more people than locations appeared in the output set.
-In the subset tolerance variant, \textit{Google CNL} and \textit{Watson NLU} achieved very similar score, however, the Watson generated approximately ten times fewer items, which brings us to a conclusion that the discriminative power of the Watsons items might be higher.
+In the strict variant, we ascribe the win of the \textit{NLTK} service to a coincidence, as its simple model extracted many words starting with capitals, and hence more people than locations appeared in the output set.
+In the subset tolerance variant, \textit{Google CNL} and \textit{Watson NLU} achieved very similar score; however, the Watson generated approximately ten times fewer items, which brings us to a conclusion that the discriminative power of the \textit{Watson NLU} items might be higher.
 
 \subsubsection{\textbf{Dates}}
-As the \textit{Aylien} service is the only one that is able to extract the time-based entities, we have not performed any comparison.
-Still, we wanted to see how precise is the extraction, and so we present the \textit{Jaccard index} computed from the \textit{Aylien} output and the survey data.
+As the \textit{Aylien} service is the only one that is able to extract the time-based entities, no comparison was necessary.
+Still, it is valuable to see how precise is the extraction, and therefore, we present the \textit{Jaccard index} computed from the \textit{Aylien} output and the survey data.
 
 \begin{figure}[h]
 \centering
@@ -990,85 +984,80 @@ Medical record &0.00\\\hline\hline
 \textbf{Average} &\textbf{0.04}\\\hline
 \end{tabular}
 \end{figure}
-The \textit{Aylien} achieved non-zero results only in the longer documents and even then, the scores are under our estimation.
-As an example, a simple date in form "24. 12. 2017" is recognized as a phone rather than a date.
-Here, it strongly depends on the spaces: after we remove a space before the month -- "24.12. 2017" -- the day and month are finally recognized as a date, however, the whole string is still reported as a phone.
-On the other hand, we took into consideration only the dates, while \textit{Aylien} recognizes times and other expressions, such as "last week", as well.
+The \textit{Aylien} achieved non-zero results only in the longer documents, and even then, the scores are under our estimation.
+As an example, a simple date in form ``24. 12. 2017'' is recognized as a phone rather than a date.
+Here, it strongly depends on the spaces: after the removal of the space before the month (``24.12. 2017'') the day and month are finally recognized as a date; however, the whole string is still reported as a phone.
+On the other hand, here the analysis takes into consideration only the dates, while \textit{Aylien} recognizes times and other expressions, such as ``last week'', as well.
 
 \subsection{Analytical comparison}
 Aside from the statistical evaluation of the tools accuracy, it is also important to manually analyze the output and check whether it is semantically correct.
-In this section, we discuss characteristics of the tools and their benefits and drawbacks.
+This section includes a discussion about the tools' characteristics, their benefits, and drawbacks.
 
 \subsubsection{\textbf{NLTK}}
-We already outlined two drawbacks of the \textit{NLTK} in the previous section: one-word limitation and simple NE model.
-The first problem is visible in both affidavits, where the toy name appears under the name "Princess Beads", which is an obvious keyword in this context.
-Interestingly, the \textit{NLTK} extracted both parts: "princess" and "beads" as keywords since the words are quite unique by itself.
+The previous section already outlined two drawbacks of the \textit{NLTK}: a one-word limitation and simple NE model.
+The first problem is visible in both affidavits, where the toy name appears under the title ``Princess Beads'', which is an obvious keyword in this context.
+Interestingly, the \textit{NLTK} extracted both parts: ``princess'' and ``beads'' as keywords since the words are unique by itself.
 However, the key phrase was missed.
-As the \textit{NLTK} is highly customizable, we believe that the multi-word phrases extraction is indeed possible but it would require an extra amount of work.
+As the \textit{NLTK} is highly customizable, we believe that the multi-word phrases extraction is, indeed, possible, but it would require an extra amount of work.
 
-On the other hand, the keyword extraction performance was very well comparable to the commercial tools.
+On the other hand, the keyword extraction performance was comparable to the commercial tools.
 \textit{NLTK} performed considerably worse in the entity extraction.
-Besides the separation of the given and family name, it also falsely marked "Liquid", "Myth" or "Identification" as people, probably because of the capital letters.
-One can notice a lot of false positives in the Medical record, were a lot of words were written in the capitals and \textit{NLTK} recognized all of them as organizations, e.g. "BODY", "AND" or "OF".
+Besides the separation of the given and family name, it also falsely marked ``Liquid'', ``Myth'' or ``Identification'' as people, probably because of the capital letters.
+One can notice many false positives in the Medical record, where some words were written in the capitals and \textit{NLTK} recognized all of them as organizations, e.g., ``BODY'', ``AND'' or ``OF''.
 
-Although the \textit{NLTK} provides a very good baseline for the NLP feature extraction, we can see a noticeable line between its hand-written patterns and the supervised machine learning models, which are used by the other tools.
+Although the \textit{NLTK} provides a satisfactory baseline for the NLP feature extraction, one can see a noticeable line between its hand-written patterns and the supervised machine learning models, which are used by the other tools.
 
 \subsubsection{\textbf{Google Cloud Natural Language}}
-The approach of the Google is a little different in the following way.
-Together with the entity, it outputs also a position in the text and it does not discard duplicates.
-\textit{Google} does not understand the extraction as picking of the most identifying words, but more as a highlighting of the words in the text.
+The approach of the Google is little different in the following way.
+Together with the entity, it outputs also a position in the text, and no duplicates are discarded.
+Google does not understand the extraction as choosing the most identifying words, but more as highlighting of the words in the text.
 Therefore, the \textit{Google CNL} usually produces a larger output than others.
-The true positive rate is almost perfect, for example in the Millers affidavit, all of "Brett Miller", "Lee Davis", "Andy Davis", "Hillary Davis" and "Joey Davis" were recognized.
-Even more surprising is that "Hillary Davis" appears only once in the text and \textit{Google} was able to link the name to many occurrences of her given name.
-The problem is that words, such as "kids", "one", or "friend" are recognized as well, and truth is that they really represent some people in the meaning, however, it is not necessary and rather disturbing in our use case.
+The true positive rate is almost perfect, for example, in the Millers affidavit, all people were correctly recognized.
+Even more surprising is that ``Hillary Davis'' appears only once in the text and the service was able to link the name to many occurrences of her given name.
+The problem is that words, such as ``kids'', ``one'', or ``friend'' are recognized as well, which is rather disturbing in the present use case.
 
 \subsubsection{\textbf{Watson Natural Language Understanding}}
 The \textit{Watson} approach is slightly more moderate.
-Very little false positives are introduced as \textit{Watson} outputs a word only in case of high confidence.
-Similarly as \textit{Google}, \textit{Watson} recognized all people in the Millers affidavit including full name of "Hillary Davis".
-Due to the conservativeness, only the family name of "Chase Tuchmont" was recognized since "chase" is an ordinary word in English as well.
+Minimal false positives are introduced as \textit{Watson} outputs a word only in case of high confidence.
+Similarly as \textit{Google}, \textit{Watson} recognized all people in the Millers affidavit including full name of ``Hillary Davis''.
+Due to the conservativeness, only the family name of ``Chase Tuchmont'' was recognized since the ``chase'' is an ordinary word in English as well.
 However, the overwhelming majority of the recognized entities makes perfect sense and are truly people, organizations or locations.
 Therefore, the \textit{Watson NLU} service is not only superior in the statistical evaluation, but also in the analytical overview of the semantics.
 
 \subsubsection{\textbf{Aylien}}
-We can see yet another approach by the \textit{Aylien} service.
-Keywords are understood as complex pieces of information of arbitrary length, sometimes even more than 10 words long.
-As a result, service correctly extracted "Joye" as a keyword in the Davis affidavit, though incorrectly extracted a key phrase "Davis and that I wanted to speak with someone about Princess", which seems rather awkward.
+One can see yet another approach by the \textit{Aylien} service.
+Keywords are understood as complex pieces of information of arbitrary length.
+As a result, service incorrectly extracted a key phrase ``Davis and that I wanted to speak with someone about Princess'', which seems slightly awkward.
 This was a source of a low score of \textit{Aylien} in the keywords category.
-
 On the other hand, \textit{Aylien} excelled in the extraction of people.
-Again, all people in the Millers affidavit were successfully recognized, even though the model was not sophisticated enough to merge "Hillary" and "Hillary Davis".
 Despite a few mistakes, mostly recognizing numbers as people, the service was able to keep high true positives and low false positives, including organizations and locations.
-
 
 \chapter{Classification}
 \label{chp:classification}
-Data exploration in the chapter \ref{chp:data_characteristics} helped us clarify the language and style of the legal documents enough to design models for the relevance classification.
-% ... write about the outcomes of data characteristics chapter when they're done ...
+Exploring the data in the chapter \ref{chp:data_characteristics} helped to enough clarify characteristics of legal documents to design models for the relevance classification.
+The analysis discovered that the focus should be put on the sentences instead of documents and that the recognition of a document type before relevance prediction might be a beneficial step.
 
-First section (\ref{sec:attributes}) presents how the NLP features are encoded into attributes applicable to the models.
+The first section (\ref{sec:attributes}) presents how the NLP features are encoded into attributes applicable to the models.
 Next sections describe the system of models that predicts the document relevance.
 Due to a large number of features, the system is structured into layers, where the top-level models make predictions based on the outputs of the bottom-level models.
 The section \ref{sec:bottom-level-models} introduces the bottom-level models, which are specialized on each feature separately and are able to understand the word embeddings.
-The top-level layer is formed by a pipeline of three machine learning models that are consecutively making decisions about the documents to output the final relevance.
-First is the \textit{Law-Case classifier} (Section \ref{sec:law-case-classifier}), second is the \textit{Sentence classifier} (Section \ref{sec:sentence-classifier}) and the last is the \textit{Document classifier} (Section \ref{sec:document-classifier}).
-Each of them needs a different set of inputs and applies different machine learning model.
+The top-level layer is formed by three machine learning models that are consecutively making decisions about the documents to output the final relevance.
+The first is the \textit{Law-Case classifier} (\ref{sec:law-case-classifier}), second is the \textit{Sentence classifier} (\ref{sec:sentence-classifier}) and the last is the \textit{Document classifier} (\ref{sec:document-classifier}).
+Each of them needs a different set of inputs and applies a different machine learning model.
 The following figure visually explains the system of models.
 For further details about the individual classifiers, see the related sections.
-
-% TODO write that there'll be a lot of claims proven in evaluation section
 
 \begin{figure}[H]
 \caption{Diagram of models}
 \label{fig:models-diagram}
-TBA
+\includegraphics[width=\textwidth]{img/models-diagram}
 \end{figure}
 
 \section{Attributes}
 \label{sec:attributes}
-To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes that will be most helpful in determining the classes.
+To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes that will be helpful in determining the classes.
 Technically, all machine learning models are built to process numbers as input variables.
-Since we work here with the text only, we have to find a way how to convert all keywords, entities, relations, syntactic structure, and other features into the numerical representation.
+Since the working dataset consists of a pure text, the first step needs to convert all keywords, entities, relations, syntactic structure, and other features into the numerical representation.
 During this process, one has to keep in mind the main purpose: the numbers must internally capture information about the relevance.
 
 Based on the arguments made in the chapter \ref{chp:data_characteristics}, the units of the machine learning are sentences rather than documents.
@@ -1400,18 +1389,6 @@ As the most discriminative attribute is the meaning, the next two paragraphs des
 The figure \ref{fig:vec_importance_caselaw} shows the importance of each of the 300 dimensions of the vector.
 The importance is following the Zipf's law, as the importance seems to be decreasing exponentially with the ordered dimensions.
 Nevertheless, the dimensionality reduction did not help in the classification and the accuracy rather decreased.
-
-\begin{figure}[h]
-\caption{First 3 components of PCA analysis plotted with labels according to the case and law related sentences}
-\label{fig:PCA_caselaw}
-\includegraphics[width=\textwidth]{img/PCA_caselaw}
-\end{figure}
-
-Next plot (\ref{fig:PCA_caselaw}) shows sentences plotted pairwise according to the first three principal components of the meaning attribute.
-It might seem that the law-related documents are located at the center and the case-related documents are more spread.
-However, this impression might be influenced by the fact, that there is three times fewer law-related documents.
-In any case, the data keep triangular shape with one corner more populated by case-related documents, which might be the reason for the success of the meaning attribute.
-
 
 The top-level model is based on the first 12 features in the figure \ref{fig:case_law_feature_importance}.
 In this case, the model is trained on the set of documents, which has only 263 instances, hence the neural networks are not applicable.
@@ -1942,8 +1919,7 @@ The negative fact is that only one out of four to five sentences is truly releva
 This imprecision might be tolerated by users as the main focus is on the recall.
 
 To obtain a better insight about the algorithm, the following examples show specific sentences with their predicted and true relevances.
-All sentences are from the case ``Davis v. HappyLand Toy Company", where a little boy named Joey dies after he swallows toy beads.
-The HappyLand Toy Company is sued for the chemicals used in the toy.
+All sentences are from the case ``Davis v. HappyLand Toy Company'' already presented in section \ref{sec:davis_legal_case}.
 
 The first document is a testimony of the babysitter, who was looking after Joey when the incident happened.
 An example of a correctly classified sentence follows:
