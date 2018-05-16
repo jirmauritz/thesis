@@ -1034,16 +1034,16 @@ Despite a few mistakes, mostly recognizing numbers as people, the service was ab
 
 \chapter{Classification}
 \label{chp:classification}
-Exploring the data in the chapter \ref{chp:data_characteristics} helped to enough clarify characteristics of legal documents to design models for the relevance classification.
+Exploring the data in the chapter \ref{chp:data_characteristics} helped to clarify enough the characteristics of legal documents to design models for the relevance classification.
 The analysis discovered that the focus should be put on the sentences instead of documents and that the recognition of a document type before relevance prediction might be a beneficial step.
 
 The first section (\ref{sec:attributes}) presents how the NLP features are encoded into attributes applicable to the models.
 Next sections describe the system of models that predicts the document relevance.
 Due to a large number of features, the system is structured into layers, where the top-level models make predictions based on the outputs of the bottom-level models.
 The section \ref{sec:bottom-level-models} introduces the bottom-level models, which are specialized on each feature separately and are able to understand the word embeddings.
-The top-level layer is formed by three machine learning models that are consecutively making decisions about the documents to output the final relevance.
+The top-level layer is formed by three machine learning models that are consecutively making decisions about the documents in order to output the final relevance.
 The first is the \textit{Law-Case classifier} (\ref{sec:law-case-classifier}), second is the \textit{Sentence classifier} (\ref{sec:sentence-classifier}) and the last is the \textit{Document classifier} (\ref{sec:document-classifier}).
-Each of them needs a different set of inputs and applies a different machine learning model.
+Each of them needs a different set of inputs and applies a different estimator.
 The following figure visually explains the system of models.
 For further details about the individual classifiers, see the related sections.
 
@@ -1056,32 +1056,29 @@ For further details about the individual classifiers, see the related sections.
 \section{Attributes}
 \label{sec:attributes}
 To achieve a successful classification, one of the most crucial steps is to convert the data into suitable attributes that will be helpful in determining the classes.
-Technically, all machine learning models are built to process numbers as input variables.
+Technically, all machine learning estimators are built to process numbers as input variables.
 Since the working dataset consists of a pure text, the first step needs to convert all keywords, entities, relations, syntactic structure, and other features into the numerical representation.
-During this process, one has to keep in mind the main purpose: the numbers must internally capture information about the relevance.
+During this process, one has to keep in mind the primary purpose: the numbers must internally capture information about the relevance.
 
-Based on the arguments made in the chapter \ref{chp:data_characteristics}, the units of the machine learning are sentences rather than documents.
-As a result, there is fewer data from which to compute the attributes and the representation of the attributes as well as the process of classification itself become simpler.
+Based on the arguments made in the chapter \ref{chp:data_characteristics}, the working set of data samples consists of sentences rather than documents.
+As a result, the representation of the attributes and the process of classification itself become simpler.
 
-\subsection{Text preprocessing}
-The extraction of features by NLP services and extraction of structural characteristics (sec. \ref{sec:structural_characteristics}) needs to be applied on the original raw text.
-However, for the purpose of the sentence meaning extraction (sec. \ref{sec:sentence-meaning}), the first step is a text preprocessing.
+% \subsection{Text preprocessing}
+% The documents come into the Legato system in one of the two formats: a text in a digital form or an image.
+% The latter needs to be converted into the former, which is achieved by the Optical Character Recognition (OCR).
+% Unfortunately, the OCR technique is not perfect and leaves specific artifacts in the text.
+% Therefore, we first apply the text processing, which filters, edits and removes these artifacts and prepares the text to be segmented into sentences.
 
-The documents come into the Legato system in one of the two formats: a text in a digital form or an image.
-The latter needs to be converted into the former, which is achieved by the Optical Character Recognition (OCR).
-Unfortunately, the OCR technique is not perfect and leaves specific artifacts in the text.
-Therefore, we first apply the text processing, which filters, edits and removes these artifacts and prepares the text to be segmented into sentences.
-
-Firstly, all empty lines are removed and consecutive white spaces are converted into a single space character.
-Secondly, the OCR artifacts has to be removed.
-For example, the recognition puts '\&\#39;' instead of the apostrophe and '\&quot;' instead of the quotation.
-Another artifact of the OCR are coupled words with missing spaces -- a dictionary of English words is applied to break the words apart.
-Next, the text is converted into lowercase and filtered to keep only the alphanumerical characters.
-The final step is a removal of a hyphenation that was introduced to break new lines in the original document.
+% Firstly, all empty lines are removed and consecutive white spaces are converted into a single space character.
+% Secondly, the OCR artifacts has to be removed.
+% For example, the recognition puts '\&\#39;' instead of the apostrophe and '\&quot;' instead of the quotation.
+% Another artifact of the OCR are coupled words with missing spaces -- a dictionary of English words is applied to break the words apart.
+% Next, the text is converted into lowercase and filtered to keep only the alphanumerical characters.
+% The final step is a removal of a hyphenation that was introduced to break new lines in the original document.
 
 \subsection{Sentence meaning embedding}
 \label{sec:sentence-meaning}
-When extracting a meaning of a sentence, one will encounter two major problems to be solved: 1) how to represent the meaning of a single word 2) how to combine word meanings.
+When extracting a meaning of a sentence, one will encounter two major problems to be solved: 1) how to represent the meaning of a single word and, 2) how to combine word meanings.
 
 The first problem is also known as the \textit{Word Embedding} problem \cite{wordEmbeddings}.
 The simplest solution is to assign unique numbers to all words and train classifiers on the numbers instead of words.
@@ -1090,35 +1087,33 @@ $$
 $$
 This approach does not usually perform well since the classifiers interpret a number as a quantitative, not nominative,  attribute.
 As a result, the classifier understands two words with close numbers as close by the meaning as well.
-Since the numbers were assigned without any order, there is undoubtedly a lot of misinterpretation.
+Since the words are not generally ordered in any way, there is undoubtedly a considerable misinterpretation.
 
-The next solution is often applied in the information retrieval systems.
-Instead of one number, we can represent the word embedding by a vector, with all elements zeros but one.
-Each word is assigned an unique index, on which the vector keeps a value of one.
+The next solution is often applied in information retrieval systems.
+Instead of one number, the word is encoded by a vector of length equal to the size of the vocabulary.
+Then, the embedding contains zeros in all elements except for the index of the word it represents.
+This approach is called \textit{One-hot encoding} as defined by the Scikit-learn machine learning library \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}}.
 $$
 \{\text{"knife"} \rightarrow (1,0,0,0), \text{"gun"} \rightarrow (0,1,0,0), \text{"wire"} \rightarrow (0,0,1,0), \dots\}
 $$
-Now, a vector uniquely identifies a word and the vectors are not quantitatively comparable, which eliminates the problem with the previous approach.
+Now, a vector uniquely identifies a word and since the vectors are not quantitatively comparable, the problem with the previous approach is eliminated.
 This solution can be further improved by counting the words in the training documents, TF-IDF weighting or co-occurrence matrices \cite{wordEmbeddings}.
 
 The third and final solution goes further in the embedding of semantics.
 Recent research by Mikolov et al. \cite{mikolov2013efficient} introduced a revolutionary algorithm \textit{Word2vec}, which uses a neural network to create a vector of fixed length that compresses semantics of the word it represents.
-Each dimension of a vector represents some concept, which can be somehow quantified, such as masculinity, age or liveliness \cite{mikolov2013linguistic}.
+Each dimension of a vector represents some concept, which can be somehow quantified, such as masculinity, age, or liveliness \cite{mikolov2013linguistic}.
 The vectors are capturing semantic regularities, and therefore, the classifiers have a potential to perform better even for unknown words.
 This embedding satisfies our ultimate assumption that close vectors are also close by the meaning of their underlying words.
 
 Both the algorithm and the trained embeddings are publicly available.
-Though there is a possibility of applying the algorithm to compute our own embeddings, the obtained dataset is too small to reliably train a model, and thus it is more efficient to adopt the dataset based on available models trained thoroughly in the past.
-Since the meaning of the words is the same regardless of the area, there would be a very little gain in the training of a custom dataset specialized on legal documents.
-The dictionary adopted here is trained by the \textit{Google} company and is available in their official code archive \cite{word2vecGoogle}.
+Though there is a possibility of applying the algorithm to compute our embeddings, the obtained dataset is too small to train a model reliably, and thus it is more efficient to adopt the dataset based on available models trained thoroughly on a large number of samples.
+The dictionary adopted here is trained by the Google company and is available in their official code archive \cite{word2vecGoogle}.
 The pre-trained model contains 3 million unique words of 300-dimensional vectors, which was trained on a 300 billion word news dataset.
-For our purpose, a trimmed dataset of 300 thousand unique words without the phrases is sufficient \footnote{Downloaded from \url{https://github.com/eyaler/word2vec-slim}}.
+For our purpose, a trimmed dataset of 300 thousand unique words without the phrases is sufficient\footnote{Downloaded from \url{https://github.com/eyaler/word2vec-slim}}.
 
-The second problem relates to the fact, that the classifiers usually need fixed input, but the computed vectors exist for each word of a sentence.
+The second problem relates to the fact that the classifiers usually need fixed input, but the computed vectors exist for each word of a sentence.
 Researchers Vedantam et al. \cite{vedantam2015learning} applied a simple average of \textit{word2vec} vectors to the words in a phrase to get the final embedding.
 The idea can be extended to whole sentences by computing an average of all words in the sentence.
-To achieve more interesting results, it is possible to weight the words by their TF-IDF score in the overall average, however, the contribution is not necessarily positive since the ordinary words can distinguish relevant sentence as well as the keyword.
-Besides, the keywords (words with high TF-IDF) are embedded in another representation introduced in the next section, hence the TF-IDF weighting does not bring enough contribution to be worth the processing time.
 
 \subsection{Keyword embedding}
 Next attribute is a vector computed from the keywords that appear in a sentence.
@@ -1126,50 +1121,49 @@ The NLP feature extraction determined keywords in the context of the whole docum
 In the process of intersecting, the \textit{subset tolerance approach} is applied, as defined in the section \ref{sec:nlp:statistical_comparison}.
 
 The next step is very similar to the approach mentioned in the previous section -- the words are converted into an embedding by the \textit{word2vec} dictionary and then averaged into one 300 dimensional vector.
-Indeed, the sentence meaning vectors contain the keywords as well, thus some information is redundant and one can argue that these two attributes appear too similar.
-However, the choice of right words plays a crucial role in the influence on classification, and the importance of both the attributes will be justified in the evaluation chapter.
+Indeed, the sentence meaning vectors contain the keywords as well, and thus some information is redundant.
+However, the choice of right words plays a crucial role in the influence on classification, and the importance of both the attributes will be justified further.
 
 \subsection{Entity embedding}
 \label{sec:entity_embedding}
 \textit{Watson NLU} service is able to recognize extensive number of entity types (462)\footnote{\url{https://console.bluemix.net/docs/services/natural-language-understanding/entity-types-v1.html}}, 
-which include as obscure categories as "WebBrowserExtension" or "HockeyConference".
-For the purpose of this research, only 6 of them the following types are used:
+which include as obscure categories as ``WebBrowserExtension'' or ``HockeyConference''.
+For the purpose of this research, only 6 of them are used:
 \begin{itemize}
-\item Person
-\item Organization
-\item Location
-\item Crime
-\item HealthCondition
+\item Person,
+\item Organization,
+\item Location,
+\item Crime,
+\item HealthCondition.
 \end{itemize}
-Note that also "Company" type is recognized, subsequently classified as "Organization".
+Note that also ``Company'' type is recognized, subsequently classified as ``Organization''.
 In addition, the concepts and dates are included as entities, since there is no difference in the way they might influence the relevance.
 
 The case-specific embedding is based only on the entities that are important for the specific case.
-During the preprocessing, they are extracted from the case synopsis and stored in a vector of fixed length for each entity type. For instance, a vector for people entities might look as follows:
+During the preprocessing, they are extracted from the case synopsis\footnote{Each case contains a description by the user, also called a \textit{case synopsis}.} and stored in a vector of fixed length for each entity type. For instance, a vector for people entities might look as follows:
 $$
 (\text{"joey david", "thomas", "jesse hester", "obama", "", "", "", "", "", ""})
 $$
-The rest of the vector is left for entities from documents, which would be included based on their importance score (\textit{Watson NLU} attaches the score to each entity).
-More specifically, when an entity appears in a new document with a high score, it is appended in the vector and never deleted.
+The rest of the vector is free for entities from documents, which would be included based on their importance score (\textit{Watson NLU} attaches the score to each entity).
+More specifically, when an entity appears in a new document with a high score, it is appended to the vector and never deleted.
 Finally, the embedding itself is a mask array of ones and zeros that indicate which entities are present in the sentence.
 
 One problem with this embedding is that the vector acquires different meaning for every case.
 In a situation when a model learns that a name on the index $i$ indicates a relevant document, the model becomes not transferable to another case, where the vector contains different names.
-General model for any case becomes impossible to train due to a lack of data.
 Hence, the entities are also encoded in general embeddings independent of case.
 Fortunately, the \textit{word2vec} dictionary was trained on general texts including the entities as well.
-Most of the well-known names, such as "David", "George", or "Adele", organizations, such as "Mc Donald", "IBM", or "Facebook" and locations, such as "Prague", "Nigeria", or "Prater" are present in the dictionary.
-Not only that we can now train a general model, in which each word has its own fixed representation, but also, the embeddings satisfy the expected semantic rules.
-For example, vectors representing names will be close together and the model has a chance to learn that names are in fact important regardless of the specific word.
+Most of the well-known names, such as ``David'', ``George'', or ``Adele'', organizations, such as ``Mc Donald'', ``IBM'', or ``Facebook'' and locations, such as ``Prague'', ``Nigeria'', or ``Prater'' are present in the dictionary.
+Not only that it is now possible to train a general model, in which each word has its own fixed representation, but also, the embeddings satisfy the expected semantic rules.
+For example, vectors representing names will be close together with respect to other entities, and the model has a chance to learn that names are in fact important regardless of the specific word.
 The figure \ref{fig:entity_distances} confirms our thought about larger distances between the types of entities.
-Here, one can immediately see the larger distances between names, locations and organizations than the distance among the entities of the same type.
+Here, one can immediately see the larger distances between names, locations, and organizations than the distance among the entities of the same type.
 The general embedding is created by concatenation of a one-hot vector specifying the entity type and the \textit{word2vec} vector for the entity.
 
 \begin{figure}[h]
 \centering
-\caption{Distances among entity vectors in word2vec dictionary after PCA transformation.}
+\caption{Distances among entity vectors in word2vec dictionary after PCA transformation to 2 principal components.}
 \label{fig:entity_distances}
-\includegraphics[width=\textwidth]{img/entities_distances}
+\includegraphics[width=0.7\textwidth]{img/entities_distances}
 \end{figure}
 
 \subsection{Relation embedding}
@@ -1197,21 +1191,18 @@ The relations computed by Watson NLU keep the following structure:
     }], 
 }
 \end{minted}
-\caption{Watson NLU relation example in JSON} 
+\caption{Watson NLU relation encoding example in JSON} 
 \label{json:relation}
 \end{listing}
-Note that the fields "location" and "score" were excluded to make the example compact.
-As the JSON example suggests, the important parts of the relation are its type ("locatedAt"), types of the entities ("Person", "Facility") and the text of the entities ("her", "courtroom").
+Note that the fields ``location'' and ``score'' were excluded to make the example compact.
+As the JSON example suggests, the essential parts of the relation are its type (``locatedAt''), types of the entities (``Person'', ``Facility'') and the text of the entities (``her'', ``courtroom'').
 The relation embedding, therefore, needs to accommodate relation type, 2x entity type and 2x entities itself.
-The previous sections presented the \textit{word2vec} dictionary, which is able to convert common words into a vector.
+The previous sections presented the \textit{word2vec} dictionary, which can convert common words into a vector.
 The same approach is used here for embedding of the entity words since there is a high probability of them being in the dictionary.
 
-On the other hand, types of relations and entities are rather identifiers than meaningful words, and thus, they will hardly occur in the \textit{word2vec} dictionary.
-In this case, we can take advantage of the lists of all possible types, which is offered by Watson.
-There is a limited number of relation types (54) and entity types (49), which suggests a straightforward way of converting the type into a vector.
-The type is encoded by a vector of length equal to the number of types, in which each index represents one specific type.
-Then, the embedding contains zeros in all elements except for the index of the type it represents.
-This approach is called \textit{One-hot encoding} as defined by the Scikit-learn machine learning library \footnote{\url{http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html}}.
+On the other hand, types of relations and entities are rather identifiers than meaningful words, and thus they will hardly occur in the \textit{word2vec} dictionary.
+In this case, we can take advantage of the lists of all possible types offered by Watson.
+There is a limited number of relation types (54) and entity types (49), which suggests a straightforward way of converting the type into a vector -- the \textit{One-hot encoding} as described earlier.
 
 To summarize, the final embedding of the relation consists of
 \begin{itemize}
@@ -1227,7 +1218,7 @@ To summarize, the final embedding of the relation consists of
 The category is an example of an attribute related to the document instead of the sentence.
 Similarly as the relation and entity types, the Watson NLU defined a fixed set of categories.
 There are five levels of categories arranged in a hierarchic tree structure, but not all categories contain a full range of levels.
-An example of a category with four levels might be
+An example of a category with four levels might be:
 \begin{minted}[frame=single,
                framesep=3mm,
                linenos=false,
@@ -1238,42 +1229,42 @@ An example of a category with four levels might be
 law, govt and politics / legal issues / civil rights / privacy
 \end{minted}
 
-As the principle of one-hot vector was explained in the previous section (\ref{sec:relation_embedding}), the category embedding should be straight-forward.
-Each category level has a fixed number of types, therefore, one-hot vectors are created for all levels and are concatenated in one vector of representing a full category.
-It is worth noting that the last (fifth) level is excluded in the embedding, since the absolute majority of categories get by with the first four levels, which left the last level largely unused.
+Each category level has a fixed number of types, which are stored in a form of ordered lists, where each index belongs to one category.
+The concatenated numbers determine the indices of categories and the final embeddings.
+It is worth noting that the fifth level is excluded from the embedding since the last category is mostly unused.
 
 \subsection{Structural characteristics}
 \label{sec:structural_characteristics}
 All the previous attributes refer to the text and its semantics.
-Documents are, however, defined also by its structure in the sense of text formating.
-For example, some documents possess structure of a fixed form, such as police records, medical records, or other administrative documents.
-In this case, the arrangement of a text plays a crucial role in determining a type of a document, and therefore, also a relevance.
+Documents are, however, defined also by their structure in the sense of text formatting.
+For example, some documents possess the structure of a fixed form, such as police records, medical records, or other administrative documents.
+In this case, the arrangement of text plays a crucial role in determining the type of a document, and therefore, also the relevance.
 The following set of structural attributes are explored further in the research to discover their contribution:
 \begin{itemize}
-\item document length in characters
-\item document length in words
-\item document length in sentences
-\item document length in new lines
-\item average length of a sentence in characters
-\item average length of a sentence in words
-\item average length of a word in characters
-\item number of empty lines
-\item number of special characters
+\item document length in characters,
+\item document length in words,
+\item document length in sentences,
+\item document length in new lines,
+\item average length of a sentence in characters,
+\item average length of a sentence in words,
+\item average length of a word in characters,
+\item number of empty lines,
+\item number of special characters.
 \end{itemize}
 
 %\subsection{Syntax structure}
 \section{Bottom-level model}
 \label{sec:bottom-level-models}
-This section introduces the model that directly processes the extracted embeddings explained in the previous section and extracts information provided to the top-level models.
-To achieve the best performance, it is crucial to split the predictions to elementary units and build on top of them.
-% TODO find a source to prove it
-The models are able to learn limited amount of information, especially in the case of insufficient number of training instances, and therefore, one should keep the models as simple as possible.
-In contrast, one could concatenate all attributes, apply them to a single large model and expect that it will be able to extract all important information.
+This section introduces the model that directly processes the embeddings explained in the previous section and extracts information, which then provides to the top-level models.
+To achieve the best performance, it is crucial to split the predictions to elementary units and build on top of them (\ref{eval:allinone-vs-features}).
+The models are able to learn a limited amount of information, especially in the case of an insufficient number of training instances, and therefore, one should keep the models as simple as possible.
+In contrast, one could concatenate all attributes in one vector, apply a single large model, and expect that it will be able to extract all discriminative information.
 This approach is not very likely to work in the environment with thousands of features, as in our case.
 
-Following this idea, we present a series of models specialized on each of the attribute separately.
-Besides better final performance in predicting the relevance (\ref{eval:allinone-vs-features}), another advantage is the transparent flow of information and better understanding of the models.
-Examining the intermediate results from the models, we are able to deduce which attributes (keywords, entities and relations) are the most discriminative in predicting of the relevance and which are not.
+Following this idea, we present a series of models specialized on each of the attributes separately.
+Besides better final performance in predicting the relevance (\ref{eval:allinone-vs-features}), another advantage is the transparent flow of information and a better understanding of the models.
+Examining the intermediate results from the models, we can deduce which attributes are the most discriminative in predicting the relevance and which are not.
+Note that only the attributes containing \textit{word2vec} embeddings (meaning, keywords, relations) need a bottom-level model, as the others are built of small-sized vectors.
 
 \subsection{Machine learning estimator selection}
 \label{sec:bottom-level-nn}
@@ -1284,14 +1275,14 @@ Regarding attributes describing the sentences, the final solution was to apply t
 As mentioned in the section \ref{sec:sentence-meaning}, the dictionary was computed from the texts of news reports that are processed by a neural network.
 Specifically, in the proposed word2vec algorithm, the vectors are derived from the weights between the hidden and output layer \cite[sec. 2.2.1]{wordEmbeddings}.
 Since the embeddings represent an internal state of a neural network, the natural step is to extend the network by virtually connecting additional layers.
-Even though the idea of extending network is not precise, as the embeddings are understood as inputs instead of weights, the aspect of the follow-up model structure showed to be important (\ref{eval:bottom-model-selection}).
+Even though the idea of extending network is not precise, as the embeddings are understood as inputs instead of weights, the aspect of the follow-up model structure showed to be significant (\ref{eval:bottom-model-selection}).
 
 Another reason, why neural network best suites our needs, is that it is an incremental estimator \cite{incrementalScikit}.
-Incremental estimators enables to iteratively learn and improve on a new batch of data without forgetting the old state.
-Other incremental estimator solving classification problems is the Naive Bayes (NB) classifier.
+Incremental estimators enable to iteratively learn and improve on a new batch of data without forgetting the old state.
+Another incremental estimator solving classification problems is the Naive Bayes (NB) classifier.
 
-The final structure of the neural network has an variable input layer dimension based on the attribute, two hidden layers of 16 and 8 neurons and 2 output neurons representing binary classes.
-Such a model is prepared to predict law-related vs case-related sentences as well as relevant vs irrelevant sentences. Note that even though there are three final classes of relevance (HOT, WARM, COLD), the WARM class is neglected here and later decided by the top-level models.
+The final structure of the neural network has a variable input layer dimension based on the attribute, two hidden layers of 16 and 8 neurons and 2 output neurons representing binary classes.
+Such a model is prepared to predict law-related vs. case-related sentences as well as relevant vs. irrelevant sentences.
 
 \begin{figure}[H]
 \caption{Bottom-level model structure}
@@ -1300,7 +1291,7 @@ Such a model is prepared to predict law-related vs case-related sentences as wel
 \end{figure}
 
 The \textit{sigmoid} activation function showed to be the most successful in all layers.
-During the model training, an Adamax optimizer with learning rate of 0.02 was applied in 150 epochs and batch size of 20 to 100 depending on the number of training data.
+During the model training, an Adamax optimizer with a learning rate of 0.02 was applied in 150 epochs and batch size of 20 to 100 depending on the number of training data.
 To prevent the overfitting, the model stopped learning in case of increasing loss on a validation set (10\% of training data).
 The applied loss function is called the Cross Entropy (CE), which is defined as follows:
 $$
@@ -1333,7 +1324,7 @@ The reason for that is the equal nature of the two classes -- one is not more im
 To train the models, we had to establish a simplified assumption and mark all sentences with the same class as the document.
 As a result, the models were trained on all 14,368 sentences.
 
-The top-level model of Law-Case classifier is working with the following several sets of attributes.
+The top-level model of Law-Case classifier is working with the following sets of attributes.
 The first set is extracted and used as an input for the bottom-level models: sentence meaning, keywords, relations and entities.
 Their encoding is explained in the section \ref{sec:attributes}.
 The second set contains the structural characteristics of the document as explained in the section \ref{sec:structural_characteristics}.
@@ -1361,8 +1352,8 @@ To determine which attributes are actually beneficial and which are irrelevant, 
 The classifier computes \textit{gini index} \footnote{Measure of class impurity for determining the next feature to split on \\(\url{http://scikit-learn.org/stable/modules/tree.html\#tree}).} that not only drives the decision tree creation, but also signifies the feature importance.
 The evaluation in the figure \ref{fig:case_law_feature_importance} takes advantage of this ability and displays the features sorted by its importance.
 
-\begin{figure}[h]
-\caption{Feature importance from Random tree classification of case-related and law-related}
+\begin{figure}[H]
+\caption{Feature importance from Random Forest classification of case-related and law-related sentences. \textit{Meaning} encodes the averaged word2vec vectors of all words in the sentence. The \textit{people}, \textit{organizations}, \textit{locations}, \textit{crimes}, \textit{health conditions} and \textit{email addresses} represents the number of appearances in the sentence. \textit{Category1} is representation of the most general level of category and \textit{category2} represents the second most general level.}
 \label{fig:case_law_feature_importance}
 \includegraphics[width=\textwidth]{img/case_law_feature_importance}
 \end{figure}
